@@ -3,6 +3,7 @@
 function template($content, $data = "")
 {
     $dataJadwalDokter = $data;
+    $dataparse = $data;
     require_once('./../views/layouts/v_header.php');
     require_once($content);
     require_once('./../views/layouts/v_footer.php');
