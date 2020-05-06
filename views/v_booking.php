@@ -71,9 +71,21 @@
 		cursor: pointer;
 	}
 
+	.row-btn-menu {
+		text-align:center;
+		padding : 2px;
+		display: none;
+	}
+
 	@media only screen and (max-width: 990px) {
 		.buttonmenu {
 			display: none;
+		}
+
+		.row-btn-menu {
+			text-align:center;
+			padding : 2px;
+			display: block;
 		}
 	}
 
@@ -85,6 +97,11 @@
 		-ms-user-select: none; /* Internet Explorer/Edge */
 		user-select: none; /* Non-prefixed version, currently
 			supported by Chrome, Opera and Firefox */
+	}
+
+	.row-btn-menu {
+		text-align:center;
+		padding : 2px;
 	}
 
 </style>	
@@ -158,6 +175,28 @@
 							<div class="square">
 								ANTRIAN
 							</div>
+							<div class="square">
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row-btn-menu">
+					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
+						<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_jadwaldokter.php';">
+							JADWAL DOKTER
+						</div>
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
+						<div class="square">
+							ANTRIAN
+						</div>
+					</div>
+					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
+						<div class="square">
+							
 						</div>
 					</div>
 				</div>
