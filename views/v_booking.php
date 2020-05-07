@@ -139,13 +139,13 @@
 									<div class="col-sm-6">
 										<div class="form-group">
 											<span class="form-label">Pesan Tanggal</span>
-											<input class="form-control" name="pesan_tanggal" type="date" required>
+											<input class="form-control" id="pesan_tanggal" name="pesan_tanggal" type="date" required>
 										</div>
 									</div>
 									<div class="col-sm-6">
 										<div class="form-group">
 											<span class="form-label">Hari</span>
-											<input class="form-control" name="pesan_hari" type="text" placeholder="" readonly>		
+											<input class="form-control" id="pesan_hari" name="pesan_hari" type="text" placeholder="" readonly>		
 										</div>
 									</div>
 								</div>
@@ -176,7 +176,7 @@
 								ANTRIAN
 							</div>
 							<div class="square">
-								
+								NOMER URUT
 							</div>
 						</div>
 					</div>
@@ -196,7 +196,7 @@
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
 						<div class="square">
-							
+							NOMER URUT
 						</div>
 					</div>
 				</div>
@@ -219,8 +219,14 @@
 			$.get(baseUrl + "/controllers/C_pasien.php?rm=" + $('#pasien_norm').val(), function( data ) {
 				document.getElementById("loading").style.display = "none";
 				var result = JSON.parse(data);
-				if(result!=""){
-					$("#pasien_nama").val(result.FS_NM_PASIEN);
+				if(result.code == '203') {
+					swal("Info!", "Pasien No. RM "+$('#pasien_norm').val()+", atas nama ", "info");
+					return false;
+				}
+
+				
+				if(result.code == '200'){
+					$("#pasien_nama").val(result.data.FS_NM_PASIEN);
 				} else {
 					swal({
 						title: "No. Rekam Medis tidak dikenali ?",
@@ -238,7 +244,7 @@
 							swal("Terhapus!", "Isi ulang No. Rekam Medis.", "success");
 							$('#pasien_norm').val('');
 						} else {
-							swal("Cancel", "Lanjutkan isian No. Rekam Medis", "error");
+							// swal("Cancel", "Lanjutkan isian No. Rekam Medis", "error");
 						}
 					});
 				}
@@ -246,4 +252,11 @@
 			
 		},1000);
 	}
+
+	$('#pesan_tanggal').change(function() {
+		var date = new Date($(this).val());
+		var hariIndo = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU', 'MINGGU'];
+		var hari_numeric = date.getDay();
+		$("#pesan_hari").val(hariIndo[hari_numeric-1]);
+	});
 </script>
