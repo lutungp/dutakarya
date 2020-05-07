@@ -220,7 +220,8 @@
 				document.getElementById("loading").style.display = "none";
 				var result = JSON.parse(data);
 				if(result.code == '203') {
-					swal("Info!", "Pasien No. RM "+$('#pasien_norm').val()+", atas nama ", "info");
+					console.log(result)
+					swal("Info!", result.message, "info");
 					return false;
 				}
 

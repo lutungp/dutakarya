@@ -22,16 +22,6 @@ class C_pasien
         $return = array(
             "code" => "202"
         );
-        if($query) {
-            $row = mysqli_fetch_object($query);
-            if ($row->booking > 0) {
-                $stmt = sqlsrv_fetch_object($stmt);
-                $return = array(
-                    "code" => "203",
-                    "mesage" => "Pasien No. RM " . $FS_MR . ", atas nama " . $stmt->FS_NM_PASIEN . " sudah booking"
-                );
-            }
-        }
 
         if($stmt){
             $stmt = sqlsrv_fetch_object($stmt);
@@ -39,6 +29,16 @@ class C_pasien
                 "code" => "200",
                 "data" => $stmt
             );
+        }
+
+        if($query) {
+            $row = mysqli_fetch_object($query);
+            if ($row->booking > 0) {
+                $return = array(
+                    "code" => "203",
+                    "message" => "Pasien No. RM " . $FS_MR . ", atas nama " . $stmt->FS_NM_PASIEN . " sudah dalam daftar antrian"
+                );
+            }
         }
 
         echo json_encode($return);
