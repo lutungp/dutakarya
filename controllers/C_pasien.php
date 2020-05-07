@@ -36,7 +36,7 @@ class C_pasien
             if ($row->booking > 0) {
                 $return = array(
                     "code" => "203",
-                    "message" => "Pasien No. RM " . $FS_MR . ", atas nama " . $stmt->FS_NM_PASIEN . " sudah dalam daftar antrian"
+                    "message" => "Pasien No. RM " . $FS_MR . ", atas nama " . $stmt->FS_NM_PASIEN . " sudah dalam daftar antrian
                 );
             }
         }
