@@ -1,3 +1,3 @@
 <?php
 
-$config['base_url']= $_SERVER['HTTP_HOST'] . '/telemedicine';
+$config['base_url']= "http://" . $_SERVER['HTTP_HOST'] . '/telemedicine';

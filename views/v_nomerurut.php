@@ -54,7 +54,7 @@
                                         </td>
                                     </tr>
                                 </table>
-                            <?php }?>
+                            <?php } else { ?>
                                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                     <tr>
                                         <td bgcolor="#ffffff" align="left" style="padding: 20px 0px 0px 0px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
@@ -64,6 +64,7 @@
                                         </td>
                                     </tr>
                                 </table>
+                            <?php } ?>
                         </div>
                         <div class="col-xs-12 col-sm-2">
                             

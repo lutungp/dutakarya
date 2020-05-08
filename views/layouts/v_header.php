@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-        define('BASE_URL', 'http://localhost/telemedicine');
+        define('BASE_URL', 'http://10.1.5.3/telemedicine');
 ?>
 <head>
 	<meta charset="utf-8">
