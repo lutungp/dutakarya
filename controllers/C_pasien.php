@@ -14,7 +14,6 @@ class C_pasien
         $FS_MR2 = str_pad($FS_MR, 8, "0", STR_PAD_LEFT);
         $tsql = "SELECT FS_MR, FD_TGL_MR, FS_NM_ALIAS, FS_NM_PASIEN FROM TC_MR WHERE FS_MR like '%$FS_MR2' ";
         $stmt = sqlsrv_query( $conn, $tsql);
-
         /* cek pasien antrian */
         $sql = "SELECT COUNT(*) AS booking FROM t_booking_hospital WHERE pasien_norm like '%$FS_MR' AND bookinghosp_aktif = 'Y' AND bookinghosp_status = 'ANTRIAN'";
         $query = $this->conn2->query($sql);

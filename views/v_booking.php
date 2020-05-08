@@ -220,13 +220,12 @@
 				document.getElementById("loading").style.display = "none";
 				var result = JSON.parse(data);
 				if(result.code == '203') {
-					console.log(result)
 					swal("Info!", result.message, "info");
 					return false;
 				}
 
 				
-				if(result.code == '200'){
+				if(result.code == '200' && result.data != null){
 					$("#pasien_nama").val(result.data.FS_NM_PASIEN);
 				} else {
 					swal({
