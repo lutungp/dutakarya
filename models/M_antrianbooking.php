@@ -29,7 +29,7 @@ class M_antrianbooking
             $row = mysqli_fetch_object($query);
             return json_encode($row);
         } else {
-            return json_encode([]);
+            return 'false';
         }
     }
 }

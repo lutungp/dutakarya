@@ -122,7 +122,7 @@
 								<div class="row no-margin">
 									<div class="col-sm-12">
 										<div class="form-group">
-											<span class="form-label">No. RM (Rekam Medis)</span>
+											<span class="form-label">No. RM (Rekam Medik)</span>
 											<input class="form-control" name="pasien_norm" type="number" id="pasien_norm" onKeyUp="javascript:chkRM();" required>
 										</div>
 									</div>
@@ -175,7 +175,7 @@
 							<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_antrianbooking.php?action=list_antrian';">
 								ANTRIAN
 							</div>
-							<div class="square">
+							<div class="square" onclick="noUrut()">
 								NOMER URUT
 							</div>
 						</div>
@@ -230,8 +230,8 @@
 					$("#pasien_nama").val(result.data.FS_NM_PASIEN);
 				} else {
 					swal({
-						title: "No. Rekam Medis tidak dikenali ?",
-						text: "Hapus isian No. Rekam Medis!",
+						title: "No. Rekam Medik tidak dikenali ?",
+						text: "Hapus isian No. Rekam Medik!",
 						type: "warning",
 						showCancelButton: true,
 						confirmButtonClass: "btn-danger",
@@ -242,10 +242,10 @@
 					},
 					function(isConfirm) {
 						if (isConfirm) {
-							swal("Terhapus!", "Isi ulang No. Rekam Medis.", "success");
+							swal("Terhapus!", "Isi ulang No. Rekam Medik.", "success");
 							$('#pasien_norm').val('');
 						} else {
-							// swal("Cancel", "Lanjutkan isian No. Rekam Medis", "error");
+							// swal("Cancel", "Lanjutkan isian No. Rekam Medik", "error");
 						}
 					});
 				}
@@ -260,4 +260,24 @@
 		var hari_numeric = date.getDay();
 		$("#pesan_hari").val(hariIndo[hari_numeric-1]);
 	});
+
+	function noUrut() {
+		swal({
+			title: "Masukkan No. RM:",
+			// text: "Masukkan No. RM:",
+			type: "input",
+			showCancelButton: true,
+			closeOnConfirm: false,
+			inputPlaceholder: "No. Rekam Medik"
+		}, function (inputValue) {
+			if (inputValue === false) return false;
+			if (inputValue === "") {
+				swal.showInputError("No. Rekam Medik belum diisi!");
+				return false
+			}
+			console.log(baseUrl + "/controllers/C_booking.php?action=nourut&rm=" + inputValue)
+			// swal("Nice!", "You wrote: " + inputValue, "success");
+			window.location.replace(baseUrl + "/controllers/C_booking.php?action=nourut&rm=" + inputValue);
+		});
+	}
 </script>

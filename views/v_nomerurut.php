@@ -14,8 +14,11 @@
     }
 </style>
 <?php
-    $data = json_decode($dataparse);
-    $urutan = str_pad($data->bookinghosp_urutan, 3, "0", STR_PAD_LEFT);
+    if ($dataparse != 'null') {
+        $data = json_decode($dataparse);
+        $urutan = str_pad($data->bookinghosp_urutan, 3, "0", STR_PAD_LEFT);
+    }
+    
 ?>
 <body>
     <div id="booking" class="section">
@@ -27,27 +30,40 @@
                             
                         </div>
                         <div class="col-xs-12 col-sm-8" style="padding:0;">
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                                <tr>
-                                    <td bgcolor="#ffffff" align="left" style="padding: 20px 0px 0px 0px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-                                            <p style="margin: 0;">
-                                            <p>Yth. <b><?php echo $data->pasien_nama ?></b></p>
-                                            <p>Anda telah berhasil mendaftar pada antrian POLI UMUM, <br>pada tangal <b><?php echo date("d-m-Y", strtotime($data->bookinghosp_tanggal)) ?></b></p>
-                                            <center>No. Antrian :</center>
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <center>
-                                            <span style="font-size: 90px; line-height : 1;">
-                                                <?php echo $urutan; ?>
-                                            </span>
-                                        </center>
-                                        <br>
-                                    </td>
-                                </tr>
-                            </table>
+                            <?php
+                                if($dataparse != 'null'){
+                            ?>
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td bgcolor="#ffffff" align="left" style="padding: 20px 0px 0px 0px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                                <p style="margin: 0;">
+                                                <p>Yth. <b><?php echo $data->pasien_nama ?></b></p>
+                                                <p>Anda telah berhasil mendaftar pada antrian POLI UMUM, <br>pada tangal <b><?php echo date("d-m-Y", strtotime($data->bookinghosp_tanggal)) ?></b></p>
+                                                <center>No. Antrian :</center>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <center>
+                                                <span style="font-size: 90px; line-height : 1;">
+                                                    <?php echo $urutan; ?>
+                                                </span>
+                                            </center>
+                                            <br>
+                                        </td>
+                                    </tr>
+                                </table>
+                            <?php }?>
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td bgcolor="#ffffff" align="left" style="padding: 20px 0px 0px 0px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+                                                <p><b>Mohon Maaf.</b></p>
+                                                <p>No. Rekam Medik anda tidak terdaftar pada antrian Kami, coba cek kembali No. Rekam Medik anda</p>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
                         </div>
                         <div class="col-xs-12 col-sm-2">
                             

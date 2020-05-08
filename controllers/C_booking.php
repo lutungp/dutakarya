@@ -52,18 +52,20 @@ class C_booking
 
 $booking = new C_booking($conn, $conn2);
 $action = isset($_GET["action"]) ? $_GET["action"] : '';
-switch ($action) {
-    case '':
-        $booking->booking();
-        break;
-    
-    default:
+switch ($action) {    
+    case 'create':
         $booking = new C_booking($conn, $conn2);
         $action = $booking->create($_POST);
         if($action["code"] == "200"){
-            header("Location: " . $config['base_url'] . "/controllers/C_antrianbooking.php?urutan=" . $action['urutan'] . "&pasien_norm=" . $action['pasien_norm'] . "&pasien_nama=" . $action['pasien_nama']);
+            header("Location: " . $config['base_url'] . "/controllers/C_antrianbooking.php?urutan=" . $action['urutan'] . "&pasien_norm=" . $action['pasien_norm']);
         } else {
             template('../views/v_booking.php');
         }
+        break;
+    case 'nourut' :
+        header("Location: " . $config['base_url'] . "/controllers/C_antrianbooking.php?pasien_norm=" . $_GET['rm']);
+        break;
+    default:
+        $booking->booking();
         break;
 }
