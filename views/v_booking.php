@@ -172,7 +172,7 @@
 							<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_jadwaldokter.php';">
 								JADWAL DOKTER
 							</div>
-							<div class="square">
+							<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_antrianbooking.php?action=list_antrian';">
 								ANTRIAN
 							</div>
 							<div class="square">
@@ -190,7 +190,7 @@
 						</div>
 					</div>
 					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
-						<div class="square">
+						<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_antrianbooking.php?action=list_antrian';">
 							ANTRIAN
 						</div>
 					</div>

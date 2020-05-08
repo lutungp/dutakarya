@@ -31,6 +31,7 @@ class C_booking
         
         $action = query_create($this->conn2, 't_booking_hospital', $field, $dataSave);
 
+        $pasiennorm = "3172724" . str_pad($data["pasien_norm"], 8, "0", STR_PAD_LEFT);
         if($action == "200"){
             $datares = array(
                 "code"  => "200",
@@ -60,7 +61,7 @@ switch ($action) {
         $booking = new C_booking($conn, $conn2);
         $action = $booking->create($_POST);
         if($action["code"] == "200"){
-            header("Location: " . $config['base_url'] . "/controllers/C_atrianbooking.php?urutan=" . $action['urutan'] . "&pasien_norm=" . $action['pasien_norm'] . "&pasien_nama=" . $action['pasien_nama']);
+            header("Location: " . $config['base_url'] . "/controllers/C_antrianbooking.php?urutan=" . $action['urutan'] . "&pasien_norm=" . $action['pasien_norm'] . "&pasien_nama=" . $action['pasien_nama']);
         } else {
             template('../views/v_booking.php');
         }
