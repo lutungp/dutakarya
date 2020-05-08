@@ -77,6 +77,14 @@
 		display: none;
 	}
 
+	.logo-rs-desktop {
+		text-align: center;
+	}
+
+	.logo-rs-mobile {
+		display: none;
+	}
+
 	@media only screen and (max-width: 990px) {
 		.buttonmenu {
 			display: none;
@@ -86,6 +94,20 @@
 			text-align:center;
 			padding : 2px;
 			display: block;
+		}
+
+		#booking {
+			top: 120px !important;
+		}
+
+		.logo-rs-desktop {
+			display: inline-block;
+			display: none;
+		}
+
+		.logo-rs-mobile {
+			display: block;
+			text-align: center;
 		}
 	}
 
@@ -114,7 +136,18 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-2">
-
+						<div class="logo-rs-desktop">
+							<!-- C:\xampp\htdocs\telemedicineRSHJ\assets\img\rshaji.jpg -->
+							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="170" height="145"
+							onclick="window.open('https://www.rshaji-jakarta.com/')">
+							<p><font style="font-size: 18px; color: #346d00;">RS. HAJI JAKARTA</font><br>Pelayanan <font style="color: red;">COVID-19</font></p>
+						</div>
+						<div class="logo-rs-mobile">
+							<!-- C:\xampp\htdocs\telemedicineRSHJ\assets\img\rshaji.jpg -->
+							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="50" height="38"
+							onclick="window.open('https://www.rshaji-jakarta.com/')">
+							<p><font style="font-size: 18px; color: #346d00;">RS. HAJI JAKARTA</font><br>Pelayanan <font style="color: red;">COVID-19</font></p>
+						</div>
 					</div>
 					<div class="col-md-8">
 						<div class="booking-form">
