@@ -184,7 +184,7 @@
 								</div>
 								<div class="form-group">
 									<span class="form-label">Layanan</span>
-									<input class="form-control" name="pesan_layanan" type="text" placeholder="" value="UMUM" readonly>
+									<input class="form-control" name="pesan_layanan" type="text" placeholder="" value="TELEMEDICINE" readonly>
 								</div>
 								<div class="form-group">
 									<span class="form-label">Email</span>

@@ -20,6 +20,9 @@
     <div class="list-header rumahsakit">RUMAH SAKIT HAJI JAKARTA</div>
     <div class="list-header">JADWAL DOKTER POLI UMUM</div>
     <div class="container table-responsive">
+        <!-- <div>
+            <input type="text" name="tanggalAntrian" id="tanggalAntrian" class="datepicker" value="12/31/2010" size="8"/>
+        </div> -->
         <table id="example" class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -37,6 +40,7 @@
     </div>
 </div>
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/plug-ins/1.10.20/filtering/type-based/html.js"></script>
 <script>
     
     $(document).ready(function() {
@@ -45,5 +49,12 @@
             "bServerSide": true,
             "sAjaxSource": baseUrl + "/controllers/C_antrianbooking.php?action=getListAntrian",
         });
+
+        console.log($('#dataTables_length'));
+        // var datebox = "<div>";
+        // datebox += "<input type='text' name='tanggalAntrian' id='tanggalAntrian' class='datepicker' value='12/31/2010' size='8'/>";
+        // datebox += "</div>";
+        // $(datebox).insertAfter( ".dataTables_length" );
+
     });
 </script>
