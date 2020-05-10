@@ -29,7 +29,7 @@
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 	<!-- <link rel="icon" href="<?php echo BASE_URL; ?>/assets/favicon.ico" type="image/gif" sizes="16x16"> -->
-	<link rel="shortcut icon" href="<?php echo BASE_URL; ?>/asset/img/favicon.ico">
+	<link rel="shortcut icon" href="<?php echo BASE_URL; ?>/assets/img/favicon.ico">
     <script>
         var baseUrl = "<?php echo BASE_URL; ?>";
     </script>
