@@ -85,6 +85,19 @@
 		display: none;
 	}
 
+	.displaymode {
+		display: block;
+	}
+
+	.mobilemode {
+		display: none;
+	}
+
+	button.displaymode {
+		border: 1px #dddee9 solid;
+		color: #949496;
+	}
+
 	@media only screen and (max-width: 990px) {
 		.buttonmenu {
 			display: none;
@@ -97,7 +110,7 @@
 		}
 
 		#booking {
-			top: 120px !important;
+			top: 20px !important;
 		}
 
 		.logo-rs-desktop {
@@ -108,6 +121,14 @@
 		.logo-rs-mobile {
 			display: block;
 			text-align: center;
+		}
+
+		.displaymode {
+			display: none;
+		}
+
+		.mobilemode {
+			display: block;
 		}
 	}
 
@@ -126,7 +147,15 @@
 		padding : 2px;
 	}
 
-</style>	
+	.modal-backdrop {
+		display : none;
+	}
+
+	tr:hover {
+		background-color: aliceblue;
+	}
+
+</style>
 <body>
 	<div id="loading" class="layer-block">
 		<div class="lds-dual-ring"></div>
@@ -140,7 +169,7 @@
 							<!-- C:\xampp\htdocs\telemedicineRSHJ\assets\img\rshaji.jpg -->
 							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="170" height="145"
 							onclick="window.open('https://www.rshaji-jakarta.com/')">
-							<p><font style="font-size: 18px; color: #346d00;">RS. HAJI JAKARTA</font><br>Pelayanan <font style="color: red;">COVID-19</font></p>
+							<p><font style="font-size: 18px; color: #346d00;">RS. HAJI JAKARTA</font><br>Pelayanan <font style="color: red;">via-Telepon</font></p>
 						</div>
 						<div class="logo-rs-mobile">
 							<!-- C:\xampp\htdocs\telemedicineRSHJ\assets\img\rshaji.jpg -->
@@ -155,8 +184,101 @@
 								<div class="row no-margin">
 									<div class="col-sm-12">
 										<div class="form-group">
+											<span class="form-label">Pilih Layanan</span>
+											<div style="display: inline-flex; width: 100%;">
+												<input class="form-control" name="m_layanan_kode" type="text" readonly required>
+												<button type="button" class="displaymode" data-toggle="modal" data-target="#ModalLayanan">CARI</button>
+												<button type="button" class="mobilemode" data-toggle="modal" data-target="#ModalLayanan"><i class="fa fa-search"></i></button>
+											<div>
+											<!-- <select id="cars" name="carlist" class="form-control">
+												<option value="volvo">Volvo</option>
+												<option value="saab">Saab</option>
+												<option value="opel">Opel</option>
+												<option value="audi">Audi</option>
+											</select> -->
+											<!-- <select class="form-control" name="m_layanan_kode" style="width: 100%;">
+												<option value="RJ001">UMUM</option>
+												<option value="FS001">REHABILITASI MEDIK</option>
+												<option value="FS002">TERAPI WICARA</option>
+												<option value="FS003">FISIOTERAPI</option>
+												<option value="LAIN1">LAIN-LAIN</option>
+												<option value="MCU01">MEDICAL CHECK UP</option>
+												<option value="RJ002">BEDAH</option>
+												<option value="RJ003">GIGI DAN MULUT</option>
+												<option value="RJ004">GIZI</option>
+												<option value="RJ005">JANTUNG</option>
+												<option value="RJ006">KANDUNGAN & KEBIDANAN</option>
+												<option value="RJ007">ANAK</option>
+												<option value="RJ008">JIWA</option>
+												<option value="RJ009">KULIT/KELAMIN</option>
+												<option value="RJ010">MATA</option>
+												<option value="RJ011">PARU</option>
+												<option value="RJ012">PENYAKIT DALAM</option>
+												<option value="RJ013">SYARAF</option>
+												<option value="RJ014">THT</option>
+												<option value="RJ015">AKUPUNKTUR</option>
+												<option value="RJ016">ENDOSCOPY</option>
+												<option value="RJ017">PERAWATAN LUKA</option>
+												<option value="RJ018">ANASTESI</option>
+												<option value="RJ019">EMERGENCY RB</option>
+												<option value="RJ020">KLINIK UMMI</option>
+												<option value="RJ021">KLINIK SAKINAH</option>
+												<option value="RJ022">KLINIK HAJI DAN UMROH</option>
+												<option value="RJ023">PSIKOLOG</option>
+												<option value="PTK01">P2TKHU</option>
+												<option value="VKS01">KLINIK VAKSIN INTERNASIONAL</option>
+												<option value="DRS01">DARUSSALAM</option>
+												<option value="RJ024">BEDAH PLASTIK</option>
+											</select> -->
+										</div>
+									</div>
+								</div>
+								<div class="row no-margin">
+									<div class="col-sm-12">
+										<div class="form-group">
+											<span class="form-label">Pilih Dokter</span>
+											<select class="form-control" name="m_layanan_kode" style="width: 100%;">
+												<option value="RJ001">UMUM</option>
+												<option value="FS001">REHABILITASI MEDIK</option>
+												<option value="FS002">TERAPI WICARA</option>
+												<option value="FS003">FISIOTERAPI</option>
+												<option value="LAIN1">LAIN-LAIN</option>
+												<option value="MCU01">MEDICAL CHECK UP</option>
+												<option value="RJ002">BEDAH</option>
+												<option value="RJ003">GIGI DAN MULUT</option>
+												<option value="RJ004">GIZI</option>
+												<option value="RJ005">JANTUNG</option>
+												<option value="RJ006">KANDUNGAN & KEBIDANAN</option>
+												<option value="RJ007">ANAK</option>
+												<option value="RJ008">JIWA</option>
+												<option value="RJ009">KULIT/KELAMIN</option>
+												<option value="RJ010">MATA</option>
+												<option value="RJ011">PARU</option>
+												<option value="RJ012">PENYAKIT DALAM</option>
+												<option value="RJ013">SYARAF</option>
+												<option value="RJ014">THT</option>
+												<option value="RJ015">AKUPUNKTUR</option>
+												<option value="RJ016">ENDOSCOPY</option>
+												<option value="RJ017">PERAWATAN LUKA</option>
+												<option value="RJ018">ANASTESI</option>
+												<option value="RJ019">EMERGENCY RB</option>
+												<option value="RJ020">KLINIK UMMI</option>
+												<option value="RJ021">KLINIK SAKINAH</option>
+												<option value="RJ022">KLINIK HAJI DAN UMROH</option>
+												<option value="RJ023">PSIKOLOG</option>
+												<option value="PTK01">P2TKHU</option>
+												<option value="VKS01">KLINIK VAKSIN INTERNASIONAL</option>
+												<option value="DRS01">DARUSSALAM</option>
+												<option value="RJ024">BEDAH PLASTIK</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="row no-margin">
+									<div class="col-sm-12">
+										<div class="form-group">
 											<span class="form-label">No. RM (Rekam Medik)</span>
-											<input class="form-control" name="pasien_norm" type="number" id="pasien_norm" onKeyUp="javascript:chkRM();" required>
+											<input class="form-control" name="pasien_norm" type="select" id="pasien_norm" onKeyUp="javascript:chkRM();" required>
 										</div>
 									</div>
 								</div>
@@ -184,7 +306,8 @@
 								</div>
 								<div class="form-group">
 									<span class="form-label">Layanan</span>
-									<input class="form-control" name="pesan_layanan" type="text" placeholder="" value="TELEMEDICINE" readonly>
+									<input class="form-control" id="layanan_kode" name="layanan_kode" type="text" placeholder="" style="display: none;">
+									<input class="form-control" id="layanan_nama" name="layanan_nama" type="text" placeholder="" readonly>
 								</div>
 								<div class="form-group">
 									<span class="form-label">Email</span>
@@ -201,7 +324,7 @@
 						</div>	
 					</div>
 					<div class="col-md-2">
-						<div class="buttonmenu noselect">
+						<!-- <div class="buttonmenu noselect">
 							<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_jadwaldokter.php';">
 								JADWAL DOKTER
 							</div>
@@ -211,11 +334,11 @@
 							<div class="square" onclick="noUrut()">
 								NOMER URUT
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
-			<div class="container">
+			<!-- <div class="container">
 				<div class="row-btn-menu">
 					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
 						<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_jadwaldokter.php';">
@@ -233,6 +356,68 @@
 						</div>
 					</div>
 				</div>
+			</div> -->
+		</div>
+	</div>
+	
+	<div class="modal fade" id="ModalLayanan" tabindex="-1" role="dialog" aria-labelledby="ModalLayananLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="ModalLayananLabel">Modal title</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<table class='table'>
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Layanan</th>
+						</tr>
+					</thead>
+					<tbody class="selecttable">
+						<tr data-kode="RJ001" data-layanan="UMUM"><td>RJ001</td><td>UMUM</td></tr>
+						<tr data-kode="FS001" data-layanan="REHABILITASI MEDIK"><td>FS001</td><td>REHABILITASI MEDIK</td></tr>
+						<tr data-kode="FS002" data-layanan="TERAPI WICARA"><td>FS002</td><td>TERAPI WICARA</td></tr>
+						<tr data-kode="FS003" data-layanan="FISIOTERAPI"><td>FS003</td><td>FISIOTERAPI</td></tr>
+						<tr data-kode="LAIN1" data-layanan="LAIN-LAIN"><td>LAIN1</td><td>LAIN-LAIN</td></tr>
+						<tr data-kode="MCU01" data-layanan="MEDICAL CHECK UP"><td>MCU01</td><td>MEDICAL CHECK UP</td></tr>
+						<tr data-kode="RJ002" data-layanan="BEDAH"><td>RJ002</td><td>BEDAH</td></tr>
+						<tr data-kode="RJ003" data-layanan="GIGI DAN MULUT"><td>RJ003</td><td>GIGI DAN MULUT</td></tr>
+						<tr data-kode="RJ004" data-layanan="GIZI"><td>RJ004</td><td>GIZI</td></tr>
+						<tr data-kode="RJ005" data-layanan="JANTUNG"><td>RJ005</td><td>JANTUNG</td></tr>
+						<tr data-kode="RJ006" data-layanan="KANDUNGAN & KEBIDANAN"><td>RJ006</td><td>KANDUNGAN & KEBIDANAN</td></tr>
+						<tr data-kode="RJ007" data-layanan="ANAK"><td>RJ007</td><td>ANAK</td></tr>
+						<tr data-kode="RJ008" data-layanan="JIWA"><td>RJ008</td><td>JIWA</td></tr>
+						<tr data-kode="RJ009" data-layanan="KULIT/KELAMIN"><td>RJ009</td><td>KULIT/KELAMIN</td></tr>
+						<tr data-kode="RJ010" data-layanan="MATA"><td>RJ010</td><td>MATA</td></tr>
+						<tr data-kode="RJ011" data-layanan="PARU"><td>RJ011</td><td>PARU</td></tr>
+						<tr data-kode="RJ012" data-layanan="PENYAKIT DALAM"><td>RJ012</td><td>PENYAKIT DALAM</td></tr>
+						<tr data-kode="RJ013" data-layanan="SYARAF"><td>RJ013</td><td>SYARAF</td></tr>
+						<tr data-kode="RJ014" data-layanan="THT"><td>RJ014</td><td>THT</td></tr>
+						<tr data-kode="RJ015" data-layanan="AKUPUNKTUR"><td>RJ015</td><td>AKUPUNKTUR</td></tr>
+						<tr data-kode="RJ016" data-layanan="ENDOSCOPY"><td>RJ016</td><td>ENDOSCOPY</td></tr>
+						<tr data-kode="RJ017" data-layanan="PERAWATAN LUKA"><td>RJ017</td><td>PERAWATAN LUKA</td></tr>
+						<tr data-kode="RJ018" data-layanan="ANASTESI"><td>RJ018</td><td>ANASTESI</td></tr>
+						<tr data-kode="RJ019" data-layanan="EMERGENCY RB"><td>RJ019</td><td>EMERGENCY RB</td></tr>
+						<tr data-kode="RJ020" data-layanan="KLINIK UMMI"><td>RJ020</td><td>KLINIK UMMI</td></tr>
+						<tr data-kode="RJ021" data-layanan="KLINIK SAKINAH"><td>RJ021</td><td>KLINIK SAKINAH</td></tr>
+						<tr data-kode="RJ022" data-layanan="KLINIK HAJI DAN UMROH"><td>RJ022</td><td>KLINIK HAJI DAN UMROH</td></tr>
+						<tr data-kode="RJ023" data-layanan="PSIKOLOG"><td>RJ023</td><td>PSIKOLOG</td></tr>
+						<tr data-kode="PTK01" data-layanan="P2TKHU"><td>PTK01</td><td>P2TKHU</td></tr>
+						<tr data-kode="VKS01" data-layanan="KLINIK VAKSIN INTERNASIONAL"><td>VKS01</td><td>KLINIK VAKSIN INTERNASIONAL</td></tr>
+						<tr data-kode="DRS01" data-layanan="DARUSSALAM"><td>DRS01</td><td>DARUSSALAM</td></tr>
+						<tr data-kode="RJ024" data-layanan="BEDAH PLASTIK"><td>RJ024</td><td>BEDAH PLASTIK</td></tr>
+						
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
 			</div>
 		</div>
 	</div>
@@ -312,4 +497,15 @@
 			window.location.replace(baseUrl + "/controllers/C_booking.php?action=nourut&rm=" + inputValue);
 		});
 	}
+
+	$(document).ready(function () {
+		$(".selecttable > tr").on("click", function (elem) {
+			var layanan_kode = $(this).attr("data-kode");
+			var layanan_nama = $(this).attr("data-layanan");
+
+			$("#layanan_kode").val(layanan_kode);
+			$("#layanan_nama").val(layanan_nama);
+			$('#ModalLayanan').modal('toggle');
+		});
+	});
 </script>
