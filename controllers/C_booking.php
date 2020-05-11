@@ -24,18 +24,35 @@ class C_booking
     {
 
         $sqlurutan = "SELECT COUNT(*) AS urutan FROM t_booking_hospital WHERE bookinghosp_tanggal = '". $data["pesan_tanggal"]. "' AND bookinghosp_aktif = 'Y' ORDER BY bookinghosp_urutan DESC LIMIT 1";
-        $urutan = $this->conn2->query($sqlurutan);
-        $urutan = mysqli_fetch_object($urutan);
-        $field = ["pasien_norm", "pasien_nama", "bookinghosp_tanggal", "layanan_kode", "pasien_email", "pasien_telp", "bookinghosp_urutan", "bookinghosp_created_by", "bookinghosp_created_date"];
-        $dataSave = [$data["pasien_norm"], $data["pasien_nama"], $data["pesan_tanggal"], "RJ001", $data["pasien_email"], $data["pasien_tlp"], ($urutan->urutan+1), "PASIEN", date("Y-m-d H:i:s")];
         
+        $qurutan = $this->conn2->query($sqlurutan);
+        $urutan = 0;
+        if($qurutan){
+            $urutan = mysqli_fetch_object($qurutan);
+            $urutan = $urutan->urutan;
+        }
+        
+        $pesan_jam = explode(" - ", $data["pesan_jam"]);
+        $field = ["pasien_norm", "pasien_nama", "bookinghosp_tanggal", "bookinghosp_jammulai", "bookinghosp_jamselesai", "layanan_kode", "pasien_email", "pasien_telp", "bookinghosp_urutan", "bookinghosp_created_by", "bookinghosp_created_date"];
+        $dataSave = [$data["pasien_norm"], $data["pasien_nama"], date("Y-m-d", strtotime($data["pesan_tanggal"])), $pesan_jam[0], $pesan_jam[1], "TM001", $data["pasien_email"], $data["pasien_tlp"], ($urutan+1), "PASIEN", date("Y-m-d H:i:s")];
         $action = query_create($this->conn2, 't_booking_hospital', $field, $dataSave);
-
+        
         $pasiennorm = "3172724" . str_pad($data["pasien_norm"], 8, "0", STR_PAD_LEFT);
-        if($action == "200"){
+
+        $sqltarif = "SELECT * FROM m_tarif WHERE FS_KD_SMF = '". $data["kode_smf"]. "' AND tarif_aktif = 'Y'";
+        $qtarif = $this->conn2->query($sqltarif);
+        if($qtarif) {
+            foreach($qtarif as $key => $val){
+                $fieldtrf = ["tagihanpasien_tanggal", "pasien_norm", "t_bookinghosp_id", "fs_kd_tarif", "tagihanpasien_total", "tagihanpasien_created_by", "tagihanpasien_created_date"];
+                $dataSavetrf = [date("Y-m-d", strtotime($data["pesan_tanggal"])), $data["pasien_norm"], $action, $val["FS_KD_TARIF"], $val["tarif_total"], "PASIEN", date("Y-m-d H:i:s")];
+                query_create($this->conn2, 't_tagihan_pasien', $fieldtrf, $dataSavetrf);
+            }
+        }
+        
+        if($action > 0){
             $datares = array(
                 "code"  => "200",
-                "urutan" => $urutan->urutan + 1,
+                "urutan" => $urutan + 1,
                 "pasien_norm" => $data["pasien_norm"],
                 "pasien_nama" => $data["pasien_nama"]
             );
@@ -47,12 +64,13 @@ class C_booking
         }
 
         return $datares;
+        // exit();
     }
 }
 
 $booking = new C_booking($conn, $conn2);
 $action = isset($_GET["action"]) ? $_GET["action"] : '';
-switch ($action) {    
+switch ($action) {
     case 'create':
         $booking = new C_booking($conn, $conn2);
         $action = $booking->create($_POST);

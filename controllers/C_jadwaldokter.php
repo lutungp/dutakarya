@@ -43,8 +43,46 @@ class C_jadwaldokter
         
         template('../views/v_jadwaldokter.php', $dataJadwalDokter);
     }
+
+    public function getJadwalDokter()
+    {
+        $hariIndo = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
+        $layanan_kode = "RJ001";
+        $resJadwalDokter = $this->model->getJadwalDokter2();
+        $dataJadwalDokter = [];
+        if($resJadwalDokter){
+            while($row = sqlsrv_fetch_array($resJadwalDokter, SQLSRV_FETCH_ASSOC)) {
+                $dataJadwalDokter[] = array(
+                    "FS_KD_DOKTER" =>  $row["FS_KD_DOKTER"],
+                    "FS_NM_PEG" => $row["FS_NM_PEG"],
+                    "FS_KD_LAYANAN" => $row["FS_KD_LAYANAN"],
+                    "FS_KD_SMF" => $row["FS_KD_SMF"] == null ? '' : $row["FS_KD_SMF"],
+                    "FS_NM_SMF" => $row["FS_NM_SMF"] == null ? '' : $row["FS_NM_SMF"],
+                    "SENIN" => $row["1"] == null ? '' : $row["1"],
+                    "SELASA" => $row["2"] == null ? '' : $row["2"],
+                    "RABU" => $row["3"] == null ? '' : $row["3"],
+                    "KAMIS" => $row["4"] == null ? '' : $row["4"],
+                    "JUMAT" => $row["5"] == null ? '' : $row["5"],
+                    "SABTU" => $row["6"] == null ? '' : $row["6"],
+                    "MINGGU" => $row["7"] == null ? '' : $row["7"],
+                );
+            }
+        }
+
+        echo json_encode($dataJadwalDokter);
+    }
 }
 
 $jadwaldokter = new C_jadwaldokter($conn, $conn2, $config);
-$tanggal = isset($_GET["tanggal"]) ? $_GET["tanggal"] : date("Y-m-d");
-$jadwaldokter->jadwaldokter($tanggal);
+$action = isset($_GET["action"]) ? $_GET["action"] : "";
+switch ($action) {
+    case 'getjadwaldokter':
+        $jadwaldokter->getJadwalDokter();
+        break;
+    
+    default:
+        $tanggal = isset($_GET["tanggal"]) ? $_GET["tanggal"] : date("Y-m-d");
+        $jadwaldokter->jadwaldokter($tanggal);
+        break;
+}
+

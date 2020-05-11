@@ -14,10 +14,11 @@ function query_create($conn2, $table, $field, $data){
     $data_values=implode("','",$data);
     $sql = "INSERT INTO $table (".$field_values.") VALUES ('".$data_values."') ";
     $action = $conn2->query($sql);
+    $lastid = $conn2->insert_id;
     if($action) {
-        return "200";
+        return $lastid;
     } else {
-        return "202";
+        return "0";
     }
 }
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-        define('BASE_URL', 'http://10.1.5.3/telemedicineRSHJ');
+    define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/telemedicineRSHJ");
 ?>
 <head>
 	<meta charset="utf-8">

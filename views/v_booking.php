@@ -159,8 +159,26 @@
 		display : none;
 	}
 
-	tr:hover {
+	.selecttable>tr:hover {
 		background-color: aliceblue;
+		cursor : pointer;
+	}
+
+	.selecttable {
+		font-size: 12px;
+	}
+
+	#tbody-dokter.selecttable>tr>td:hover {
+		background-color: #b2efb4;
+		cursor : pointer;
+	}
+
+	.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+		padding: 4px;
+		line-height: 1.42857143;
+		vertical-align: top;
+		border-top: 1px solid #ddd;
+		border-right: 1px solid #ddd;
 	}
 
 </style>
@@ -189,7 +207,7 @@
 					<div class="col-md-8">
 						<div class="booking-form">
 							<form action="<?php echo BASE_URL; ?>/controllers/C_booking.php?action=create" method="post">
-								<div class="row no-margin">
+								<!-- <div class="row no-margin">
 									<div class="col-sm-12">
 										<div class="form-group">
 											<span class="form-label">Pilih Layanan</span>
@@ -201,13 +219,15 @@
 											<div>
 										</div>
 									</div>
-								</div>
+								</div> -->
 								<div class="row no-margin">
 									<div class="col-sm-12">
 										<div class="form-group">
 											<span class="form-label">Pilih Dokter</span>
 											<div style="display: inline-flex; width: 100%;">
-												<input class="form-control" name="m_pegawai_kode" type="text" readonly required>
+												<input class="form-control" id="m_pegawai_kode" name="m_pegawai_kode" type="text" readonly required style="display: none;">
+												<input class="form-control" id="m_pegawai_nama" name="m_pegawai_nama" type="text" readonly required>
+												<input class="form-control" id="kode_smf" name="kode_smf" type="text" readonly required style="display: none;">
 												<button type="button" class="displaymode" data-toggle="modal" data-target="#ModalDokter">CARI</button>
 												<button type="button" class="mobilemode" data-toggle="modal" data-target="#ModalDokter"><i class="fa fa-search"></i></button>
 											<div>
@@ -218,7 +238,7 @@
 									<div class="col-sm-12">
 										<div class="form-group">
 											<span class="form-label">No. RM (Rekam Medik)</span>
-											<input class="form-control" name="pasien_norm" type="select" id="pasien_norm" onKeyUp="javascript:chkRM();" required>
+											<input class="form-control" name="pasien_norm" type="number" id="pasien_norm" onKeyUp="javascript:chkRM();" required>
 										</div>
 									</div>
 								</div>
@@ -231,16 +251,22 @@
 									</div>
 								</div>
 								<div class="row no-margin">
-									<div class="col-sm-6">
+									<div class="col-sm-4">
 										<div class="form-group">
 											<span class="form-label">Pesan Tanggal</span>
 											<input class="form-control" id="pesan_tanggal" name="pesan_tanggal" type="date" required>
 										</div>
 									</div>
-									<div class="col-sm-6">
+									<div class="col-sm-4">
 										<div class="form-group">
 											<span class="form-label">Hari</span>
 											<input class="form-control" id="pesan_hari" name="pesan_hari" type="text" placeholder="" readonly>		
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<span class="form-label">Jam</span>
+											<input class="form-control" id="pesan_jam" name="pesan_jam" type="text" placeholder="" readonly>		
 										</div>
 									</div>
 								</div>
@@ -253,7 +279,7 @@
 									<input class="form-control" name="pasien_tlp" type="tel" placeholder="Enter your phone number" required>
 								</div>
 								<div class="form-btn">
-									<button class="submit-btn">PESAN</button>
+									<button class="submit-btn">DAFTAR</button>
 								</div>
 							</form>
 						</div>	
@@ -356,31 +382,38 @@
 		</div>
 	</div>
 	<div class="modal fade" id="ModalDokter" tabindex="-1" role="dialog" aria-labelledby="ModalDokterLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
+		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="ModalDokterLabel">Daftar Dokter</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<table class='table'>
-					<thead>
-						<tr>
-							<th>No.</th>
-							<th>Nama Dokter</th>
-							<th>Jam Praktek</th>
-						</tr>
-					</thead>
-					<tbody id="tbody-dokter" class="selecttable">
-						<tr><td colspan=3 align=center>Jadwal Tidak Tersedia</td></tr>
-					<tbody>
-				</table>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			</div>
+				<div class="modal-header">
+					<h5 class="modal-title" id="ModalDokterLabel">Daftar Dokter</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<table class='table'>
+						<thead>
+							<tr>
+								<th>No.</th>
+								<th width='20%'>Nama Dokter</th>
+								<th>Spesialis</th>
+								<th>Senin</th>
+								<th>Selasa</th>
+								<th>Rabu</th>
+								<th>Kamis</th>
+								<th>Jumat</th>
+								<th>Sabtu</th>
+								<th>Minggu</th>
+							</tr>
+						</thead>
+						<tbody id="tbody-dokter" class="selecttable">
+							<tr><td colspan=9 align=center>Jadwal Tidak Tersedia</td></tr>
+						<tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -438,7 +471,7 @@
 		var date = new Date($(this).val());
 		var hariIndo = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU', 'MINGGU'];
 		var hari_numeric = date.getDay();
-		$("#pesan_hari").val(hariIndo[hari_numeric-1]);
+		// $("#pesan_hari").val(hariIndo[hari_numeric-1]);
 	});
 
 	function noUrut() {
@@ -462,6 +495,48 @@
 	}
 
 	$(document).ready(function () {
+		var dtToday = new Date();
+    
+		var month = dtToday.getMonth() + 1;
+		var day = dtToday.getDate();
+		var year = dtToday.getFullYear();
+		if(month < 10)
+			month = '0' + month.toString();
+		if(day < 10)
+			day = '0' + day.toString();
+		
+		var maxDate = year + '-' + month + '-' + day;
+		// alert(maxDate);
+		$('#pesan_tanggal').attr('min', maxDate);
+		$('#pesan_tanggal')
+
+		var jadwaldokter = [];
+		$.get(baseUrl + "/controllers/C_jadwaldokter.php?action=getjadwaldokter", function( data ) {
+			jadwaldokter = JSON.parse(data);
+
+			var htmljadwal = "";
+			var jadwaldokterfilter = jadwaldokter;
+			var nomor = 1;
+			jadwaldokterfilter.forEach(function(datajadwal) {
+				htmljadwal += "<tr>";
+				htmljadwal += "<td align=center>"+nomor+"</td><td>"+datajadwal.FS_NM_PEG+"</td><td>"+datajadwal.FS_NM_SMF+"</td>";
+				htmljadwal += "<td class=selected-col align=center  data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='SENIN' data-value='"+datajadwal.SENIN+"'>"+datajadwal.SENIN+"</td>";
+				htmljadwal += "<td class=selected-col align=center  data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='SELASA' data-value='"+datajadwal.SELASA+"'>"+datajadwal.SELASA+"</td>";
+				htmljadwal += "<td class=selected-col align=center  data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='RABU' data-value='"+datajadwal.RABU+"'>"+datajadwal.RABU+"</td>";
+				htmljadwal += "<td class=selected-col align=center  data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='KAMIS' data-value='"+datajadwal.KAMIS+"'>"+datajadwal.KAMIS+"</td>";
+				htmljadwal += "<td class=selected-col align=center  data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='JUMAT' data-value='"+datajadwal.JUMAT+"'>"+datajadwal.JUMAT+"</td>";
+				htmljadwal += "<td class=selected-col align=center  data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='SABTU' data-value='"+datajadwal.SABTU+"'>"+datajadwal.SABTU+"</td>";
+				htmljadwal += "<td class=selected-col align=center  data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='MINGGU' data-value='"+datajadwal.MINGGU+"'>"+datajadwal.MINGGU+"</td>";
+				htmljadwal += "<tr>";
+				nomor++;
+				$("#tbody-dokter").html(htmljadwal);
+			});
+			$(".selected-col").on("click", function (elem) {
+				selectTime(this);
+			});
+
+		});
+
 		$(".selecttable > tr").on("click", function (elem) {
 			var layanan_kode = $(this).attr("data-kode");
 			var layanan_nama = $(this).attr("data-nama");
@@ -471,6 +546,43 @@
 			$('#ModalLayanan').modal('toggle');
 			$('#tbody-dokter').html("<tr><td colspan=3 align=center>Jadwal Tidak Tersedia</td></tr>");
 			$("#ModalDokterLabel").html("Daftar Dokter " + $("#m_layanan_nama").val());
+			
+			var htmljadwal = "";
+			var jadwaldokterfilter = jadwaldokter.filter(p=>p.FS_KD_LAYANAN==layanan_kode);
+			
+			var nomor = 1;
+			jadwaldokterfilter.forEach(function(datajadwal) {
+				htmljadwal += "<tr>";
+				htmljadwal += "<td align=center>"+nomor+"</td><td>"+datajadwal.FS_NM_PEG+"</td><td>"+datajadwal.FS_NM_SMF+"</td>";
+				htmljadwal += "<td class=selected-col align=center data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='SENIN' data-value='"+datajadwal.SENIN+"'>"+datajadwal.SENIN+"</td>";
+				htmljadwal += "<td class=selected-col align=center data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='SELASA' data-value='"+datajadwal.SELASA+"'>"+datajadwal.SELASA+"</td>";
+				htmljadwal += "<td class=selected-col align=center data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='RABU' data-value='"+datajadwal.RABU+"'>"+datajadwal.RABU+"</td>";
+				htmljadwal += "<td class=selected-col align=center data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='KAMIS' data-value='"+datajadwal.KAMIS+"'>"+datajadwal.KAMIS+"</td>";
+				htmljadwal += "<td class=selected-col align=center data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='JUMAT' data-value='"+datajadwal.JUMAT+"'>"+datajadwal.JUMAT+"</td>";
+				htmljadwal += "<td class=selected-col align=center data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='SABTU' data-value='"+datajadwal.SABTU+"'>"+datajadwal.SABTU+"</td>";
+				htmljadwal += "<td class=selected-col align=center data-kodesmf='"+datajadwal.FS_KD_SMF+"' data-kodedokter='"+datajadwal.FS_KD_DOKTER+"' data-namadokter='"+datajadwal.FS_NM_PEG+"' data-hari='MINGGU' data-value='"+datajadwal.MINGGU+"'>"+datajadwal.MINGGU+"</td>";
+				htmljadwal += "<tr>";
+				nomor++;
+			});
+			$("#tbody-dokter").html(htmljadwal);
+			$(".selected-col").on("click", function (elem) {
+				selectTime(this);
+			});
 		});
+
+		function selectTime(elem){
+			var kode_dokter = $(elem).attr("data-kodedokter");
+			var nama_dokter = $(elem).attr("data-namadokter");
+			var kode_smf = $(elem).attr("data-kodesmf");
+			var hari = $(elem).attr("data-hari");
+			var time = $(elem).attr("data-value");
+			$("#m_pegawai_kode").val(kode_dokter);
+			$("#m_pegawai_nama").val(nama_dokter);
+			$("#kode_smf").val(kode_smf);
+			
+			$('#ModalDokter').modal('toggle');
+			$("#pesan_hari").val(hari);
+			$("#pesan_jam").val(time);
+		}
 	});
 </script>
