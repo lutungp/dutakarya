@@ -72,9 +72,12 @@
 	}
 
 	.row-btn-menu {
-		text-align:center;
+		/* text-align:center; */
 		padding : 2px;
 		display: none;
+		margin: auto;
+		width: 50%;
+		padding: 10px;
 	}
 
 	.logo-rs-desktop {
@@ -106,7 +109,6 @@
 		}
 
 		.row-btn-menu {
-			text-align:center;
 			padding : 2px;
 			display: block;
 		}
@@ -137,6 +139,13 @@
 			background-color: #e8e7e7;
 			border: none;
 			width: 40px;
+		}
+
+		.square {
+			margin-bottom: 5px;
+			background: #00848a;
+			width: 140px;
+			height: 45px;
 		}
 	}
 
@@ -298,7 +307,8 @@
 									ANTRIAN
 								</div>
 							</div> -->
-							<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
+							<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4"">
+								
 								<div class="square" onclick="noUrut()">
 									NOMER URUT
 								</div>
