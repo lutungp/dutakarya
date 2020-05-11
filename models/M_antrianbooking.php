@@ -18,7 +18,7 @@ class M_antrianbooking
         $tsql = "SELECT 
                     t_booking_hospital.pasien_norm, pasien_nama, pasien_telp, 
                     bookinghosp_urutan, pasien_email, bookinghosp_tanggal,
-                    layanan_kode, bookinghosp_status,
+                    layanan_kode, bookinghosp_status, t_booking_hospital.bookinghosp_created_date,
                     tagihan.total
                 FROM t_booking_hospital 
                 LEFT JOIN (

@@ -207,30 +207,15 @@
 					<div class="col-md-8">
 						<div class="booking-form">
 							<form action="<?php echo BASE_URL; ?>/controllers/C_booking.php?action=create" method="post">
-								<!-- <div class="row no-margin">
-									<div class="col-sm-12">
-										<div class="form-group">
-											<span class="form-label">Pilih Layanan</span>
-											<div style="display: inline-flex; width: 100%;">
-												<input class="form-control" id="m_layanan_kode" name="m_layanan_kode" type="text" placeholder="" style="display: none;">
-												<input class="form-control" id="m_layanan_nama" name="m_layanan_nama" type="text" readonly required>
-												<button type="button" class="displaymode" data-toggle="modal" data-target="#ModalLayanan">CARI</button>
-												<button type="button" class="mobilemode" data-toggle="modal" data-target="#ModalLayanan"><i class="fa fa-search"></i></button>
-											<div>
-										</div>
-									</div>
-								</div> -->
 								<div class="row no-margin">
 									<div class="col-sm-12">
-										<div class="form-group">
+										<div class="form-group" style="display: inline-flex; width: 100%;">
 											<span class="form-label">Pilih Dokter</span>
-											<div style="display: inline-flex; width: 100%;">
 												<input class="form-control" id="m_pegawai_kode" name="m_pegawai_kode" type="text" readonly required style="display: none;">
 												<input class="form-control" id="m_pegawai_nama" name="m_pegawai_nama" type="text" readonly required>
 												<input class="form-control" id="kode_smf" name="kode_smf" type="text" readonly required style="display: none;">
 												<button type="button" class="displaymode" data-toggle="modal" data-target="#ModalDokter">CARI</button>
 												<button type="button" class="mobilemode" data-toggle="modal" data-target="#ModalDokter"><i class="fa fa-search"></i></button>
-											<div>
 										</div>
 									</div>
 								</div>
@@ -270,13 +255,17 @@
 										</div>
 									</div>
 								</div>
-								<div class="form-group">
-									<span class="form-label">Email</span>
-									<input class="form-control" name="pasien_email" type="email" placeholder="Enter your email">
+								<div class="row no-margin">
+									<div class="form-group">
+										<span class="form-label">Email</span>
+										<input class="form-control" name="pasien_email" type="email" placeholder="Enter your email">
+									</div>
 								</div>
-								<div class="form-group">
-									<span class="form-label">Phone</span>
-									<input class="form-control" name="pasien_tlp" type="tel" placeholder="Enter your phone number" required>
+								<div class="row no-margin">
+									<div class="form-group">
+										<span class="form-label">Phone</span>
+										<input class="form-control" name="pasien_tlp" type="tel" placeholder="Enter your phone number" required>
+									</div>
 								</div>
 								<div class="form-btn">
 									<button class="submit-btn">DAFTAR</button>
@@ -285,39 +274,39 @@
 						</div>	
 					</div>
 					<div class="col-md-2">
-						<!-- <div class="buttonmenu noselect">
-							<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_jadwaldokter.php';">
+						<div class="buttonmenu noselect">
+							<!-- <div class="square" onclick="window.location.href='<?php // echo BASE_URL ?>/controllers/C_jadwaldokter.php';">
 								JADWAL DOKTER
 							</div>
-							<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_antrianbooking.php?action=list_antrian';">
+							<div class="square" onclick="window.location.href='<?php // echo BASE_URL ?>/controllers/C_antrianbooking.php?action=list_antrian';">
 								ANTRIAN
-							</div>
+							</div> -->
 							<div class="square" onclick="noUrut()">
 								NOMER URUT
 							</div>
-						</div> -->
+						</div>
+					</div>
+					<div class="container">
+						<div class="row-btn-menu">
+							<!-- <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
+								<div class="square" onclick="window.location.href='<?php // echo BASE_URL ?>/controllers/C_jadwaldokter.php';">
+									JADWAL DOKTER
+								</div>
+							</div>
+							<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
+								<div class="square" onclick="window.location.href='<?php // echo BASE_URL ?>/controllers/C_antrianbooking.php?action=list_antrian';">
+									ANTRIAN
+								</div>
+							</div> -->
+							<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
+								<div class="square" onclick="noUrut()">
+									NOMER URUT
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<!-- <div class="container">
-				<div class="row-btn-menu">
-					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
-						<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_jadwaldokter.php';">
-							JADWAL DOKTER
-						</div>
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
-						<div class="square" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_antrianbooking.php?action=list_antrian';">
-							ANTRIAN
-						</div>
-					</div>
-					<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4" style="padding-left:0;">
-						<div class="square">
-							NOMER URUT
-						</div>
-					</div>
-				</div>
-			</div> -->
 		</div>
 	</div>
 	

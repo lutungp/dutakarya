@@ -66,6 +66,12 @@ class C_booking
         return $datares;
         // exit();
     }
+
+    public function nonAktifPendaftaran($pasien_norm)
+    {
+        $sql = "UPDATE t_booking_hospital SET bookinghosp_status = 'EXPIRED' WHERE pasien_norm = '" . $pasien_norm . "'";
+        $this->conn2->query($sql);
+    }
 }
 
 $booking = new C_booking($conn, $conn2);
@@ -82,6 +88,10 @@ switch ($action) {
         break;
     case 'nourut' :
         header("Location: " . $config['base_url'] . "/controllers/C_antrianbooking.php?pasien_norm=" . $_GET['rm']);
+        break;
+    case 'expiredbayar' :
+        $booking = new C_booking($conn, $conn2);
+        $action = $booking->nonAktifPendaftaran($_POST["pasien_norm"]);
         break;
     default:
         $booking->booking();
