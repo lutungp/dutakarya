@@ -39,12 +39,12 @@ class C_booking
         
         $pasiennorm = "3172724" . str_pad($data["pasien_norm"], 8, "0", STR_PAD_LEFT);
 
-        $sqltarif = "SELECT * FROM m_tarif WHERE FS_KD_SMF = '". $data["kode_smf"]. "' AND tarif_aktif = 'Y'";
+        $sqltarif = "SELECT * FROM m_tarif_detail WHERE FS_KD_SMF = '". $data["kode_smf"]. "' AND tarifdet_aktif = 'Y'";
         $qtarif = $this->conn2->query($sqltarif);
         if($qtarif) {
             foreach($qtarif as $key => $val){
                 $fieldtrf = ["tagihanpasien_tanggal", "pasien_norm", "t_bookinghosp_id", "fs_kd_tarif", "tagihanpasien_total", "tagihanpasien_created_by", "tagihanpasien_created_date"];
-                $dataSavetrf = [date("Y-m-d", strtotime($data["pesan_tanggal"])), $data["pasien_norm"], $action, $val["FS_KD_TARIF"], $val["tarif_total"], "PASIEN", date("Y-m-d H:i:s")];
+                $dataSavetrf = [date("Y-m-d", strtotime($data["pesan_tanggal"])), $data["pasien_norm"], $action, $val["FS_KD_TARIF"], $val["tarifdet_total"], "PASIEN", date("Y-m-d H:i:s")];
                 query_create($this->conn2, 't_tagihan_pasien', $fieldtrf, $dataSavetrf);
             }
         }

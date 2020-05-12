@@ -9,7 +9,7 @@ Route::add('/',function(){
 });
 
 Route::add('/admin',function(){
-    header("Location: ./controllers/C_dashboard.php");
+    // header("Location: ./controllers/C_dashboard.php");
 },'get');
 
 // http://103.231.200.60/

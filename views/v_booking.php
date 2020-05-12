@@ -114,7 +114,7 @@
 		}
 
 		#booking {
-			top: 20px !important;
+			top: 45px !important;
 		}
 
 		.logo-rs-desktop {
@@ -202,14 +202,12 @@
 					<div class="col-md-2">
 						<div class="logo-rs-desktop">
 							<!-- C:\xampp\htdocs\telemedicineRSHJ\assets\img\rshaji.jpg -->
-							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="170" height="145"
-							onclick="window.open('https://www.rshaji-jakarta.com/')">
+							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="170" height="145">
 							<p><font style="font-size: 18px; color: #346d00;">RS. HAJI JAKARTA</font><br>Pelayanan <font style="color: red;">Telemedicine</font></p>
 						</div>
 						<div class="logo-rs-mobile">
 							<!-- C:\xampp\htdocs\telemedicineRSHJ\assets\img\rshaji.jpg -->
-							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="50" height="38"
-							onclick="window.open('https://www.rshaji-jakarta.com/')">
+							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="50" height="38">
 							<p><font style="font-size: 18px; color: #346d00;">RS. HAJI JAKARTA</font><br>Pelayanan <font style="color: red;">Telemedicine</font></p>
 						</div>
 					</div>
@@ -293,6 +291,12 @@
 							<div class="square" onclick="noUrut()">
 								NOMER URUT
 							</div>
+							<div class="square" onclick="noUrut()">
+								BUKTI BAYAR
+							</div>
+							<div class="square" onclick="window.open('<?php echo BASE_URL;?>/controllers/C_dashboard.php')">
+								LOGIN
+							</div>
 						</div>
 					</div>
 					<div class="container">
@@ -308,9 +312,14 @@
 								</div>
 							</div> -->
 							<div class="col-lg-2 col-md-2 col-sm-4 col-xs-4"">
-								
 								<div class="square" onclick="noUrut()">
 									NOMER URUT
+								</div>
+								<div class="square" onclick="noUrut()">
+									BUKTI BAYAR
+								</div>
+								<div class="square" onclick="noUrut()">
+									LOGIN
 								</div>
 							</div>
 						</div>

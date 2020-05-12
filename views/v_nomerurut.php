@@ -146,7 +146,7 @@
 
         document.getElementById("timer").innerHTML = ansh + ":" + ansm + ":" + anss;
         
-        if (selisihwaktudaftar < 3113224) {
+        if (selisihwaktudaftar < 60) {
             clearInterval(x);
             document.getElementById("timer").innerHTML = "EXPIRED";
 

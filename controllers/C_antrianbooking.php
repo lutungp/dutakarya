@@ -32,7 +32,7 @@ class C_antrianbooking
 
     public function getListAntrian()
     {
-        $aColumns = array( 'pasien_norm', 'pasien_nama', 'bookinghosp_tanggal', 'bookinghosp_status', 'bookinghosp_urutan' );
+        $aColumns = array( 'bookinghosp_created_date', 'pasien_norm', 'pasien_nama', 'bookinghosp_tanggal', 'bookinghosp_jammulai', 'bookinghosp_jamselesai', 'bookinghosp_status', 'bookinghosp_urutan' );
 	
         /* Indexed column (used for fast and accurate table cardinality) */
         $sIndexColumn = "bookinghosp_id";
@@ -77,7 +77,11 @@ class C_antrianbooking
         * word by word on any field. It's possible to do here, but concerned about efficiency
         * on very large tables, and MySQL's regex functionality is very limited
         */
-        $sWhere = "";
+        $sWhere = "WHERE bookinghosp_aktif = 'Y' ";
+        if($_GET["datefilter"] <> 'Invalid Date') {
+            $sWhere .= " AND DATE(bookinghosp_tanggal) = '" . $_GET["datefilter"] . "'";
+        }
+
         if ( $_GET['sSearch'] != "" )
         {
             $sWhere = "WHERE (";
@@ -106,12 +110,20 @@ class C_antrianbooking
             }
         }
 
+        $aColumns2 = [];
+        foreach ($aColumns as $key => $val) {
+            if($val == 'bookinghosp_created_date' || $val == 'bookinghosp_tanggal'){
+                array_push($aColumns2, 'DATE_FORMAT('.$val.', "%d-%m-%Y %H:%i:%s") AS ' . $val);
+            } else {
+                array_push($aColumns2, $val);
+            }
+        }
         /*
             * SQL queries
             * Get data to display
             */
             $sQuery = "
-            SELECT SQL_CALC_FOUND_ROWS ".str_replace(" , ", " ", implode(", ", $aColumns))."
+            SELECT SQL_CALC_FOUND_ROWS ".str_replace(" , ", " ", implode(", ", $aColumns2))."
             FROM   $sTable
             $sWhere
             $sOrder
@@ -171,6 +183,11 @@ class C_antrianbooking
         echo json_encode( $output );
         
     }
+
+    public function listdaftar()
+    {
+        templateAdmin('../views/v_listdaftar.php', $data = "", $active1 = "TRANSAKSI", $active2 = "DAFTAR ANTRIAN");
+    }
 }
 
 $antrianbooking = new C_antrianbooking($conn, $conn2, $config);
@@ -183,6 +200,10 @@ switch ($action) {
     
     case 'getListAntrian':
         $antrianbooking->getListAntrian();
+        break;
+    
+    case 'listdaftar':
+        $antrianbooking->listdaftar();
         break;
 
     default:

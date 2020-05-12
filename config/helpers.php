@@ -9,6 +9,16 @@ function template($content, $data = "")
     require_once('./../views/layouts/v_footer.php');
 }
 
+function templateAdmin($content, $data = "", $active1 = "", $active2 = "")
+{
+    $dataparse = $data;
+    $active1 = $active1;
+    $active2 = $active2;
+    require_once('./../views/layouts/v_headeradmin.php');
+    require_once($content);
+    require_once('./../views/layouts/v_footeradmin.php');
+}
+
 function query_create($conn2, $table, $field, $data){
     $field_values= implode(',',$field);
     $data_values=implode("','",$data);
