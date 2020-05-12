@@ -190,6 +190,18 @@
 		border-right: 1px solid #ddd;
 	}
 
+	.datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+		background: 0 0;
+		color: #eaeaea;
+		cursor: default;
+	}
+
+	.table-condensed>tbody>tr>td, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>td, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>thead>tr>th {
+		padding: 5px;
+		color: #000;
+		font-size: 16px;
+	}
+
 </style>
 <link type="text/css" rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
 <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
@@ -408,25 +420,27 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<table class='table'>
-						<thead>
-							<tr>
-								<th>No.</th>
-								<th width='20%'>Nama Dokter</th>
-								<th>Spesialis</th>
-								<th>Senin</th>
-								<th>Selasa</th>
-								<th>Rabu</th>
-								<th>Kamis</th>
-								<th>Jumat</th>
-								<th>Sabtu</th>
-								<th>Minggu</th>
-							</tr>
-						</thead>
-						<tbody id="tbody-dokter" class="selecttable">
-							<tr><td colspan=9 align=center>Jadwal Tidak Tersedia</td></tr>
-						<tbody>
-					</table>
+					<div class="table-responsive">
+						<table class='table'>
+							<thead>
+								<tr>
+									<th>No.</th>
+									<th width='20%'>Nama Dokter</th>
+									<th>Spesialis</th>
+									<th>Senin</th>
+									<th>Selasa</th>
+									<th>Rabu</th>
+									<th>Kamis</th>
+									<th>Jumat</th>
+									<th>Sabtu</th>
+									<th>Minggu</th>
+								</tr>
+							</thead>
+							<tbody id="tbody-dokter" class="selecttable">
+								<tr><td colspan=9 align=center>Jadwal Tidak Tersedia</td></tr>
+							<tbody>
+						</table>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
