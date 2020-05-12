@@ -33,7 +33,7 @@ class C_antrianbooking
     public function getListAntrian()
     {
         $aColumns = array( 'bookinghosp_id', 'bookinghosp_created_date', 'pasien_norm', 'pasien_nama', 'bookinghosp_tanggal', 'bookinghosp_jammulai', 'bookinghosp_jamselesai', 
-                            'bookinghosp_status', 'bookinghosp_urutan', 'pasien_email', 'pasien_telp' );
+                            'bookinghosp_status', 'bookinghosp_urutan', 'pasien_email', 'pasien_telp', 'pegawai_nama' );
 	
         /* Indexed column (used for fast and accurate table cardinality) */
         $sIndexColumn = "bookinghosp_id";

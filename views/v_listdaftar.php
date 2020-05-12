@@ -77,7 +77,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Dokter</label>
-                                <input type="text" id="pasien_telp" name="pasien_telp" class="form-control" readonly>
+                                <input type="text" id="pegawai_nama" name="pegawai_nama" class="form-control" readonly>
                             </div>
                             <div class="form-group">
                                 <div class="row">
@@ -143,6 +143,10 @@
                     "visible": false
                 },
                 {
+                    "targets": [ 10 ],
+                    "visible": false
+                },
+                {
                 "targets": -1,
                 "data": null,
                 "defaultContent": "<button type='button' class='btn btn-warning' onclick='editRow(this)'><i class='fas fa-pencil-alt'></i></button>&nbsp;<button type=button onclick='deleteRow(this)' class='btn btn-danger'><i class='fas fa-trash-alt'></i></button>"
@@ -169,6 +173,7 @@
         $("#bookinghosp_jam").val($(td[4]).html() + " - " + $(td[5]).html());
         $("#pasien_email").val(data[9]);
         $("#pasien_telp").val(data[10]);
+        $("#pegawai_nama").val(data[11]);
     }
 
     function deleteRow(elem) {

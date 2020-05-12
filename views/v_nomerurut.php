@@ -59,7 +59,7 @@
                                     </tr>
                                     <tr>
                                         <td style="color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
-                                            <p>Silahkan lakukan pembayaran sebesar Rp. <?php echo number_format($data->total) ?>. Dengan cara transfer ke rekening : <br><b>BANK BNI Syariah No. Rekening 888-999-8949-70</b> an. RUMAH SAKIT HAJI.</p>
+                                            <p>Silahkan lakukan pembayaran sebesar Rp. <?php echo number_format($data->total) ?>. Dengan cara transfer ke rekening : <br><b>BANK BNI Syariah No. Rekening 888-999-8949-70 an. RUMAH SAKIT HAJI.</b></p>
                                             <?php
                                                 $time = strtotime($data->bookinghosp_created_date) + 7200; // Add 1 hour
                                                 $time = date('H:i:s', $time);

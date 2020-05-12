@@ -261,7 +261,7 @@
 										<div class="form-group">
 											<span class="form-label">Pesan Tanggal</span>
 											<!-- <input class="form-control" id="pesan_tanggal" name="pesan_tanggal" type="date" required> -->
-											<input type="text" class="form-control datepicker" />
+											<input type="text" id="pesan_tanggal" name="pesan_tanggal" class="form-control datepicker" />
 										</div>
 									</div>
 									<div class="col-sm-4">

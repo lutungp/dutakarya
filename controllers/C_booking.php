@@ -23,7 +23,7 @@ class C_booking
     public function create($data)
     {
 
-        $sqlurutan = "SELECT COUNT(*) AS urutan FROM t_booking_hospital WHERE bookinghosp_tanggal = '". $data["pesan_tanggal"]. "' ORDER BY bookinghosp_urutan DESC LIMIT 1";
+        $sqlurutan = "SELECT COUNT(*) AS urutan FROM t_booking_hospital WHERE bookinghosp_tanggal = '". date("Y-m-d", strtotime($data["pesan_tanggal"])). "' ORDER BY bookinghosp_urutan DESC LIMIT 1";
         
         $qurutan = $this->conn2->query($sqlurutan);
         $urutan = 0;
