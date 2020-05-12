@@ -191,6 +191,8 @@
 	}
 
 </style>
+<link type="text/css" rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
+<script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 <body>
 	<div id="loading" class="layer-block">
 		<div class="lds-dual-ring"></div>
@@ -246,7 +248,8 @@
 									<div class="col-sm-4">
 										<div class="form-group">
 											<span class="form-label">Pesan Tanggal</span>
-											<input class="form-control" id="pesan_tanggal" name="pesan_tanggal" type="date" required>
+											<!-- <input class="form-control" id="pesan_tanggal" name="pesan_tanggal" type="date" required> -->
+											<input type="text" class="form-control datepicker" />
 										</div>
 									</div>
 									<div class="col-sm-4">
@@ -324,6 +327,12 @@
 							</div>
 						</div>
 					</div>
+					<!-- <div class="container">
+						<div class="form-group">
+							<label>Tanggal (DatePicker)</label>
+							<input type="text" class="form-control datepicker" />
+						</div>
+					</div> -->
 				</div>
 			</div>
 		</div>
@@ -576,9 +585,23 @@
 			$(".selected-col").on("click", function (elem) {
 				selectTime(this);
 			});
+			// setDateRangePicker(".startdate", ".enddate")
+			// setMonthPicker()
+			// setYearPicker()
+			// setYearRangePicker(".startyear", ".endyear")
 		});
 
+		$(".datepicker").datepicker({
+			format: "dd-mm-yyyy",
+			todayHighlight: true,
+			autoclose: true,
+			startDate: new Date(),
+			daysOfWeekDisabled: [0]
+		}).attr("readonly", "readonly").css({"cursor":"pointer", "background":"white"});
+
 		function selectTime(elem){
+			$(".datepicker").datepicker('remove');
+			console.log($(".datepicker").datepicker('remove'))
 			var kode_dokter = $(elem).attr("data-kodedokter");
 			var nama_dokter = $(elem).attr("data-namadokter");
 			var kode_smf = $(elem).attr("data-kodesmf");
@@ -591,6 +614,22 @@
 			$('#ModalDokter').modal('toggle');
 			$("#pesan_hari").val(hari);
 			$("#pesan_jam").val(time);
+
+			var hariIndo = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+			var hariDisabled = [];
+			for (let index = 0; index < hariIndo.length; index++) {
+				if(hariIndo[index] != hari){
+					hariDisabled.push(index);
+				}
+			}
+			
+			$(".datepicker").datepicker({
+				format: "dd-mm-yyyy",
+				// todayHighlight: true,
+				autoclose: true,
+				startDate: new Date(),
+				daysOfWeekDisabled: hariDisabled
+			}).attr("readonly", "readonly").css({"cursor":"pointer", "background":"white"});
 		}
 	});
 </script>
