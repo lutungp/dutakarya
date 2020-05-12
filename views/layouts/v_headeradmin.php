@@ -6,7 +6,7 @@
     ?>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 3 | Dashboard</title>
+  <title>Admin Telemedicine</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -30,6 +30,7 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- ./wrapper -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
 
   <!-- jQuery -->
   <script src="<?php echo BASE_URL ?>/assets/plugins/jquery/jquery.min.js"></script>
@@ -39,6 +40,7 @@
   <script>
   $.widget.bridge('uibutton', $.ui.button)
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- ChartJS -->

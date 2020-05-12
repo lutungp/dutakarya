@@ -59,7 +59,7 @@
                                     </tr>
                                     <tr>
                                         <td style="color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
-                                            <p>Silahkan lakukan pembayaran sebesar Rp. <?php echo number_format($data->total) ?>. Dengan cara transfer ke rekening : <br><b>BANK BNI Syariah No. Rekening 888-999-8949-70</b>.</p>
+                                            <p>Silahkan lakukan pembayaran sebesar Rp. <?php echo number_format($data->total) ?>. Dengan cara transfer ke rekening : <br><b>BANK BNI Syariah No. Rekening 888-999-8949-70</b> an. RUMAH SAKIT HAJI.</p>
                                             <?php
                                                 $time = strtotime($data->bookinghosp_created_date) + 7200; // Add 1 hour
                                                 $time = date('H:i:s', $time);
@@ -107,6 +107,21 @@
                         <div class="col-xs-12 col-sm-3">
                             
                         </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="center">
+                        <div class="col-xs-12 col-sm-3">
+                        
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <center>
+                                Untuk informasi lebih lanjut atau verifikasi pembayaran silahkan hubungi no. whatsapp di <b>0821-646464-70</b>
+                            </center>
+                        </div>
+                        <div class="col-xs-12 col-sm-3">
+                        
+                        </div>  
                     </div>
                 </div>
             </div>

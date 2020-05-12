@@ -32,7 +32,8 @@ class C_antrianbooking
 
     public function getListAntrian()
     {
-        $aColumns = array( 'bookinghosp_created_date', 'pasien_norm', 'pasien_nama', 'bookinghosp_tanggal', 'bookinghosp_jammulai', 'bookinghosp_jamselesai', 'bookinghosp_status', 'bookinghosp_urutan' );
+        $aColumns = array( 'bookinghosp_id', 'bookinghosp_created_date', 'pasien_norm', 'pasien_nama', 'bookinghosp_tanggal', 'bookinghosp_jammulai', 'bookinghosp_jamselesai', 
+                            'bookinghosp_status', 'bookinghosp_urutan', 'pasien_email', 'pasien_telp' );
 	
         /* Indexed column (used for fast and accurate table cardinality) */
         $sIndexColumn = "bookinghosp_id";
@@ -188,6 +189,29 @@ class C_antrianbooking
     {
         templateAdmin('../views/v_listdaftar.php', $data = "", $active1 = "TRANSAKSI", $active2 = "DAFTAR ANTRIAN");
     }
+
+    public function deletedaftar($bookinghosp_id)
+    {
+        $sql = "UPDATE t_booking_hospital SET bookinghosp_aktif = 'N' WHERE bookinghosp_id = $bookinghosp_id ";
+        $action = $this->conn2->query($sql);
+        if($action){
+            return "200";
+        } else {
+            return "202";
+        }
+    }
+
+    public function sudahbayar($bookinghosp_id)
+    {
+        $tglbayar = date("Y-m-d H:i:s");
+        $sql = "UPDATE t_booking_hospital SET bookinghosp_status = 'SUDAH BAYAR', bookinghosp_tglbayar = '" . $tglbayar . "' WHERE bookinghosp_id = $bookinghosp_id ";
+        $action = $this->conn2->query($sql);
+        if($action){
+            return "200";
+        } else {
+            return "202";
+        }
+    }
 }
 
 $antrianbooking = new C_antrianbooking($conn, $conn2, $config);
@@ -204,6 +228,16 @@ switch ($action) {
     
     case 'listdaftar':
         $antrianbooking->listdaftar();
+        break;
+    
+    case 'delete':
+        $action = $antrianbooking->deletedaftar($_POST["bookinghosp_id"]);
+        echo $action;
+        break;
+    
+    case 'sudahbayar':
+        $action = $antrianbooking->sudahbayar($_POST["bookinghosp_id"]);
+        echo $action;
         break;
 
     default:

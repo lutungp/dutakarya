@@ -38,7 +38,7 @@
               <li class="nav-item">
                 <a href="<?php echo BASE_URL ?>/controllers/C_antrianbooking.php?action=listdaftar" class="nav-link  <?php echo $active2 == "DAFTAR ANTRIAN" ? "active" : ""; ?>">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>List Antrian</p>
+                  <p>List Daftar</p>
                 </a>
               </li>
             </ul>

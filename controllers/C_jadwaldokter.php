@@ -46,7 +46,7 @@ class C_jadwaldokter
 
     public function getJadwalDokter()
     {
-        $hariIndo = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
+        $hariIndo = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
         $layanan_kode = "RJ001";
         $resJadwalDokter = $this->model->getJadwalDokter2();
         $dataJadwalDokter = [];
@@ -58,13 +58,13 @@ class C_jadwaldokter
                     "FS_KD_LAYANAN" => $row["FS_KD_LAYANAN"],
                     "FS_KD_SMF" => $row["FS_KD_SMF"] == null ? '' : $row["FS_KD_SMF"],
                     "FS_NM_SMF" => $row["FS_NM_SMF"] == null ? '' : $row["FS_NM_SMF"],
-                    "SENIN" => $row["1"] == null ? '' : $row["1"],
-                    "SELASA" => $row["2"] == null ? '' : $row["2"],
-                    "RABU" => $row["3"] == null ? '' : $row["3"],
-                    "KAMIS" => $row["4"] == null ? '' : $row["4"],
-                    "JUMAT" => $row["5"] == null ? '' : $row["5"],
-                    "SABTU" => $row["6"] == null ? '' : $row["6"],
-                    "MINGGU" => $row["7"] == null ? '' : $row["7"],
+                    "MINGGU" => $row["1"] == null ? '' : $row["1"],
+                    "SENIN" => $row["2"] == null ? '' : $row["2"],
+                    "SELASA" => $row["3"] == null ? '' : $row["3"],
+                    "RABU" => $row["4"] == null ? '' : $row["4"],
+                    "KAMIS" => $row["5"] == null ? '' : $row["5"],
+                    "JUMAT" => $row["6"] == null ? '' : $row["6"],
+                    "SABTU" => $row["7"] == null ? '' : $row["7"],
                 );
             }
         }
