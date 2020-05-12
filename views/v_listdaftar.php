@@ -76,6 +76,10 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label>Dokter</label>
+                                <input type="text" id="pasien_telp" name="pasien_telp" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Tanggal pesan</label>

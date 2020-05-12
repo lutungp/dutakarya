@@ -33,8 +33,8 @@ class C_booking
         }
         
         $pesan_jam = explode(" - ", $data["pesan_jam"]);
-        $field = ["pasien_norm", "pasien_nama", "bookinghosp_tanggal", "bookinghosp_jammulai", "bookinghosp_jamselesai", "layanan_kode", "pasien_email", "pasien_telp", "bookinghosp_urutan", "bookinghosp_created_by", "bookinghosp_created_date"];
-        $dataSave = [$data["pasien_norm"], $data["pasien_nama"], date("Y-m-d", strtotime($data["pesan_tanggal"])), $pesan_jam[0], $pesan_jam[1], "TM001", $data["pasien_email"], $data["pasien_tlp"], ($urutan+1), "PASIEN", date("Y-m-d H:i:s")];
+        $field = ["pasien_norm", "pasien_nama", "pegawai_kode", "pegawai_nama", "bookinghosp_tanggal", "bookinghosp_jammulai", "bookinghosp_jamselesai", "layanan_kode", "pasien_email", "pasien_telp", "bookinghosp_urutan", "bookinghosp_created_by", "bookinghosp_created_date"];
+        $dataSave = [$data["pasien_norm"], $data["pasien_nama"], $data["m_pegawai_kode"], $data["m_pegawai_nama"], date("Y-m-d", strtotime($data["pesan_tanggal"])), $pesan_jam[0], $pesan_jam[1], "TM001", $data["pasien_email"], $data["pasien_tlp"], ($urutan+1), "PASIEN", date("Y-m-d H:i:s")];
         $action = query_create($this->conn2, 't_booking_hospital', $field, $dataSave);
         
         $pasiennorm = "3172724" . str_pad($data["pasien_norm"], 8, "0", STR_PAD_LEFT);
