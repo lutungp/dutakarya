@@ -120,7 +120,7 @@
 		}
 
 		#booking {
-			top: 45px !important;
+			/* top: 45px !important; */
 		}
 
 		.logo-rs-desktop {
@@ -157,6 +157,16 @@
 		.image-tata-cara {
 			width: 100%; 
 			height:auto;
+		}
+		
+		.logo-rs {
+			text-align: center;
+		}
+		
+		.logo-rs>img {
+			margin-top : 280px;
+			width : 50px;
+			height : 38px;
 		}
 	}
 
@@ -234,6 +244,7 @@
 </style>
 <link type="text/css" rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
 <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script src="<?php echo BASE_URL ?>/assets/plugins/moment/moment.min.js"></script>
 <body>
 	<div id="backdrop" class="info-po-up">
 		<div class="container center">
@@ -248,14 +259,9 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-2">
-						<div class="logo-rs-desktop">
+						<div class="logo-rs">
 							<!-- C:\xampp\htdocs\telemedicineRSHJ\assets\img\rshaji.jpg -->
 							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="170" height="145">
-							<p><font style="font-size: 18px; color: #346d00;">RS. HAJI JAKARTA</font><br>Pelayanan <font style="color: red;">Telemedicine</font></p>
-						</div>
-						<div class="logo-rs-mobile">
-							<!-- C:\xampp\htdocs\telemedicineRSHJ\assets\img\rshaji.jpg -->
-							<img src="<?php echo BASE_URL; ?>/assets/img/rshaji.jpg" alt="Rshaji-Jakarta-telemedicine" width="50" height="38">
 							<p><font style="font-size: 18px; color: #346d00;">RS. HAJI JAKARTA</font><br>Pelayanan <font style="color: red;">Telemedicine</font></p>
 						</div>
 					</div>
@@ -548,10 +554,12 @@
 	}
 
 	$('#pesan_tanggal').change(function() {
-		var date = new Date($(this).val());
-		var hariIndo = ['SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU', 'MINGGU'];
-		var hari_numeric = date.getDay();
-		// $("#pesan_hari").val(hariIndo[hari_numeric-1]);
+		var date = moment($(this).val(), "DD-MM-YYYY").format("YYYY-MM-DD");
+		$.get(baseUrl + "/controllers/C_jadwaldokter.php?action=getjmlpasien&tgl=" + date + "&kodok=" + $("#m_pegawai_kode").val(), function( data ) {
+			if (data == 1) {
+				swal("Warning!", "Pasien sudah penuh pada tanggal " + $("#pesan_tanggal").val() + ", silahkan pilih jadwal lain", "warning");
+			}
+		});
 	});
 
 	function noUrut() {
@@ -663,6 +671,7 @@
 		}).attr("readonly", "readonly").css({"cursor":"pointer", "background":"white"});
 
 		function selectTime(elem){
+			$("#pesan_tanggal").val('');
 			$(".datepicker").datepicker('remove');
 			console.log($(".datepicker").datepicker('remove'))
 			var kode_dokter = $(elem).attr("data-kodedokter");

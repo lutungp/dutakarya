@@ -85,4 +85,42 @@ class M_jadwaldokter
             return false;
         }
     }
+
+    public function getJmlPasien($tgl, $kodedokter)
+    {
+        $sql = "SELECT COUNT(*) AS jmlantrian FROM t_booking_hospital 
+                WHERE bookinghosp_tanggal = '".$tgl."' 
+                AND t_booking_hospital.bookinghosp_aktif = 'Y'
+                AND t_booking_hospital.bookinghosp_status != 'EXPIRED' ";
+        $jml = 0;
+        $query = $this->conn2->query($sql);
+        if ($query) {
+            $jml = $query->fetch_object()->jmlantrian;
+        }
+
+        /* jml sesuai jadwal */
+        $harin = date('N', strtotime($tgl));
+        /* menyesuaikan urutan jadwal dari hospital */
+        $hariArr = ["2", "3", "4", "5", "6", "7", "1"];
+        $hari = $hariArr[$harin-1];
+        
+        $tsql = "SELECT 
+                    TA_JADWAL_DOKTER.FN_MAX
+                FROM TA_JADWAL_DOKTER
+                WHERE TA_JADWAL_DOKTER.FS_KD_LAYANAN = 'TM001' AND TA_JADWAL_DOKTER.FN_HARI = '$hari'
+                AND TA_JADWAL_DOKTER.FS_KD_DOKTER = '$kodedokter'";
+
+        $stmt = sqlsrv_query($this->conn, $tsql);
+        $max = 6;
+        if($stmt){
+            $stmt = sqlsrv_fetch_object($stmt);
+            $max = $stmt->FN_MAX;
+        }
+
+        if ($jml >= $max) {
+            return "1";
+        } else {
+            return "0";
+        }
+    }
 }

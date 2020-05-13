@@ -71,6 +71,12 @@ class C_jadwaldokter
 
         echo json_encode($dataJadwalDokter);
     }
+
+    public function getJmlPasien($tgl, $kodedokter)
+    {
+        $action = $this->model->getJmlPasien($tgl, $kodedokter);
+        return $action;
+    }
 }
 
 $jadwaldokter = new C_jadwaldokter($conn, $conn2, $config);
@@ -80,6 +86,11 @@ switch ($action) {
         $jadwaldokter->getJadwalDokter();
         break;
     
+    case 'getjmlpasien':
+        $action = $jadwaldokter->getJmlPasien($_GET["tgl"], $_GET["kodok"]);
+        echo $action;
+        break;
+
     default:
         $tanggal = isset($_GET["tanggal"]) ? $_GET["tanggal"] : date("Y-m-d");
         $jadwaldokter->jadwaldokter($tanggal);
