@@ -22,7 +22,7 @@ class M_antrianbooking
                     tagihan.total
                 FROM t_booking_hospital 
                 LEFT JOIN (
-                    SELECT pasien_norm, SUM(t_tagihan_pasien.tagihanpasien_total) AS total FROM t_tagihan_pasien WHERE tagihanpasien_aktif = 'Y' GROUP BY pasien_norm
+                    SELECT pasien_norm, SUM(t_tagihan_pasien.tagihanpasien_total + t_tagihan_pasien.tagihanpasien_kodeunik) AS total FROM t_tagihan_pasien WHERE tagihanpasien_aktif = 'Y' GROUP BY pasien_norm
                 ) tagihan ON  tagihan.pasien_norm = t_booking_hospital.pasien_norm
                 WHERE bookinghosp_aktif = 'Y' 
                 AND bookinghosp_status = 'ANTRIAN' 

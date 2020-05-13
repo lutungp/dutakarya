@@ -42,9 +42,10 @@ class C_booking
         $sqltarif = "SELECT * FROM m_tarif_detail WHERE FS_KD_SMF = '". $data["kode_smf"]. "' AND tarifdet_aktif = 'Y'";
         $qtarif = $this->conn2->query($sqltarif);
         if($qtarif) {
+            $number =  random_int(100, 1000); // membuat kode unik angka yg akan ditambahkan pada total tagihan
             foreach($qtarif as $key => $val){
-                $fieldtrf = ["tagihanpasien_tanggal", "pasien_norm", "t_bookinghosp_id", "fs_kd_tarif", "tagihanpasien_total", "tagihanpasien_created_by", "tagihanpasien_created_date"];
-                $dataSavetrf = [date("Y-m-d", strtotime($data["pesan_tanggal"])), $data["pasien_norm"], $action, $val["FS_KD_TARIF"], $val["tarifdet_total"], "PASIEN", date("Y-m-d H:i:s")];
+                $fieldtrf = ["tagihanpasien_tanggal", "pasien_norm", "tagihanpasien_kodeunik", "t_bookinghosp_id", "fs_kd_tarif", "tagihanpasien_total", "tagihanpasien_created_by", "tagihanpasien_created_date"];
+                $dataSavetrf = [date("Y-m-d", strtotime($data["pesan_tanggal"])), $data["pasien_norm"], $number, $action, $val["FS_KD_TARIF"], $val["tarifdet_total"], "PASIEN", date("Y-m-d H:i:s")];
                 query_create($this->conn2, 't_tagihan_pasien', $fieldtrf, $dataSavetrf);
             }
         }

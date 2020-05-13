@@ -100,6 +100,12 @@
 		border: 1px #dddee9 solid;
 		color: #949496;
 	}
+
+	.image-tata-cara {
+		width: 530px; 
+		height:590px;
+		transition: visibility 0s, opacity 0.5s linear;
+	}
 	
 	button:focus {outline:0;}
 
@@ -146,6 +152,11 @@
 			background: #00848a;
 			width: 140px;
 			height: 45px;
+		}
+
+		.image-tata-cara {
+			width: 100%; 
+			height:auto;
 		}
 	}
 
@@ -202,10 +213,33 @@
 		font-size: 16px;
 	}
 
+	.info-po-up {
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		background: rgba(0,0,0,0.7);
+		display : none;
+		z-index : 99;
+	}
+
+	.container.center {
+		text-align: center;
+		margin: 0;
+		position: absolute;
+		top: 50%;
+		-ms-transform: translateY(-50%);
+		transform: translateY(-50%);
+		width: 100%;
+	}
 </style>
 <link type="text/css" rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
 <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 <body>
+	<div id="backdrop" class="info-po-up">
+		<div class="container center">
+			<img class="image-tata-cara" src="<?php echo BASE_URL; ?>/assets/img/tata-cara-daftar.jpeg" alt="tata-cara-daftar-Rshaji-Jakarta-telemedicine">
+		</div>
+	</div>
 	<div id="loading" class="layer-block">
 		<div class="lds-dual-ring"></div>
 	</div>
@@ -306,8 +340,8 @@
 							<div class="square" onclick="noUrut()">
 								NOMER URUT
 							</div>
-							<div class="square" onclick="noUrut()">
-								BUKTI BAYAR
+							<div class="square" onclick="infoPendaftaran()">
+								CARA DAFTAR
 							</div>
 							<div class="square" onclick="window.open('<?php echo BASE_URL;?>/controllers/C_dashboard.php')">
 								LOGIN
@@ -330,10 +364,10 @@
 								<div class="square" onclick="noUrut()">
 									NOMER URUT
 								</div>
-								<div class="square" onclick="noUrut()">
-									BUKTI BAYAR
+								<div class="square" onclick="infoPendaftaran()">
+									CARA DAFTAR
 								</div>
-								<div class="square" onclick="noUrut()">
+								<div class="square" onclick="window.open('<?php echo BASE_URL;?>/controllers/C_dashboard.php')">
 									LOGIN
 								</div>
 							</div>
@@ -441,6 +475,21 @@
 							<tbody>
 						</table>
 					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="ModalInfo" tabindex="-1" role="dialog" aria-labelledby="ModalInfoLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="ModalDokterLabel">Tata Cara Pendaftaran</h5>
+				</div>
+				<div class="modal-body">
+					
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -646,4 +695,34 @@
 			}).attr("readonly", "readonly").css({"cursor":"pointer", "background":"white"});
 		}
 	});
+
+	function infoPendaftaran() {
+		// $('#ModalInfo').modal('toggle');
+		$(".info-po-up").css("display", "block");
+	}
+
+	document.onkeydown = function(evt) {
+		evt = evt || window.event;
+		var isEscape = false;
+		if ("key" in evt) {
+			isEscape = (evt.key === "Escape" || evt.key === "Esc");
+		} else {
+			isEscape = (evt.keyCode === 27);
+		}
+		if (isEscape) {
+			$(".info-po-up").css("display", "none");
+		}
+	};
+
+	$("#backdrop").on("click", function(event){
+		// setTimeout(function () {
+			if ($('.info-po-up').css('display') == 'block') {
+				if(!$(event.target).closest(".image-tata-cara").length){
+					$(".info-po-up").css("display", "none");
+				}
+			}
+		// }, 2000);
+    });
+
+	// $("#backdrop").on("click")
 </script>

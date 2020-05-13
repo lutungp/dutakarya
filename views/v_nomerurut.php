@@ -16,6 +16,19 @@
     .section .section-center {
         top: 45%;
     }
+
+    .info {
+        font-size : 16px;
+        background-color: #a5a5a5;
+        color: #000;
+        padding: 12px;
+    }
+
+    @media only screen and (max-width: 990px) {
+        #booking {
+            margin-top: 30px;
+        }
+    }
 </style>
 <?php
     if ($dataparse != 'null') {
@@ -116,7 +129,10 @@
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <center>
-                                Untuk informasi lebih lanjut atau verifikasi pembayaran silahkan hubungi no. whatsapp di <b>0821-646464-70</b>
+                                <div class="info">
+                                    <p>Transfer berserta 3 kode unik di nominal paling belakang</p>
+                                    <p>Untuk informasi lebih lanjut atau verifikasi pembayaran silahkan hubungi no. whatsapp di <b>0821-646464-70</b></p>
+                                </div>
                             </center>
                         </div>
                         <div class="col-xs-12 col-sm-3">
