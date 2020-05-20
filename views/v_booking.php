@@ -164,7 +164,7 @@
 		}
 		
 		.logo-rs>img {
-			margin-top : 280px;
+			margin-top : 100px;
 			width : 50px;
 			height : 38px;
 		}

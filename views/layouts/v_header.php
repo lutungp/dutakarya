@@ -30,6 +30,7 @@
 		<![endif]-->
 	<!-- <link rel="icon" href="<?php echo BASE_URL; ?>/assets/favicon.ico" type="image/gif" sizes="16x16"> -->
 	<link rel="shortcut icon" href="<?php echo BASE_URL; ?>/assets/img/favicon.ico">
+	<link rel="manifest" href="<?php echo BASE_URL; ?>/manifest.json">
     <script>
         var baseUrl = "<?php echo BASE_URL; ?>";
     </script>
