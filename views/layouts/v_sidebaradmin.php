@@ -13,9 +13,10 @@
           });
           
           foreach ($rolemenu_lv1 as $value) {
-              echo '<li class="nav-item has-treeview">';
-              $active1 = $active1 == $value["menu_kode"] ? "active" : "";
-              echo '<a href="#" class="nav-link '.$active1.'">
+              $activeclass1 = $active1 == $value["menu_kode"] ? "menu-open" : "";
+              echo '<li class="nav-item has-treeview '.$activeclass1.'">';
+              $activeclass1 = $active1 == $value["menu_kode"] ? "active" : "";
+              echo '<a href="#" class="nav-link '.$activeclass1.'">
                 <i class="nav-icon fas fa-briefcase"></i>
                 <p>
                   '.$value["menu_nama"].'
@@ -28,10 +29,10 @@
                       return $value['menu_level'] == 2 && $value['menu_parent'] == $menuparent; 
                   });
                   foreach ($rolemenu_lv2 as $valchild) {
-                      $active2 = $active2 == $valchild["menu_kode"] ? "active" : "";
+                      $activeclass2 = $active2 == $valchild["menu_kode"] ? "active" : "";
                       $url = BASE_URL . $valchild["menu_url"];
                       echo '<li class="nav-item">
-                            <a href="'.$url.'" class="nav-link '.$active2.'">
+                            <a href="'.$url.'" class="nav-link '.$activeclass2.'">
                             <i class="far fa-circle nav-icon"></i>
                             <p>'.$valchild["menu_nama"].'</p>
                             </a>
