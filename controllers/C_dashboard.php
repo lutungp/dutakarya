@@ -19,7 +19,7 @@ class C_dashboard
         $this->config = $config;
 
         if(isset($_SESSION["USERNAME"])) {
-            templateAdmin('../views/v_dashboard.php');
+            templateAdmin($this->conn2, '../views/v_dashboard.php');
         } else {
             header("Location: " . $config['base_url'] . "./controllers/C_login.php");
         }

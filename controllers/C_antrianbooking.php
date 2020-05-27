@@ -187,7 +187,7 @@ class C_antrianbooking
 
     public function listdaftar()
     {
-        templateAdmin('../views/v_listdaftar.php', $data = "", $active1 = "TRANSAKSI", $active2 = "DAFTAR ANTRIAN");
+        templateAdmin($this->conn2, '../views/v_listdaftar.php', $data = "", $active1 = "TRANSAKSI", $active2 = "DAFTAR ANTRIAN");
     }
 
     public function deletedaftar($bookinghosp_id)

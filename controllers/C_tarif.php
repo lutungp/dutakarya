@@ -16,7 +16,7 @@ class C_tarif
 
     public function listTarif()
     {
-        templateAdmin('../views/v_listtarif.php', $data = "", $active1 = "MASTER", $active2 = "TARIF");
+        templateAdmin($this->conn2, '../views/v_listtarif.php', $data = "", $active1 = "MASTER", $active2 = "TARIF");
     }
 
     public function getListTarif()

@@ -7,42 +7,40 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <!-- <li class="nav-item has-treeview <?php echo $active1 == "MASTER" ? "menu-open" : ""; ?>">
-            <a href="#" class="nav-link  <?php echo $active1 == "MASTER" ? "active" : ""; ?>">
-              <i class="nav-icon fas fa-briefcase"></i>
-              <p>
-                Master
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo BASE_URL ?>/controllers/C_tarif.php" class="nav-link  <?php echo $active2 == "TARIF" ? "active" : ""; ?>">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Tarif</p>
-                </a>
-              </li>
-            </ul>
-          </li> -->
-          <li class="nav-item has-treeview <?php echo $active1 == "TRANSAKSI" ? "menu-open" : ""; ?>">
-            <a href="#" class="nav-link  <?php echo $active1 == "TRANSAKSI" ? "active" : ""; ?>">
-              <i class="nav-icon fas fa-briefcase"></i>
-              <p>
-                Transaksi
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo BASE_URL ?>/controllers/C_antrianbooking.php?action=listdaftar" class="nav-link  <?php echo $active2 == "DAFTAR ANTRIAN" ? "active" : ""; ?>">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>List Daftar</p>
-                </a>
-              </li>
-            </ul>
-          </li>
+        <?php 
+          $rolemenu_lv1 = array_filter($rolemenu, function ($value) { 
+              return $value['menu_level'] == 1; 
+          });
+          
+          foreach ($rolemenu_lv1 as $value) {
+              echo '<li class="nav-item has-treeview">';
+              $active1 = $active1 == $value["menu_kode"] ? "active" : "";
+              echo '<a href="#" class="nav-link '.$active1.'">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <p>
+                  '.$value["menu_nama"].'
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">';
+                  $menuparent = $value["menu_id"];
+                  $rolemenu_lv2 = array_filter($rolemenu, function ($value) use ($menuparent) { 
+                      return $value['menu_level'] == 2 && $value['menu_parent'] == $menuparent; 
+                  });
+                  foreach ($rolemenu_lv2 as $valchild) {
+                      $active2 = $active2 == $valchild["menu_kode"] ? "active" : "";
+                      $url = BASE_URL . $valchild["menu_url"];
+                      echo '<li class="nav-item">
+                            <a href="'.$url.'" class="nav-link '.$active2.'">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>'.$valchild["menu_nama"].'</p>
+                            </a>
+                            </li>' ;
+                  }
+              echo '</ul>
+                  </li>';
+          }
+        ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

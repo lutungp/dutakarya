@@ -1,8 +1,8 @@
 <?php  
-    $serverName = "10.1.10.1"; 
+    $serverName = "10.1.1.5"; 
     $uid = "sa";   
     $pwd = "Rshaji123!@";  
-    $databaseName = "HOSPITAL_LAT"; 
+    $databaseName = "HOSPITAL"; 
 
     $connectionInfo = array( "UID" => $uid,
                             "PWD"  => $pwd,

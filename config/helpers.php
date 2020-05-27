@@ -9,14 +9,46 @@ function template($content, $data = "")
     require_once('./../views/layouts/v_footer.php');
 }
 
-function templateAdmin($content, $data = "", $active1 = "", $active2 = "")
+function templateAdmin($conn2, $content, $data = "", $active1 = "", $active2 = "")
 {
     $dataparse = $data;
     $active1 = $active1;
     $active2 = $active2;
+    $rolemenu = getRoleMenu($conn2, $_SESSION["USERNAME"]);
     require_once('./../views/layouts/v_headeradmin.php');
     require_once($content);
     require_once('./../views/layouts/v_footeradmin.php');
+}
+
+function getRoleMenu($conn2, $username)
+{
+    $sql = "SELECT 
+                s_menu.menu_id, s_menu.menu_kode, s_menu.menu_nama, s_menu.menu_level, s_menu.menu_parent,
+                s_role.role_priviliges, s_menu.menu_url
+            FROM s_menu 
+            LEFT JOIN (
+                SELECT 
+                    s_role.s_menu_id, s_role.m_usergroup_id, s_role.role_priviliges
+                FROM s_role WHERE role_aktif = 'Y'
+            ) AS s_role ON s_role.s_menu_id = s_menu.menu_id
+            JOIN m_user ON m_user.m_usergroup_id = s_role.m_usergroup_id
+            WHERE menu_aktif = 'Y' 
+            AND m_user.user_nama = '$username'";
+
+    $quser = $conn2->query($sql);
+    $role = array();
+    while ($val = $quser->fetch_array()) {
+        $role[] = array(
+            "menu_id" => $val["menu_id"],
+            "menu_kode" => $val["menu_kode"],
+            "menu_nama" => $val["menu_nama"],
+            "menu_level" => $val["menu_level"],
+            "menu_parent" => $val["menu_parent"],
+            "menu_url" => $val["menu_url"]
+        );
+    }
+
+    return $role;
 }
 
 function query_create($conn2, $table, $field, $data){
