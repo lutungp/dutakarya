@@ -12,7 +12,7 @@
             <div class="card">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-6">
                         <div class="form-group">
                             <label>Tanggal:</label>
                             <div class="input-group">

@@ -11,6 +11,9 @@ function template($content, $data = "")
 
 function templateAdmin($conn2, $content, $data = "", $active1 = "", $active2 = "")
 {
+    if(!isset($_SESSION["USERNAME"])) {
+        header("Location: " . $config['base_url'] . "./controllers/C_login.php");
+    }
     $dataparse = $data;
     $active1 = $active1;
     $active2 = $active2;

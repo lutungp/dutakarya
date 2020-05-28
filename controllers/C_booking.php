@@ -1,8 +1,8 @@
 <?php
 
 include '../config/database.php';
-include '../config/helpers.php';
 include '../config/config.php';
+include '../config/helpers.php';
 
 class C_booking
 {
