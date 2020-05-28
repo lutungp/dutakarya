@@ -3,6 +3,7 @@
         background-color: #fff;
     }
 </style>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
 <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 <section class="content">
@@ -20,12 +21,15 @@
                                 </div>
                                 <input type="text" id="datefilter" class="form-control float-right">
                                 &nbsp;<button type="button" id="btn-filter" class="btn btn-primary"><i class="fas fa-search"></i>&nbsp;Cari</button>
-                                <!-- &nbsp;<button type="button" id="btn-excel" class="btn btn-success"><i class="far fa-file-excel"></i>&nbsp;Excel</button> -->
+                                <!-- &nbsp;<button type="button" id="btn-chart" class="btn btn-default"><i class="fas fa-chart-bar"></i>&nbsp;Lihat Grafik</button> -->
                             </div>
                         </div>
                     </div>
                     <!-- /.input group -->
                 </div>
+            </div>
+            <div class="container-chart">
+                <div id="container" style="height: 400px"></div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -55,15 +59,14 @@
 </section>
 <script>
     var oTable = "";
+    $('#datefilter').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    });
+    var datefilter = $('#datefilter').val();
+    datefilter = datefilter.split(" - ");
     $(function () {
-        $('#datefilter').daterangepicker({
-            locale: {
-                format: 'DD/MM/YYYY'
-            }
-        });
-        var datefilter = $('#datefilter').val();
-        datefilter = datefilter.split(" - ");
-        console.log(datefilter)
         oTable = $("#listperlayanan").DataTable({
             "responsive": true,
             "autoWidth": false,
@@ -102,30 +105,103 @@
                 );
             }
         });
-
         $("#btn-filter").on("click", function () {
             oTable.ajax.reload();
-        });
-
-        $("#btn-excel").on("click", function () {
-            importToExcel();
+            var datefilter = $('#datefilter').val();
+            datefilter = datefilter.split(" - ");
+            getData(datefilter);
         });
         
     });
 
-    function editRow(elem) {
-
+    var options = {
+        chart: {
+            type: 'column',
+            events: {
+                load: getData(datefilter)
+            }
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            categories: JSON.parse('<?php echo $dataparse["layanan"]?>')
+        },
+        yAxis: {
+            allowDecimals: false,
+            min: 0,
+            title: {
+                text: 'Number of fruits'
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.x + '</b><br/>' +
+                this.series.name + ': ' + this.y + '<br/>' +
+                'Total: ' + this.point.stackTotal;
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal'
+            }
+        },
+        series: []
     }
 
-    function deleteRow(elem) {
+    var chart = Highcharts.chart('container', options);
 
+    function getData(datefilter) {
+        $.ajax({
+            url: "<?php echo BASE_URL ?>/controllers/C_lapkunjunganpasien.php?action=getchartdata",
+            type: "post",
+            data: {
+                tglawal : moment(datefilter[0], 'DD/MM/YYYY').format("YYYY-MM-DD"),
+                tglakhir : moment(datefilter[1], 'DD/MM/YYYY').format("YYYY-MM-DD"),
+                instalasi : $('#instalasi').val(),
+                layanan : $('#layanan').val(),
+                groupjaminan : $('#groupjaminan').val(),
+                tipejaminan : $('#tipejaminan').val()
+            },
+            success : function (res) {
+                var result = JSON.parse(res);
+                var dataLayanan = [];
+                var layanan = JSON.parse('<?php echo $dataparse["layanan"]?>');
+                var pasienbaru = [];
+                var pasienlama = [];
+                for (let index = 0; index < layanan.length; index++) {
+                    const element = layanan[index];
+                    hh = result.filter(p=>p[0]==element);
+                    if(hh[0] !== undefined) {
+                        pasienbaru.push(hh[0][1]);
+                        pasienlama.push(hh[0][2]);
+                    } else {
+                        pasienbaru.push(0);
+                        pasienlama.push(0);
+                    }
+                }
+                
+                options.series = []
+
+                options.series.push({
+                    name : 'Pasien Baru',
+                    data : pasienbaru,
+                    stack : 'baru'
+                });
+
+                options.series.push({
+                    name : 'Pasien Lama',
+                    data : pasienlama,
+                    stack : 'baru'
+                });
+
+                Highcharts.chart('container', options);
+            }
+        });
+    }
+    
+    function getLayanan() {
+        
     }
 
-    function submitForm() {
- 
-    }
-
-    function importToExcel(elem) {
-
-    }
 </script>

@@ -22,22 +22,27 @@ class C_lapkunjunganpasien
 
     public function lapKunjunganPasien()
     {
-        templateAdmin($this->conn2, '../views/v_lapkunjungan.php', NULL, "TRANSAKSI", "KUNJUNGAN PASIEN");
+        $layanan = $this->model->getLayanan();
+        $data["layanan"] = json_encode($layanan);
+        templateAdmin($this->conn2, '../views/v_lapkunjungan.php', $data, "TRANSAKSI", "KUNJUNGAN PASIEN");
     }
 
     public function getPerLayanan($tglawal, $tglakhir, $instalasi, $layanan, $groupjaminan, $tipejaminan, $data)
     {
         $data = $this->model->getPerLayanan($tglawal, $tglakhir, $instalasi, $layanan, $groupjaminan, $tipejaminan, $data);
 
-        
+        echo json_encode($data);
+    }
+
+    public function getChartData($tglawal, $tglakhir, $instalasi, $layanan, $groupjaminan, $tipejaminan, $data)
+    {
+        $data = $this->model->getChartData($tglawal, $tglakhir, $instalasi, $layanan, $groupjaminan, $tipejaminan);
+        echo json_encode($data);
     }
 }
 
 $kunjunganpasien = new C_lapkunjunganpasien($conn, $conn2, $config);
 $action = isset($_GET["action"]) ? $_GET["action"] : "";
-// $tglawal = 
-
-
 switch ($action) {
     case 'getPerLayanan':
         $tglawal = isset($_GET["tglawal"]) ? $_GET["tglawal"] : "";
@@ -47,6 +52,16 @@ switch ($action) {
         $groupjaminan = isset($_GET["groupjaminan"]) ? $_GET["groupjaminan"] : "";
         $tipejaminan = isset($_GET["tipejaminan"]) ? $_GET["tipejaminan"] : "";
         $kunjunganpasien->getPerLayanan($tglawal, $tglakhir, $instalasi, $layanan, $groupjaminan, $tipejaminan, $_GET);
+        break;
+    
+    case 'getchartdata':
+        $tglawal = isset($_POST["tglawal"]) ? $_POST["tglawal"] : "";
+        $tglakhir = isset($_POST["tglakhir"]) ? $_POST["tglakhir"] : "";
+        $instalasi = isset($_POST["instalasi"]) ? $_POST["instalasi"] : "";
+        $layanan = isset($_POST["layanan"]) ? $_POST["layanan"] : "";
+        $groupjaminan = isset($_POST["groupjaminan"]) ? $_POST["groupjaminan"] : "";
+        $tipejaminan = isset($_POST["tipejaminan"]) ? $_POST["tipejaminan"] : "";
+        $kunjunganpasien->getChartData($tglawal, $tglakhir, $instalasi, $layanan, $groupjaminan, $tipejaminan, NULL);
         break;
 
     default:
