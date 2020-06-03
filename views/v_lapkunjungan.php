@@ -1,8 +1,3 @@
-<style>
-    .form-control:disabled, .form-control[readonly] {
-        background-color: #fff;
-    }
-</style>
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <link type="text/css" rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
 <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>

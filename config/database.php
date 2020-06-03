@@ -10,9 +10,9 @@
 
     $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
-    $servername2 = "10.1.2.29";
-    $username2 = "rshajiclient";
-    $password2 = "Rshaji123!@";
+    $servername2 = "127.0.0.1";
+    $username2 = "root";
+    $password2 = "";
 
     $conn2 = mysqli_connect($servername2, $username2, $password2, "hospital");
 ?>  

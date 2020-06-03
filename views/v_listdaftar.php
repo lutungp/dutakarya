@@ -1,8 +1,3 @@
-<style>
-    .form-control:disabled, .form-control[readonly] {
-        background-color: #fff;
-    }
-</style>
 <link type="text/css" rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
 <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 <section class="content">
@@ -57,65 +52,65 @@
       <!-- /.row -->
 </section>
 <div class="modal fade" id="ModalDaftar" tabindex="-1" role="dialog" aria-labelledby="ModalDaftarLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="ModalDaftarLabel">Data Pendaftaran</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					    <span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-                <form role="form" id="quickForm">
-                    <div class="modal-body">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <input type="hidden" id="bookinghosp_id" name="bookinghosp_id">
-                                <label for="exampleInputEmail1">Nama Pasien</label>
-                                <div style="display: inline-flex;">
-                                    <input type="text" id="pasien_norm" name="pasien_norm" class="form-control" 
-                                    style="width: 150px;" readonly>&nbsp;
-                                    <input type="text" id="pasien_nama" name="pasien_nama" class="form-control" 
-                                    style="width: 273px;" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Dokter</label>
-                                <input type="text" id="pegawai_nama" name="pegawai_nama" class="form-control" readonly>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Tanggal pesan</label>
-                                        <input type="text" id="bookinghosp_tanggal" name="bookinghosp_tanggal" class="form-control" readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Jam</label>
-                                        <input type="text" id="bookinghosp_jam" name="bookinghosp_jam" class="form-control" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- <div class="form-group">
-                                <label>Jam</label>
-                                <input type="text" id="bookinghosp_jam" name="bookinghosp_jam" class="form-control" readonly>
-                            </div> -->
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="text" id="pasien_email" name="pasien_email" class="form-control" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Telepon</label>
-                                <input type="text" id="pasien_telp" name="pasien_telp" class="form-control" readonly>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalDaftarLabel">Data Pendaftaran</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form role="form" id="quickForm">
+                <div class="modal-body">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="hidden" id="bookinghosp_id" name="bookinghosp_id">
+                            <label for="exampleInputEmail1">Nama Pasien</label>
+                            <div style="display: inline-flex;">
+                                <input type="text" id="pasien_norm" name="pasien_norm" class="form-control" 
+                                style="width: 150px;" readonly>&nbsp;
+                                <input type="text" id="pasien_nama" name="pasien_nama" class="form-control" 
+                                style="width: 273px;" readonly>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label>Dokter</label>
+                            <input type="text" id="pegawai_nama" name="pegawai_nama" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Tanggal pesan</label>
+                                    <input type="text" id="bookinghosp_tanggal" name="bookinghosp_tanggal" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Jam</label>
+                                    <input type="text" id="bookinghosp_jam" name="bookinghosp_jam" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group">
+                            <label>Jam</label>
+                            <input type="text" id="bookinghosp_jam" name="bookinghosp_jam" class="form-control" readonly>
+                        </div> -->
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="text" id="pasien_email" name="pasien_email" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Telepon</label>
+                            <input type="text" id="pasien_telp" name="pasien_telp" class="form-control" readonly>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="submitForm()">Sudah Bayar</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-			</div>
-		</div>
-	</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Sudah Bayar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     var oTable = "";
     $(function () {

@@ -36,8 +36,9 @@ function getRoleMenu($conn2, $username)
             ) AS s_role ON s_role.s_menu_id = s_menu.menu_id
             JOIN m_user ON m_user.m_usergroup_id = s_role.m_usergroup_id
             WHERE menu_aktif = 'Y' 
-            AND m_user.user_nama = '$username'";
-
+            AND m_user.user_nama = '$username'
+            ORDER BY menu_level ASC, menu_urutan ASC";
+    
     $quser = $conn2->query($sql);
     $role = array();
     while ($val = $quser->fetch_array()) {

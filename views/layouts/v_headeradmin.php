@@ -31,23 +31,23 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- ./wrapper -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
-
+  
   <!-- jQuery -->
   <script src="<?php echo BASE_URL ?>/assets/plugins/jquery/jquery.min.js"></script>
   <!-- jQuery UI 1.11.4 -->
   <script src="<?php echo BASE_URL ?>/assets/plugins/jquery-ui/jquery-ui.min.js"></script>
   <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-  <script>
-  $.widget.bridge('uibutton', $.ui.button)
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- ChartJS -->
-    <script src="<?php echo BASE_URL ?>/assets/plugins/chart.js/Chart.min.js"></script>
-    <!-- Sparkline -->
-    <script src="<?php echo BASE_URL ?>/assets/plugins/sparklines/sparkline.js"></script>
-    <!-- JQVMap -->
+      <script>
+        $.widget.bridge('uibutton', $.ui.button);
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+      <!-- Bootstrap 4 -->
+      <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- ChartJS -->
+      <script src="<?php echo BASE_URL ?>/assets/plugins/chart.js/Chart.min.js"></script>
+      <!-- Sparkline -->
+      <script src="<?php echo BASE_URL ?>/assets/plugins/sparklines/sparkline.js"></script>
+      <!-- JQVMap -->
       <script src="<?php echo BASE_URL ?>/assets/plugins/jqvmap/jquery.vmap.min.js"></script>
       <script src="<?php echo BASE_URL ?>/assets/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
       <!-- jQuery Knob Chart -->
@@ -76,6 +76,23 @@
   <style>
     .content-wrapper>.content {
       padding: 0 1.5rem;
+    }
+
+    .form-control:disabled, .form-control[readonly] {
+        background-color: #fff;
+    }
+    .modal-body {
+        padding: 2px
+        ;
+    }
+    .form-group {
+        margin-bottom: 0rem;
+    }
+
+    .form-control {
+      height: 29px;
+      padding: 4px 5px;
+      font-size: 14px;
     }
   </style>
 </head>
