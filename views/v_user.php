@@ -24,6 +24,7 @@
         {
             datatype: "json",
             datafields: [
+                { name: 'user_id', type: 'int' },
                 { name: 'user_nama', type: 'string' },
                 { name: 'm_usergroup_id', type: 'int' },
                 { name: 'usergroup_nama', type: 'string' },
@@ -40,7 +41,7 @@
         };
         var dataAdapter = new $.jqx.dataAdapter(source, {
             downloadComplete: function (data, status, xhr) { },
-            loadComplete: function (data) { },
+            loadComplete: function (data) {},
             loadError: function (xhr, status, error) { }
         });
         // initialize jqxGrid
@@ -59,7 +60,7 @@
                 { text: 'User Nama', datafield: 'user_nama'},
                 { text: 'User Group', datafield: 'usergroup_nama'},
                 { text: 'User Aktif', datafield: 'useraktif'},
-                { text: 'Edit', datafield: 'Edit', columntype: 'button', 
+                { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false,
                     cellsrenderer: function () {
                         return "Edit";
                     }, buttonclick: function (row) {
@@ -67,9 +68,17 @@
                         var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
                         $("#grid").offset();
                         $("#ModalUser").modal('toggle');
+                        $("#user_id").val(dataRecord.user_id);
                         $("#user_nama").val(dataRecord.user_nama);
                         $("#m_usergroup_id").val(dataRecord.m_usergroup_id);
                         $("#user_password").val('');
+                    }
+                },
+                { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false,
+                    cellsrenderer: function () {
+                        return "Delete";
+                    }, buttonclick: function (row) {
+                        
                     }
                 }
             ]
@@ -83,7 +92,8 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body default">
-                    <div id='jqxWidget'>
+                    <button type="button" id="btn-filter" class="btn btn-primary btn-sm" onclick="adduser()">Tambah</button>
+                    <div id='jqxWidget' style="margin-top: 5px;">
                         <div id="grid"></div>
                         <div id="cellbegineditevent"></div>
                         <div style="margin-top: 10px;" id="cellendeditevent"></div>
@@ -162,7 +172,14 @@
         var password1 = $("#user_password").val();
         var password2 = $("#user_password2").val();
 
-        if (password1 !== password2) {
+        if (password1 == '' || password2 == '') {
+            $("#user_password").addClass("is-invalid");
+            $("#user_password").removeClass("is-valid");
+            $("#user_password2").addClass("is-invalid");
+            $("#user_password2").removeClass("is-valid");
+
+            return false;
+        } else if (password1 !== password2) {
             $("#user_password").addClass("is-invalid");
             $("#user_password").removeClass("is-valid");
             $("#user_password2").addClass("is-invalid");
@@ -175,6 +192,8 @@
             $("#user_password2").removeClass("is-invalid");
             $("#user_password2").addClass("is-valid");
         }
+
+        
         
         var dataForm = {
             user_id : $("#user_id").val(),
@@ -185,19 +204,34 @@
         };
 
         $.ajax({
-            url: "<?php echo BASE_URL ?>/controllers/C_lapkunjunganpasien.php?action=getchartdata",
+            url: "<?php echo BASE_URL ?>/controllers/C_user.php?action=createuser",
             type: "post",
-            data: {
-                tglawal : moment(datefilter[0], 'DD/MM/YYYY').format("YYYY-MM-DD"),
-                tglakhir : moment(datefilter[1], 'DD/MM/YYYY').format("YYYY-MM-DD"),
-                instalasi : $('#instalasi').val(),
-                layanan : $('#layanan').val(),
-                groupjaminan : $('#groupjaminan').val(),
-                tipejaminan : $('#tipejaminan').val()
-            },
+            data: dataForm,
             success : function (res) {
-                
+                $("#grid").jqxGrid('updatebounddata');
+                if (res == 200) {
+                    resetForm();
+                    swal("Info!", "User pasien " + $("#user_nama").val() + " Berhasil disimpan", "success");
+                    $("#ModalUser").modal('toggle');
+                    $("#user_password").removeClass("is-valid");
+                    $("#user_password2").removeClass("is-valid");
+                } else {
+                    swal("Info!", "User pasien " + $("#user_nama").val() + " Gagal disimpan", "error");
+                }
             }
         });
+    }
+
+    function resetForm() {
+        $("#user_id").val(0);
+        $("#user_nama").val('');
+        $("#m_usergroup_id").val(0);
+        $("#user_password").val('');
+        $("#user_password2").val('');
+    }
+
+    function adduser() {
+        resetForm();
+        $("#ModalUser").modal('toggle');
     }
 </script>

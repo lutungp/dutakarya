@@ -68,6 +68,16 @@ function query_create($conn2, $table, $field, $data){
     }
 }
 
+function query_update($conn2, $table, $field, $where){
+    $sql = "UPDATE $table SET $field $where";
+    $action = $conn2->query($sql);
+    if($action) {
+        return "1";
+    } else {
+        return "0";
+    }
+}
+
 function hariIndo($tanggal){
     $hariIndo = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
     $harinomor =  date('N', strtotime($tanggal));

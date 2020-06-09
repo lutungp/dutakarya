@@ -24,7 +24,11 @@ class M_user
                 FROM m_user 
                 LEFT JOIN m_usergroup ON m_usergroup.usergroup_id = m_user.m_usergroup_id ";
         $quser = $this->conn2->query($sql);
-        return $quser->fetch_array(MYSQLI_ASSOC);
+        $user = [];
+        while ($result = $quser->fetch_array(MYSQLI_ASSOC)) {
+            array_push($user, $result);
+        }
+        return $user;
     }
 
     public function getUserGroup()
