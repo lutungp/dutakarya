@@ -29,10 +29,10 @@ function getRoleMenu($conn2, $username)
                 s_menu.menu_id, s_menu.menu_kode, s_menu.menu_nama, s_menu.menu_level, s_menu.menu_parent,
                 s_role.role_priviliges, s_menu.menu_url
             FROM s_menu 
-            LEFT JOIN (
+            JOIN (
                 SELECT 
                     s_role.s_menu_id, s_role.m_usergroup_id, s_role.role_priviliges
-                FROM s_role WHERE role_aktif = 'Y'
+                FROM s_role WHERE role_aktif = 'Y' AND (s_role.role_priviliges!='' AND role_priviliges IS NOT NULL)
             ) AS s_role ON s_role.s_menu_id = s_menu.menu_id
             JOIN m_user ON m_user.m_usergroup_id = s_role.m_usergroup_id
             WHERE menu_aktif = 'Y' 
@@ -42,14 +42,20 @@ function getRoleMenu($conn2, $username)
     $quser = $conn2->query($sql);
     $role = array();
     while ($val = $quser->fetch_array()) {
-        $role[] = array(
-            "menu_id" => $val["menu_id"],
-            "menu_kode" => $val["menu_kode"],
-            "menu_nama" => $val["menu_nama"],
-            "menu_level" => $val["menu_level"],
-            "menu_parent" => $val["menu_parent"],
-            "menu_url" => $val["menu_url"]
-        );
+        $role_priviliges = explode(",", $val['role_priviliges']);
+        if (($key = array_search("", $role_priviliges)) !== false) {
+            unset($role_priviliges[$key]);
+        }
+        if (count($role_priviliges) > 0) {
+            $role[] = array(
+                "menu_id" => $val["menu_id"],
+                "menu_kode" => $val["menu_kode"],
+                "menu_nama" => $val["menu_nama"],
+                "menu_level" => $val["menu_level"],
+                "menu_parent" => $val["menu_parent"],
+                "menu_url" => $val["menu_url"]
+            );
+        }
     }
 
     return $role;
