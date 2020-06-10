@@ -45,11 +45,15 @@ class C_user
     {
         $fieldSave = ["user_nama", "user_password", "m_usergroup_id", "user_updated_by", "user_updated_date", "user_revised"];
         $password = md5($data["user_password"]);
-        $dataSave = [$data["user_nama"], $password, $data["m_usergroup_id"], $_SESSION["USERNAME"], date("Y-m-d H:i:s"), 0];
+        $dataSave = [$data["user_nama"], $password, $data["m_usergroup_id"], $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "user_revised+1"];
         $field = "";
         foreach ($fieldSave as $key => $value) {
             $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
-            $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
         }
         $where = "WHERE user_id = " . $data['user_id'];
         $action = query_update($this->conn2, 'm_user', $field, $where);

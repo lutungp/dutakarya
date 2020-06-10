@@ -94,6 +94,12 @@
       padding: 4px 5px;
       font-size: 14px;
     }
+    .modal-header {
+      padding: 5px !important;
+    }
+    .modal-footer {
+      padding: 2px !important;
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">

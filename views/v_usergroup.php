@@ -63,7 +63,15 @@
                     cellsrenderer: function () {
                         return "Edit";
                     }, buttonclick: function (row) {
-                        
+                        resetForm();
+                        editrow = row;
+                        var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
+                        $("#grid").offset();
+                        $("#ModalUserGroup").modal('toggle');
+                        $("#usergroup_id").val(dataRecord.usergroup_id);
+                        $("#usergroup_kode").val(dataRecord.usergroup_kode);
+                        $("#usergroup_nama").val(dataRecord.usergroup_nama);
+                        getRole(dataRecord.usergroup_id);
                     }
                 },
                 { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false,
@@ -78,7 +86,9 @@
 
     });
 </script>
-
+<?php
+    $data = json_decode($dataparse);
+?>
 <section class="content">
     <div class="row">
         <div class="col-12">
@@ -91,6 +101,132 @@
                         <div style="margin-top: 10px;" id="cellendeditevent"></div>
                     </div>
                 </div>
+                <div class="modal fade" id="ModalUserGroup" tabindex="-1" role="dialog" aria-labelledby="ModalUserGroupLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ModalUserGroupLabel">Data Group</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <form role="form" id="quickForm">
+                                <div class="modal-body">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <input type="hidden" id="usergroup_id" name="usergroup_id">
+                                            <label for="usergroup_nama">Group Nama</label>
+                                            <input type="text" id="usergroup_nama" name="usergroup_nama" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="usergroup_kode">Group Kode</label>
+                                            <input type="text" id="usergroup_kode" name="usergroup_kode" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="card-body table-responsive p-0" style="height: 300px; padding: 5px !important;">
+                                        <table class="table table-head-fixed text-nowrap table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th width="40%">Menu</th>
+                                                    <th width="10%" style="text-align: center;">Create</th>
+                                                    <th width="10%" style="text-align: center;">Read</th>
+                                                    <th width="10%" style="text-align: center;">Update</th>
+                                                    <th width="10%" style="text-align: center;">Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                    $row = "";
+                                                    $menu_lv1 = array_filter($data->menu, function ($value) { 
+                                                        return $value->menu_level == 1; 
+                                                    });
+                                                    foreach ($menu_lv1 as $key => $val1) {
+                                                        $row .= "<tr>";
+                                                        $row .= "<td>".$val1->menu_nama."</td>";
+                                                        $row .= "<td>
+                                                                    <div class='icheck-primary d-inline'>
+                                                                    <input type='checkbox' id='checkboxCreate-" . $val1->menu_id . "' menu-id='".$val1->menu_id."' role-id='0' menu-parent='".$val1->menu_parent."' role-type='create' class='checkbox'>
+                                                                    <label for='checkboxCreate-" . $val1->menu_id . "'>
+                                                                    </label>
+                                                                    </div>
+                                                                </td>";
+                                                        $row .= "<td>
+                                                                    <div class='icheck-primary d-inline'>
+                                                                    <input type='checkbox' id='checkboxRead-" . $val1->menu_id . "' menu-id='".$val1->menu_id."' role-id='0' menu-parent='".$val1->menu_parent."' role-type='read' class='checkbox'>
+                                                                    <label for='checkboxRead-" . $val1->menu_id . "'>
+                                                                    </label>
+                                                                    </div>
+                                                                </td>";
+                                                        $row .= "<td>
+                                                                    <div class='icheck-primary d-inline'>
+                                                                    <input type='checkbox' id='checkboxUpdate-" . $val1->menu_id . "' menu-id='".$val1->menu_id."' role-id='0' menu-parent='".$val1->menu_parent."' role-type='update' class='checkbox'>
+                                                                    <label for='checkboxUpdate-" . $val1->menu_id . "'>
+                                                                    </label>
+                                                                    </div>
+                                                                </td>";
+                                                        $row .= "<td>
+                                                                    <div class='icheck-primary d-inline'>
+                                                                    <input type='checkbox' id='checkboxDelete-" . $val1->menu_id . "' menu-id='".$val1->menu_id."' role-id='0' menu-parent='".$val1->menu_parent."' role-type='delete' class='checkbox'>
+                                                                    <label for='checkboxDelete-" . $val1->menu_id . "'>
+                                                                    </label>
+                                                                    </div>
+                                                                </td>";
+                                                        $row .= "</tr>";
+                                                        $parent = $val1->menu_id;
+                                                        $row2 = "";
+                                                        $menu_lv2 = array_filter($data->menu, function ($val2) use ($parent) { 
+                                                            return $val2->menu_level == 2 && $val2->menu_parent == $parent; 
+                                                        });
+
+                                                        foreach ($menu_lv2 as $val2) {
+                                                            $row2 .= "<tr>";
+                                                            $row2 .= "<td>".$val2->menu_nama."</td>";
+                                                            $row2 .= "<td>
+                                                                        <div class='icheck-primary d-inline'>
+                                                                        <input type='checkbox' id='checkboxCreate-" . $val2->menu_id . "' menu-id='".$val2->menu_id."' role-id='0' menu-parent='".$val2->menu_parent."' role-type='create' class='checkbox'>
+                                                                        <label for='checkboxCreate-" . $val2->menu_id . "'>
+                                                                        </label>
+                                                                        </div>
+                                                                    </td>";
+                                                            $row2 .= "<td>
+                                                                        <div class='icheck-primary d-inline'>
+                                                                        <input type='checkbox' id='checkboxRead-" . $val2->menu_id . "' menu-id='".$val2->menu_id."' role-id='0' menu-parent='".$val2->menu_parent."' role-type='read' class='checkbox'>
+                                                                        <label for='checkboxRead-" . $val2->menu_id . "'>
+                                                                        </label>
+                                                                        </div>
+                                                                    </td>";
+                                                            $row2 .= "<td>
+                                                                        <div class='icheck-primary d-inline'>
+                                                                        <input type='checkbox' id='checkboxUpdate-" . $val2->menu_id . "' menu-id='".$val2->menu_id."' role-id='0' menu-parent='".$val2->menu_parent."' role-type='update' class='checkbox'>
+                                                                        <label for='checkboxUpdate-" . $val2->menu_id . "'>
+                                                                        </label>
+                                                                        </div>
+                                                                    </td>";
+                                                            $row2 .= "<td>
+                                                                        <div class='icheck-primary d-inline'>
+                                                                        <input type='checkbox' id='checkboxDelete-" . $val2->menu_id . "' menu-id='".$val2->menu_id."' role-id='0' menu-parent='".$val2->menu_parent."' role-type='delete' class='checkbox'>
+                                                                        <label for='checkboxDelete-" . $val2->menu_id . "'>
+                                                                        </label>
+                                                                        </div>
+                                                                    </td>";
+                                                            $row2 .= "</tr>";
+                                                        }
+                                                        $row .= $row2;
+                                                    }
+                                                    echo $row;
+                                                ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" onclick="submitForm()">Simpan</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -99,4 +235,127 @@
     function addUserGroup() {
         
     }
+
+    function submitForm() {
+        var dataForm = {
+            usergroup_id : $("#usergroup_id").val(),
+            usergroup_nama : $("#usergroup_nama").val(),
+            usergroup_kode : $("#usergroup_kode").val(),
+        };
+
+        datacheck = [];
+        menucheck = $(".checkbox").each(function () {
+           var data = {
+               role_id : $(this).attr("role-id"),
+               menu_id : $(this).attr("menu-id"),
+               role : this.checked ? $(this).attr("role-type") : '',
+           };
+           datacheck.push(data);
+        });
+
+        var groups = {};
+        for (var i = 0; i < datacheck.length; i++) {
+            var groupName = datacheck[i].menu_id;
+            if (!groups[groupName]) {
+                groups[groupName] = [];
+            }
+            var roletype = '';
+            switch (datacheck[i].role) {
+                case 'create':
+                    roletype = 'c';
+                    break;
+                case 'read':
+                    roletype = 'r';
+                    break;
+                case 'update':
+                    roletype = 'u';
+                    break;
+                case 'delete':
+                    roletype = 'd';
+                    break;
+                default:
+                    roletype = '';
+                    break;
+            }
+            groups[groupName].push(roletype);
+        }
+        datacheck = [];
+        for (var groupName in groups) {
+            role_id = $("#checkboxCreate-"+groupName).attr('role-id');
+            datacheck.push({role_id : role_id, menu_id: groupName, role: groups[groupName]});
+        }
+        dataForm.datacheck = datacheck;
+        
+        $.ajax({
+            url: "<?php echo BASE_URL ?>/controllers/C_usergroup.php?action=createusergroup",
+            type: "post",
+            data: dataForm,
+            success : function (res) {
+                $("#grid").jqxGrid('updatebounddata');
+                if (res == 200) {
+                    resetForm();
+                    swal("Info!", "User group " + $("#usergroup_nama").val() + " Berhasil disimpan", "success");
+                    $("#ModalUserGroup").modal('toggle');
+                } else {
+                    swal("Info!", "User group " + $("#usergroup_nama").val() + " Gagal disimpan", "error");
+                }
+            }
+        });
+    }
+
+    function resetForm () {
+        $("#usergroup_id").val(0);
+        $("#usergroup_kode").val('');
+        $("#usergroup_nama").val('');
+        $('.checkbox').prop('checked', false);
+        $('.checkbox').attr('role-id', 0);
+    }
+
+    function getRole(usergroup_id) {
+        $.ajax({
+            url: "<?php echo BASE_URL ?>/controllers/C_usergroup.php?action=getrole",
+            type: "post",
+            data: {usergroup_id : usergroup_id},
+            success : function (res) {
+                result = JSON.parse(res);
+                for (let index = 0; index < result.length; index++) {
+                    const element = result[index];
+                    role_priviliges = element.role_priviliges;
+                    role_priviliges = role_priviliges.split(",");
+                    role_id = element.role_id;
+                    menu_id = element.s_menu_id;
+                    role_priviliges.forEach(function (elem) {
+                        var roletype = "";
+                        if (elem == 'c') {
+                            roletype = 'Create';
+                        } else if (elem == 'r') {
+                            roletype = 'Read';
+                        } else if (elem == 'u') {
+                            roletype = 'Update';
+                        } else if (elem == 'd') {
+                            roletype = 'Delete';
+                        }
+                        $("#checkbox"+roletype+"-"+menu_id).prop('checked', true);
+                        $("[menu-id="+menu_id+"]").attr('role-id', role_id);
+                    })
+                }
+            }
+        });
+    }
+
+    String.prototype.capitalize = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    }
+
+    $(document).ready(function () {
+        var datamenu = '';
+        $(".checkbox").change(function () {
+            var menuid =  $(this).attr("menu-id");
+            var menuparent =  $(this).attr("menu-parent");
+            var roletype =  $(this).attr("role-type");
+            if (menuparent == 0) {
+                $("[menu-parent="+menuid+"][role-type="+roletype+"]").prop('checked', this.checked);
+            }
+        });
+    });
 </script>
