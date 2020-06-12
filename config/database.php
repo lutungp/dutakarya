@@ -11,8 +11,8 @@
     $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
     $servername2 = "127.0.0.1";
-    $username2 = "root";
-    $password2 = "";
+    $username2 = "client";
+    $password2 = "TcLZqrr4WSpxG6D6";
 
     $conn2 = mysqli_connect($servername2, $username2, $password2, "hospital");
 ?>  

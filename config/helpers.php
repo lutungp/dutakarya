@@ -43,9 +43,9 @@ function getRoleMenu($conn2, $username)
     $role = array();
     while ($val = $quser->fetch_array()) {
         $role_priviliges = explode(",", $val['role_priviliges']);
-        if (($key = array_search("", $role_priviliges)) !== false) {
-            unset($role_priviliges[$key]);
-        }
+        $role_priviliges = array_filter($role_priviliges, function ($var) {
+                            return $var != '' && $var != null;
+                        });
         if (count($role_priviliges) > 0) {
             $role[] = array(
                 "menu_id" => $val["menu_id"],

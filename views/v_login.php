@@ -103,6 +103,14 @@
     .logo-rs-login {
         text-align: center;
     }
+
+    @media only screen and (max-width: 400px) {
+        .form {
+            position:fixed;
+            top: 20%;
+        }
+    }
+
 </style>
 <div class="login-page">
     <div class="form">
@@ -115,7 +123,7 @@
         </form> -->
         <form id="login-form" class="login-form" method="POST" action="<?php echo BASE_URL; ?>/controllers/C_login.php?action=login">
             <img src="<?php echo BASE_URL; ?>/assets/img/RSHAJI.PNG" alt="Rshaji-Jakarta-telemedicine" width="100px" heigh="50px">
-            <p><b>TELEMEDICINE <font style="color: green;">RSHAJI</font></b></p>
+            <p><b>ADMINISTRATOR <font style="color: green;">RSHAJI</font></b></p>
             <input type="text" name="username" placeholder="username"/>
             <input type="password" name="password" placeholder="password"/>
             <button>login</button>
@@ -136,10 +144,10 @@
                     type:$(this).attr("method"),
                     dataType: 'html',
                     success:function(hasil) {
-                        if(hasil) {
+                        if(hasil == 200) {
                             window.location.href='<?php echo BASE_URL ?>/controllers/C_Login.php';
                         } else {
-
+                            
                         }
                     }
                 })

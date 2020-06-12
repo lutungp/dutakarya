@@ -37,12 +37,27 @@ class C_login
             $rowuser = $quser->fetch_object();
             if($rowuser) {
                 $_SESSION["USERNAME"] = $rowuser->user_nama;
-                echo "200";
+                return "200";
             } else {
-                echo "202";
+                return "202";
             }
         } else {
-            echo "202";
+            return "202";
+        }
+    }
+
+    public function cekpegawai($data)
+    {
+        $username = $data["username"];
+        $password = date("Y-m-d", strtotime($data["password"]));
+        $sql = "SELECT FS_NM_ALIAS FROM TD_PEG WHERE FS_KD_PEG = '" . $username . "' AND FD_TGL_LAHIR = '" . $password . "'";
+        $stmt = sqlsrv_query($this->conn, $sql);
+        $stmt = sqlsrv_fetch_object($stmt);
+        if($stmt) {
+            $_SESSION["USERNAME"] = $stmt->FS_NM_ALIAS;
+            return "200";
+        } else {
+            return "202";
         }
     }
 }
@@ -52,7 +67,8 @@ $data = $_GET;
 $action = isset($data["action"]) ? $data["action"] : "";
 switch ($action) {
     case 'login':
-        $login->cekuser($_POST);
+        $cekuser = $login->cekuser($_POST);
+        echo $cekuser;
         break;
     
     default:
