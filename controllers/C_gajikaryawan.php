@@ -24,16 +24,18 @@ class C_gajikaryawan
 
     public function getGajiKaryawan($data)
     {
+        $page = $data["page"];
         $limit = $data["limit"];
         $offset = $data["offset"];
         $username = $_SESSION['USERNAME'];
-        $datagaji = $this->model->getGajiKaryawan($offset, $limit, $username);
+        $datagaji = $this->model->getGajiKaryawan($page, $offset, $limit, $username);
 
         echo json_encode($datagaji);
     }
 
     public function exportPdf($data)
     {
+        $bulan = ['', 'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
         $username = $_SESSION['USERNAME'];
         $gaji_id = $data['id'];
         $user = $this->model->getDataGaji($gaji_id);
@@ -85,7 +87,7 @@ div.cls_005{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:
         $content .= '<span class=koprshaji><p>RUMAH SAKIT HAJI</p>';
         $content .= '<p>JAKARTA</p></span>';
         $content .= '</td>';
-        $content .= '<td class=header-title>STRUK GAJI KARYAWAN RS HAJI JAKARTA';
+        $content .= '<td class=header-title><p>STRUK GAJI KARYAWAN RS HAJI JAKARTA</p><p>BULAN : '.$bulan[$user->gaji_bulan].' '.$user->gaji_tahun.'</p>';
         $content .= '</td>';
         $content .= '</td>';
         $content .= '<td width=25% align=center>';
@@ -320,7 +322,13 @@ div.cls_005{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:
         
         $this->mpdf->AddPage("L","","","","","5","5","5","5","","","","","","","","","","","","B5");
         $this->mpdf->WriteHTML($content);
-        $this->mpdf->Output();
+        $this->mpdf->Output('gajibulan-'.$bulan[$user->gaji_bulan].'-'.$user->gaji_tahun.'.pdf', 'I');
+    }
+
+    public function viewSlipGaji($gaji_id)
+    {
+        $sql = "UPDATE t_gaji SET gaji_view_count=gaji_view_count+1 WHERE gaji_id = $gaji_id";
+        $this->conn2->query($sql);
     }
 
 }
@@ -334,6 +342,9 @@ switch ($action) {
         break;
     case 'getgajikaryawan':
         $antrianbooking->getGajiKaryawan($_POST);
+        break;
+    case 'view':
+        $antrianbooking->viewSlipGaji($data["id"]);
         break;
     default:
         templateAdmin($conn2, '../views/v_gajikaryawan.php', $data = "", $active1 = "INFO", $active2 = "INFO GAJI KARYAWAN");

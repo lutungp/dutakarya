@@ -18,6 +18,7 @@ function templateAdmin($conn2, $content, $data = "", $active1 = "", $active2 = "
     $active1 = $active1;
     $active2 = $active2;
     $rolemenu = getRoleMenu($conn2, $_SESSION["USERNAME"]);
+    $user = getUserProfile($conn2, $_SESSION["USERNAME"]);
     require_once('./../views/layouts/v_headeradmin.php');
     require_once($content);
     require_once('./../views/layouts/v_footeradmin.php');
@@ -27,7 +28,7 @@ function getRoleMenu($conn2, $username)
 {
     $sql = "SELECT 
                 s_menu.menu_id, s_menu.menu_kode, s_menu.menu_nama, s_menu.menu_level, s_menu.menu_parent,
-                s_role.role_priviliges, s_menu.menu_url
+                s_role.role_priviliges, s_menu.menu_url, s_menu.menu_icon
             FROM s_menu 
             JOIN (
                 SELECT 
@@ -53,12 +54,20 @@ function getRoleMenu($conn2, $username)
                 "menu_nama" => $val["menu_nama"],
                 "menu_level" => $val["menu_level"],
                 "menu_parent" => $val["menu_parent"],
-                "menu_url" => $val["menu_url"]
+                "menu_url" => $val["menu_url"],
+                "menu_icon" => $val["menu_icon"]
             );
         }
     }
 
     return $role;
+}
+
+function getUserProfile($conn2, $username)
+{
+    $sql = "SELECT user_id, user_nama, user_pegawai FROM m_user WHERE m_user.user_aktif = 'Y' AND m_user.user_nama = '$username'";
+    $action = $conn2->query($sql);
+    return $action->fetch_object();
 }
 
 function query_create($conn2, $table, $field, $data){

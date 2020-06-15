@@ -211,12 +211,12 @@
                 $("#grid").jqxGrid('updatebounddata');
                 if (res == 200) {
                     resetForm();
-                    swal("Info!", "User pasien " + $("#user_nama").val() + " Berhasil disimpan", "success");
+                    swal("Info!", "User " + $("#user_nama").val() + " Berhasil disimpan", "success");
                     $("#ModalUser").modal('toggle');
                     $("#user_password").removeClass("is-valid");
                     $("#user_password2").removeClass("is-valid");
                 } else {
-                    swal("Info!", "User pasien " + $("#user_nama").val() + " Gagal disimpan", "error");
+                    swal("Info!", "User " + $("#user_nama").val() + " Gagal disimpan", "error");
                 }
             }
         });

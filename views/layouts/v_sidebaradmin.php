@@ -3,10 +3,21 @@
     <!-- Brand Logo -->
     <!-- Sidebar -->
     <div class="sidebar">
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="info">
+          <a href="<?php echo BASE_URL ?>/controllers/C_profile.php" class="d-block"><?php echo $user->user_pegawai ?></a>
+        </div>
+      </div>
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <li class="nav-item has-treeview">
+          <a href="<?php echo BASE_URL ?>/controllers/C_dashboard.php" class="nav-link">
+            <i class="nav-icon"></i>
+            <p>Dashboard</p>
+          </a>
+        </li>
         <?php 
           $rolemenu_lv1 = array_filter($rolemenu, function ($value) { 
               return $value['menu_level'] == 1; 
@@ -17,7 +28,7 @@
               echo '<li class="nav-item has-treeview '.$activeclass1.'">';
               $activeclass1 = $active1 == $value["menu_kode"] ? "active" : "";
               echo '<a href="#" class="nav-link '.$activeclass1.'">
-                <i class="nav-icon fas fa-briefcase"></i>
+                <i class="nav-icon"></i>
                 <p>
                   '.$value["menu_nama"].'
                   <i class="right fas fa-angle-left"></i>

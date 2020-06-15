@@ -104,6 +104,12 @@
         text-align: center;
     }
 
+    #username.invalid,
+    #password.invalid {
+        border: 1px solid red;
+        background-color: #f3d1d1;
+    }
+
     @media only screen and (max-width: 400px) {
         .form {
             position:fixed;
@@ -124,8 +130,8 @@
         <form id="login-form" class="login-form" method="POST" action="<?php echo BASE_URL; ?>/controllers/C_login.php?action=login">
             <img src="<?php echo BASE_URL; ?>/assets/img/RSHAJI.PNG" alt="Rshaji-Jakarta-telemedicine" width="100px" heigh="50px">
             <p><b>ADMINISTRATOR <font style="color: green;">RSHAJI</font></b></p>
-            <input type="text" name="username" placeholder="username"/>
-            <input type="password" name="password" placeholder="password"/>
+            <input type="text" id="username" name="username" placeholder="username"/>
+            <input type="password" id="password" name="password" placeholder="password"/>
             <button>login</button>
             <!-- <p class="message">Not registered? <a href="#">Create an account</a></p> -->
         </form>
@@ -137,21 +143,30 @@
     });
 
     $(function(){
-          $("#login-form").submit(function(){
-                $.ajax({
-                    url:$(this).attr("action"),
-                    data:$(this).serialize(),
-                    type:$(this).attr("method"),
-                    dataType: 'html',
-                    success:function(hasil) {
-                        if(hasil == 200) {
-                            window.location.href='<?php echo BASE_URL ?>/controllers/C_Login.php';
-                        } else {
-                            
-                        }
-                    }
-                })
-                return false;
-            });
+        $("input").on("keyup", function () {
+            if($(this).val() !== '') {
+                $("input").removeClass("invalid")
+            }
         });
+
+        $("#login-form").submit(function(){
+            $.ajax({
+                url:$(this).attr("action"),
+                data:$(this).serialize(),
+                type:$(this).attr("method"),
+                dataType: 'html',
+                success:function(hasil) {
+                    if(hasil == 200) {
+                        window.location.href='<?php echo BASE_URL ?>/controllers/C_Login.php';
+                    } else {
+                        $("#username").val('');
+                        $("#password").val('');
+                        $("#username").addClass("invalid");
+                        $("#password").addClass("invalid");
+                    }
+                }
+            })
+            return false;
+        });
+    });
 </script>

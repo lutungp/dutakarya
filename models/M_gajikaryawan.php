@@ -13,8 +13,10 @@ class M_gajikaryawan
         $this->config = $config;
     }
 
-    public function getGajiKaryawan($offset, $limit, $username)
+    public function getGajiKaryawan($page, $offset, $limit, $username)
     {
+        $page = $page > 1 ? $page - 1 : 0;
+        $offset = $limit * $page;
         $sql = "SELECT 
                     gaji_id,
                     gaji_bulan,
@@ -57,8 +59,8 @@ class M_gajikaryawan
                 JOIN m_user on m_user.user_id = t_gaji.m_user_id
                 WHERE m_user.user_nama = '$username'
                 ORDER BY gaji_tahun DESC, gaji_view_count ASC, gaji_bulan DESC
-                LIMIT $limit OFFSET $offset";
-                
+                LIMIT $limit OFFSET $offset ";
+                // echo $sql;
         $qgaji = $this->conn2->query($sql);
         $gaji = [];
         if($qgaji)
@@ -66,7 +68,13 @@ class M_gajikaryawan
                 array_push($gaji, $result);
             }
 
-        return $gaji;
+        $data["gaji"] = $gaji;
+        $sqlcount = "SELECT count(*) AS count FROM t_gaji JOIN m_user on m_user.user_id = t_gaji.m_user_id WHERE m_user.user_nama = '$username'";
+        $qcount = $this->conn2->query($sqlcount);
+        $rcount = $qcount->fetch_object();
+        $data["num_rows"] = $rcount->count;
+
+        return $data;
     }
 
     public function getDataGaji($gaji_id)
@@ -115,6 +123,7 @@ class M_gajikaryawan
                 FROM t_gaji
                 JOIN m_user on m_user.user_id = t_gaji.m_user_id
                 WHERE t_gaji.gaji_id = '$gaji_id'";
+                
         $qgaji = $this->conn2->query($sql);
         
         return $qgaji->fetch_object();

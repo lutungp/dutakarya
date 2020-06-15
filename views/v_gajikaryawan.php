@@ -101,8 +101,8 @@
                 <div class="float-right">
                 <span>1-50/200</span>
                   <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-left"></i></button>
-                    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-right"></i></button>
+                    <button type="button" class="btn btn-default btn-sm" onclick="chevronLeft()"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" class="btn btn-default btn-sm" onclick="chevronRight()"><i class="fas fa-chevron-right"></i></button>
                   </div>
                   <!-- /.btn-group -->
                 </div>
@@ -126,8 +126,8 @@
                 <div class="float-right">
                   <span>1-50/200</span>
                   <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-left"></i></button>
-                    <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-right"></i></button>
+                    <button type="button" class="btn btn-default btn-sm" onclick="chevronLeft()"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" class="btn btn-default btn-sm" onclick="chevronRight()"><i class="fas fa-chevron-right"></i></button>
                   </div>
                   <!-- /.btn-group -->
                 </div>
@@ -318,25 +318,26 @@
             url: "<?php echo BASE_URL ?>/controllers/C_gajikaryawan.php?action=getgajikaryawan",
             type: "post",
             data: {
+              page : page,
               offset : offset,
               limit : limit
             },
             success : function (res) {
                 datagaji = JSON.parse(res);
-                pages = datagaji.length > 50 ? 1 : datagaji.length/50;
+                pages =  datagaji['num_rows'] < 50 ? 1 : datagaji['num_rows']/50;
                 pages = pages % 1 === 0 ? pages : parseInt(pages)+1;
-                $('#page').val(pages);
-                $(".float-right > span").html(offset+1 +"-"+ pages +"/"+ datagaji.length);
+                $('#page').val(page);
+                $(".float-right > span").html(page +"-"+ pages +"/"+ datagaji['num_rows']);
                 var bulan = ['', 'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
-                for (let index = 0; index < datagaji.length; index++) {
-                    const element = datagaji[index];
+                for (let index = 0; index < datagaji['gaji'].length; index++) {
+                    const element = datagaji['gaji'][index];
                     var html = '<tr>';
                     var bintang_baca = '';
                     if (element.gaji_view_count < 1) {
                         bintang_baca = '<a href="#"><i class="fas fa-star text-warning"></i></a>';
                     }
                     html += '<td class="mailbox-star">'+bintang_baca+'</td>';
-                    html += '<td class="mailbox-name"><a href="read-mail.html">Pemberitahuan gaji</a> <br>Bulan '+bulan[element.gaji_bulan]+' '+ element.gaji_tahun+ '</td>';
+                    html += '<td class="mailbox-name"><a href="#" onClick="viewSlipGaji('+element.gaji_id+')">Pemberitahuan gaji</a> <br>Bulan '+bulan[element.gaji_bulan]+' '+ element.gaji_tahun+ '</td>';
                     html += '<td class="mailbox-date">'+moment(element.gaji_created_date, 'YYYY-MM-DD').format('DD-MM-YYYY')+'</td>';
                     html += '<td class="mailbox-subject" align="center">';
                     html += '<button type="button" class="btn btn-default btn-sm" onClick="viewSlipGaji('+element.gaji_id+')"><i class="far fa-sticky-note"></i></button>';
@@ -384,7 +385,7 @@
           $("#readgaji").css('display', 'block');
           $("#listgaji").css('display', 'none');
           $("#gajih_id").val(gaji_id);
-          dataslipgaji = datagaji.filter(p=>p.gaji_id==gaji_id);
+          dataslipgaji = datagaji['gaji'].filter(p=>p.gaji_id==gaji_id);
           $("#tglgajih").html(moment(dataslipgaji[0].gaji_created_date, 'YYYY-MM-DD hh:mm:ss').format('DD-MM-YYYY hh:mm:ss'));
           var gaji_pokok  = parseFloat(dataslipgaji[0].gaji_pokok||0);
           $("#gajirshaji").html(gaji_pokok > 0 ? Number(gaji_pokok).toLocaleString() : '-');
@@ -477,6 +478,10 @@
 
           var totalterima = totalgajitunj + totalinsentif - totalpotongan;
           $("#totalterima").html(totalterima > 0 ? "<b><font color=green>" + Number(totalterima).toLocaleString() + "</font></b>" : '-');
+
+          $.get("<?php echo BASE_URL ?>/controllers/C_gajikaryawan.php?action=view&id="+gaji_id, function(data, status){
+            console.log(status);
+          });
       }
 
       function listGaji(gaji_id) {
@@ -487,12 +492,32 @@
           resetForm();
       }
 
-      function exportPdf(gajih_id) {
-        window.open('<?php echo BASE_URL;?>/controllers/C_gajikaryawan.php?action=exportpdf&id=' + gajih_id);
+      function exportPdf(gaji_id) {
+        window.open('<?php echo BASE_URL;?>/controllers/C_gajikaryawan.php?action=exportpdf&id=' + gaji_id);
+        $.get("<?php echo BASE_URL ?>/controllers/C_gajikaryawan.php?action=view&id="+gaji_id, function(data, status){
+          console.log(status);
+        });
       }
 
       function exportPdf2() {
         var gajih_id = $("#gajih_id").val();
-        exportPdf2(gajih_id);
+        exportPdf(gajih_id);
       }
+
+      function chevronLeft() {
+        var pageprev = $('#page').val() - 1;
+        if(pageprev >= 0) {
+          getGajiKaryawan(pageprev, 0, 50);
+        }
+      }
+
+      function chevronRight() {
+        var pagenext = parseInt($('#page').val()) + 1;
+        pages =  datagaji['num_rows'] < 50 ? 1 : datagaji['num_rows']/50;
+        pages = pages % 1 === 0 ? pages : parseInt(pages)+1;
+        if(pagenext<=pages){
+          getGajiKaryawan(pagenext, 0, 50);
+        }
+      }
+      
     </script>
