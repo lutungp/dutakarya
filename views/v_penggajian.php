@@ -137,23 +137,7 @@
                 { text: 'No. Pegawai', datafield: 'gaji_nopeg'},
                 { text: 'Nama', datafield: 'gaji_nama', width : '200'},
                 { text: 'Unit', datafield: 'gaji_unitpeg'},
-                { text: 'Golongan', datafield: 'gaji_golpangkat_peg'},
-                { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
-                    cellsrenderer: function () {
-                        return "Edit";
-                    }, buttonclick: function (row) {
-                        editrow = row;
-                        var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
-                        
-                    }
-                },
-                { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false,  filterable: false,
-                    cellsrenderer: function () {
-                        return "Delete";
-                    }, buttonclick: function (row) {
-                        
-                    }
-                }
+                { text: 'Golongan', datafield: 'gaji_golpangkat_peg'}
             ]
         });
 
@@ -162,28 +146,32 @@
         });
 
         $('#uploadFile').on('submit', function(event){
-           event.preventDefault();
-           console.log(filesize)
-           $.ajax({  
-                url: "<?php echo BASE_URL ?>/controllers/C_penggajian.php?action=importgaji&bulan=" + $("#bulan").val() + "&tahun=" + $("#tahun").val(),
-                method:"POST",
-                data:new FormData(this),
-                contentType:false,
-                processData:false,
-                success:function(data){
-                    if(data == 202){
-                        swal({
-                            title: "Sorry",
-                            text: "Gaji bulan " + $("#bulan").val() + " " + $("#tahun").val() + ", sudah diimport. silahkan hubungi administrator !",
-                            icon: "warning"
-                        })
-                    } else {
-                        swal("Info!", "Bulan " + $("#bulan").val() + " " + $("#tahun").val() + " Berhasil diimport", "success");
-                    }
-                    $('#grid').jqxGrid('updatebounddata', 'cells');
-                }  
-           });  
-      });  
+            event.preventDefault();
+            console.log(filesize)
+            $.ajax({  
+                    url: "<?php echo BASE_URL ?>/controllers/C_penggajian.php?action=importgaji&bulan=" + $("#bulan").val() + "&tahun=" + $("#tahun").val(),
+                    method:"POST",
+                    data:new FormData(this),
+                    contentType:false,
+                    processData:false,
+                    success:function(data){
+                        if(data == 202){
+                            swal({
+                                title: "Sorry",
+                                text: "Gaji bulan " + $("#bulan").val() + " " + $("#tahun").val() + ", sudah diimport. silahkan hubungi administrator !",
+                                icon: "warning"
+                            })
+                        } else {
+                            swal("Info!", "Bulan " + $("#bulan").val() + " " + $("#tahun").val() + " Berhasil diimport", "success");
+                        }
+                        $('#grid').jqxGrid('updatebounddata', 'cells');
+                    }  
+            });
+        });
+
+        $("#btn-template").on("click", function () {
+            window.open("<?php echo BASE_URL ?>/assets/gaji_tmp.xlsx");
+        });
 
     });
 </script>
@@ -252,6 +240,7 @@
                     <div class="col-md-4 col-xs-6">
                         <div style="padding-top: 30px;">
                             <button type="button" id="btn-filter" class="btn btn-primary btn-sm"><i class="fas fa-filter"></i>&nbsp;&nbsp;Filter</button>
+                            <button type="button" class="btn btn-success btn-sm" id="btn-template"><i class="fas fa-file-excel"></i>&nbsp;&nbsp;Template</button type="submit">
                         </div>
                     </div>
                 </div>
