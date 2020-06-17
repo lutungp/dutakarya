@@ -1,3 +1,13 @@
+<style>
+    .book-notif {
+        width:500px;
+    }
+    @media only screen and (max-width: 500px) {
+        .book-notif {
+            width: 80%;
+        }
+    }
+</style>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -22,26 +32,42 @@
             const groups = Object.values(group);
             groups.forEach(function(elem){
                 var tanggal = moment(elem[0].tanggal, "YYYY-MM-DD").format("LL");
+                var jam = moment(elem[0].created_date, "YYYY-MM-DD hh:mm:ss").format("hh:mm");
                 html += '<div class="time-label"><span class="bg-red">'+tanggal+'</span></div>';
                 elem.forEach(function(val){
-                    html += '<div>';
-                    html += '<i class="fas fa-envelope bg-blue"></i>';
-                    html += '<div class="timeline-item">';
-                    html += '<span class="time"><i class="fas fa-clock"></i> 12:05</span>';
-                    var star = '';
-                    var readmore = val.readmore.split("-");
-                    if(readmore[2]<1){
-                        star = '<i class="fas fa-star text-warning"></i>';
+                    if (val.title=="Pemberitahuan Gaji") {
+                        html += '<div>';
+                        html += '<i class="fas fa-envelope bg-blue"></i>';
+                        html += '<div class="timeline-item">';
+                        html += '<span class="time"><i class="fas fa-clock"></i>&nbsp;&nbsp;'+jam+'</span>';
+                        var star = '';
+                        var readmore = val.readmore.split("-");
+                        if(readmore[2]<1){
+                            star = '<i class="fas fa-star text-warning"></i>';
+                        }
+                        html += '<h3 class="timeline-header">Pemberitahuan <a href="#">'+val.title+'</a>&nbsp;'+star+'</h3>';
+                        html += '<div class="timeline-body">';
+                        html += val.description;
+                        html += '</div>';
+                        html += '<div class="timeline-footer">';
+                        html += "<a class='btn btn-primary btn-sm' onclick=readmore('"+val.readmore+"')>Read more</a>";
+                        html += '</div>';
+                        html += '</div>';
+                        html += '</div>';   
+                    } else {
+                        html += '<div>';
+                        html += '<i class="fas fa-envelope bg-blue"></i>';
+                        html += '<div class="timeline-item book-notif">';
+                        html += '<span class="time"><i class="fas fa-clock"></i>&nbsp;&nbsp;'+jam+'</span>';
+                        var star = '';
+                        var readmore = val.readmore.split("-");
+                        if(readmore[2]<1){
+                            star = '<i class="fas fa-star text-warning"></i>';
+                        }
+                        html += '<h3 class="timeline-header">Pemberitahuan <a href="#">'+val.title+'</a>&nbsp;'+star+'</h3>';
+                        html += '</div>';
+                        html += '</div>';
                     }
-                    html += '<h3 class="timeline-header">Pemberitahuan <a href="#">'+val.title+'</a>&nbsp;'+star+'</h3>';
-                    html += '<div class="timeline-body">';
-                    html += val.description;
-                    html += '</div>';
-                    html += '<div class="timeline-footer">';
-                    html += "<a class='btn btn-primary btn-sm' onclick=readmore('"+val.readmore+"')>Read more</a>";
-                    html += '</div>';
-                    html += '</div>';
-                    html += '</div>';
                 });
             });
             if(res.length > 0) {

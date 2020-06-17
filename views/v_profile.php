@@ -12,10 +12,10 @@
               <form id="formProfile" class="form-horizontal" action="<?php echo BASE_URL; ?>/controllers/C_profile.php?action=submit" method="POST">
                 <div class="card-body">
                   <div class="form-group row">
-                    <label for="usernama" class="col-sm-4 col-form-label">Nama Pegawai</label>
+                    <label for="userpegawai" class="col-sm-4 col-form-label">Nama Pegawai</label>
                     <div class="col-sm-8">
                         <input type="hidden" id="user_id" name="user_id" value="<?php echo $user->user_id ?>"/>
-                      <input type="text" class="form-control" id="usernama" name="usernama" placeholder="username" value="<?php echo $user->user_pegawai ?>">
+                      <input type="text" class="form-control" id="userpegawai" name="userpegawai" placeholder="Nama Pegawai" value="<?php echo $user->user_pegawai ?>">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -33,7 +33,7 @@
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary float-right">Simpan</button>
+                  <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                 </div>
                 <!-- /.card-footer -->
               </form>
@@ -46,14 +46,24 @@
     $(function(){
         $(".password").on("keyup", function () {
             if($(this).val() !== '') {
-                $(".password").removeClass("is-invalid")
+                $(".password").removeClass("is-invalid");
             }
             if($("#password1").val() !== $("#password2").val()) {
-                $(".password").addClass("is-invalid")
+                $(".password").addClass("is-invalid");
             }
         });
 
-        $("#formProfile").submit(function(){
+        $("#formProfile").submit(function(event){
+            if($("#password1").val() == '' || $("#password2").val() == '') {
+                $(".password").addClass("is-invalid");
+                return false;
+            }
+            if($("#password1").val() !== $("#password2").val()) {
+                $(".password").addClass("is-invalid");
+                return false;
+            }
+
+            event.preventDefault();  
             $.ajax({
                 url:$(this).attr("action"),
                 data:$(this).serialize(),
@@ -61,9 +71,9 @@
                 dataType: 'html',
                 success:function(hasil) {
                     if(hasil == 200) {
-                        swal("Info!", "User " + $("#usernama").val() + " Berhasil disimpan", "success");
+                        swal("Info!", "User " + $("#userpegawai").val() + " Berhasil disimpan", "success");
                     } else {
-                        swal("Info!", "User " + $("#usernama").val() + " Gagal disimpan", "error");
+                        swal("Info!", "User " + $("#userpegawai").val() + " Gagal disimpan", "error");
                     }
                 }
             })

@@ -71,6 +71,11 @@ switch ($action) {
         echo $cekuser;
         break;
     
+    case 'logout':
+        session_destroy();
+        template('../views/v_login.php');
+        break;
+    
     default:
         $login->login($config);
         break;

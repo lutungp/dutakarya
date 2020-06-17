@@ -86,5 +86,22 @@ class M_penggajian
             }
         return $gaji;
     }
+
+    public function validasiGaji($bulan, $tahun)
+    {
+        $sql = "SELECT count(*) as count FROM t_gaji WHERE gaji_bulan = $bulan AND gaji_tahun = $tahun";
+        $qgaji = $this->conn2->query($sql);
+        if ($qgaji) {
+            $rgaji = $qgaji->fetch_object();
+            if ($rgaji->count > 0) {
+                return "sudah ada";
+            } else {
+                return "belum ada";
+            }
+        } else {
+            return "belum ada";
+        }
+        
+    }
 }
     

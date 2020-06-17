@@ -31,8 +31,8 @@ class C_profile
 
     public function simpanProfile($data)
     {
-        $fieldSave = ["user_nama", "user_password", "user_updated_by", "user_updated_date", "user_revised"];
-        $dataSave = [$data["user_pegawai"], md5($data["password"]), $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "user_revised+1"];
+        $fieldSave = ["user_pegawai", "user_password", "user_updated_by", "user_updated_date", "user_revised"];
+        $dataSave = [$data["userpegawai"], md5($data["password"]), $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "user_revised+1"];
         $where = "WHERE user_id = " . $data["user_id"];
         $field = "";
         foreach ($fieldSave as $key => $value) {

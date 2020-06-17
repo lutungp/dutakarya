@@ -57,7 +57,7 @@
             $("#grid").jqxGrid('addfilter', 'user_nama', filtergroup);
             // // apply the filters.
             // $("#grid").jqxGrid('applyfilters');
-            }
+        }
         var dataAdapter = new $.jqx.dataAdapter(source, {
             downloadComplete: function (data, status, xhr) { },
             loadComplete: function (data) {},

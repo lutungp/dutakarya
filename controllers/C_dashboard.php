@@ -40,6 +40,7 @@ class C_dashboard
                     t_gaji.gaji_bulan AS bulan,
                     t_gaji.gaji_tahun AS tahun,
                     Date(t_gaji.gaji_created_date) AS tanggal,
+                    t_gaji.gaji_created_date AS created_date,
                     '' AS status,
                     'Pemberitahuan Gaji' AS title,
                     CONCAT('A-', gaji_id, '-', gaji_view_count) AS readmore
@@ -53,6 +54,7 @@ class C_dashboard
                         MONTH(t_booking_hospital.bookinghosp_tanggal) AS bulan,
                         YEAR(t_booking_hospital.bookinghosp_created_date) AS tahun,
                         Date(t_booking_hospital.bookinghosp_created_date) AS tanggal,
+                        t_booking_hospital.bookinghosp_created_date AS created_date,
                         t_booking_hospital.bookinghosp_status AS status,
                         'Booking Telemedicine' AS title,
                         'B' AS readmore
@@ -78,6 +80,7 @@ class C_dashboard
                     "status" => $val["status"],
                     "title" => $val["title"],
                     "tanggal" => $val["tanggal"],
+                    "created_date" => $val["created_date"],
                     "description"  => $description,
                     "readmore"  => $val["readmore"]
                 );

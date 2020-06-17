@@ -6,7 +6,7 @@
     ?>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Admin Telemedicine</title>
+  <title>Admin RSHAJI</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -31,7 +31,8 @@
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- ./wrapper -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">
-  
+  <link rel="shortcut icon" href="<?php echo BASE_URL; ?>/assets/img/favicon.ico">
+	<link rel="manifest" href="<?php echo BASE_URL; ?>/manifest.json">
   <!-- jQuery -->
   <script src="<?php echo BASE_URL ?>/assets/plugins/jquery/jquery.min.js"></script>
   <!-- jQuery UI 1.11.4 -->
@@ -116,7 +117,6 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
-
   <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
@@ -125,9 +125,16 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
     </ul>
+    <ul class="navbar-nav ml-auto">
+      <!-- Messages Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" href="<?php echo BASE_URL ?>/controllers/C_login.php?action=logout">
+          <i class="fas fa-power-off"></i>
+        </a>
+      </li>
+    </ul>
   </nav>
   <!-- /.navbar -->
-
   <!-- Main Sidebar Container -->
  <?php include '../views/layouts/v_sidebaradmin.php'; ?>
 

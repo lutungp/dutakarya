@@ -7,6 +7,7 @@
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxlistbox.js"></script>
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxdropdownlist.js"></script>
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.js"></script>
+<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.filter.js"></script>
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.sort.js"></script> 
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.pager.js"></script> 
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.selection.js"></script> 
@@ -78,6 +79,24 @@
             },
         };
 
+        var addfilter = function () {
+            var filtergroup = new $.jqx.filter();
+            var filter_or_operator = 1;
+            var filtervalue = '';
+            var filtercondition = 'contains';
+            var filter1 = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+            filtervalue = '';
+            filtercondition = 'starts_with';
+            var filter2 = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+
+            filtergroup.addfilter(filter_or_operator, filter1);
+            filtergroup.addfilter(filter_or_operator, filter2);
+            // add the filters.
+            $("#grid").jqxGrid('addfilter', 'gaji_nama', filtergroup);
+            $("#grid").jqxGrid('addfilter', 'gaji_unitpeg', filtergroup);
+            // // apply the filters.
+            $("#grid").jqxGrid('applyfilters');
+        }
         var dataAdapter = new $.jqx.dataAdapter(source, {
             formatData: function (data) {
                 $.extend(data, {
@@ -85,6 +104,9 @@
                     tahun: $("#tahun").val()
                 });
                 return data;
+            },
+            ready: function () {
+                addfilter();
             },
             downloadComplete: function (data, status, xhr) { },
             loadComplete: function (data) {},
@@ -100,19 +122,19 @@
             sortable: true,
             altrows: true,
             enabletooltips: true,
-            editable: true,
             selectionmode: 'multiplecellsadvanced',
+            filterable: true,
             columns: [
-                { text: 'Gaji Bulan', datafield: 'gaji_bulan', width : '150',
+                { text: 'Gaji Bulan', datafield: 'gaji_bulan', width : '150',  filterable: false,
                 cellsrenderer: function (rec, field, val) {
                     return "&nbsp;" + bulan[val];
                 }},
-                { text: 'Gaji Tahun', datafield: 'gaji_tahun', width : '150'},
+                { text: 'Gaji Tahun', datafield: 'gaji_tahun', width : '150',  filterable: false},
                 { text: 'No. Pegawai', datafield: 'gaji_nopeg'},
                 { text: 'Nama', datafield: 'gaji_nama', width : '200'},
                 { text: 'Unit', datafield: 'gaji_unitpeg'},
                 { text: 'Golongan', datafield: 'gaji_golpangkat_peg'},
-                { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false,
+                { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
                         return "Edit";
                     }, buttonclick: function (row) {
@@ -121,7 +143,7 @@
                         
                     }
                 },
-                { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false,
+                { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false,  filterable: false,
                     cellsrenderer: function () {
                         return "Delete";
                     }, buttonclick: function (row) {
@@ -135,16 +157,25 @@
             $('#grid').jqxGrid('updatebounddata', 'cells');
         });
 
-        $('#uploadFile').on('submit', function(event){  
-           event.preventDefault();  
+        $('#uploadFile').on('submit', function(event){
+           event.preventDefault();
            $.ajax({  
-                url: "<?php echo BASE_URL ?>/controllers/C_penggajian.php?action=importgaji",
-                method:"POST",  
-                data:new FormData(this),  
-                contentType:false,  
-                processData:false,  
-                success:function(data){  
-                     
+                url: "<?php echo BASE_URL ?>/controllers/C_penggajian.php?action=importgaji&bulan=" + $("#bulan").val() + "&tahun=" + $("#tahun").val(),
+                method:"POST",
+                data:new FormData(this),
+                contentType:false,
+                processData:false,
+                success:function(data){
+                    if(data == 202){
+                        swal({
+                            title: "Sorry",
+                            text: "Gaji bulan " + $("#bulan").val() + " " + $("#tahun").val() + ", sudah diimport. silahkan hubungi administrator !",
+                            icon: "warning"
+                        })
+                    } else {
+                        swal("Info!", "Bulan " + $("#bulan").val() + " " + $("#tahun").val() + " Berhasil diimport", "success");
+                    }
+                    $('#grid').jqxGrid('updatebounddata', 'cells');
                 }  
            });  
       });  
@@ -163,7 +194,7 @@
                         <div class="form-group">
                             <label>Bulan</label>
                             <?php 
-                                $bulan = ['', 'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
+                                $bulan = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER', 'JANUARI'];
                             ?>
                             <select id="bulan" class="form-control select2" style="width: 100%;">
                                 <?php
