@@ -7,6 +7,7 @@
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxlistbox.js"></script>
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxdropdownlist.js"></script>
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.js"></script>
+<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.filter.js"></script>
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.sort.js"></script> 
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.pager.js"></script> 
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.selection.js"></script> 
@@ -15,6 +16,7 @@
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxwindow.js"></script>
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxinput.js"></script>
 <script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/scripts/demos.js"></script>
+
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -39,6 +41,23 @@
                 commit(true);
             }
         };
+        var addfilter = function () {
+            var filtergroup = new $.jqx.filter();
+            var filter_or_operator = 1;
+            var filtervalue = '';
+            var filtercondition = 'contains';
+            var filter1 = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+            filtervalue = '';
+            filtercondition = 'starts_with';
+            var filter2 = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+
+            filtergroup.addfilter(filter_or_operator, filter1);
+            filtergroup.addfilter(filter_or_operator, filter2);
+            // add the filters.
+            $("#grid").jqxGrid('addfilter', 'user_nama', filtergroup);
+            // // apply the filters.
+            // $("#grid").jqxGrid('applyfilters');
+            }
         var dataAdapter = new $.jqx.dataAdapter(source, {
             downloadComplete: function (data, status, xhr) { },
             loadComplete: function (data) {},
@@ -54,13 +73,17 @@
             sortable: true,
             altrows: true,
             enabletooltips: true,
-            editable: true,
             selectionmode: 'multiplecellsadvanced',
+            filterable: true,
+            ready: function () {
+                addfilter();
+            },
+            autoshowfiltericon: true,
             columns: [
                 { text: 'User Nama', datafield: 'user_nama'},
                 { text: 'User Group', datafield: 'usergroup_nama'},
-                { text: 'User Aktif', datafield: 'useraktif'},
-                { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false,
+                { text: 'User Aktif', datafield: 'useraktif', filterable: false},
+                { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
                         return "Edit";
                     }, buttonclick: function (row) {
@@ -74,7 +97,7 @@
                         $("#user_password").val('');
                     }
                 },
-                { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false,
+                { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
                         return "Delete";
                     }, buttonclick: function (row) {
@@ -83,7 +106,6 @@
                 }
             ]
         });
-
     });
 </script>
 

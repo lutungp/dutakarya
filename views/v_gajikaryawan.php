@@ -327,7 +327,7 @@
                 pages =  datagaji['num_rows'] < 50 ? 1 : datagaji['num_rows']/50;
                 pages = pages % 1 === 0 ? pages : parseInt(pages)+1;
                 $('#page').val(page);
-                $(".float-right > span").html(page +"-"+ pages +"/"+ datagaji['num_rows']);
+                $(".float-right > span").html(page +" - "+ pages +" / "+ datagaji['num_rows']);
                 var bulan = ['', 'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
                 for (let index = 0; index < datagaji['gaji'].length; index++) {
                     const element = datagaji['gaji'][index];

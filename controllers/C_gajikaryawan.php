@@ -20,6 +20,9 @@ class C_gajikaryawan
         $this->config = $config;
         $this->model = new M_gajikaryawan($conn, $conn2, $config);
         $this->mpdf = new \Mpdf\Mpdf();
+        if(!isset($_SESSION["USERNAME"])) {
+            header("Location: " . $config['base_url'] . "./controllers/C_login.php");
+        }
     }
 
     public function getGajiKaryawan($data)

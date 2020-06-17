@@ -12,7 +12,7 @@
               <form id="formProfile" class="form-horizontal" action="<?php echo BASE_URL; ?>/controllers/C_profile.php?action=submit" method="POST">
                 <div class="card-body">
                   <div class="form-group row">
-                    <label for="usernama" class="col-sm-4 col-form-label">Username</label>
+                    <label for="usernama" class="col-sm-4 col-form-label">Nama Pegawai</label>
                     <div class="col-sm-8">
                         <input type="hidden" id="user_id" name="user_id" value="<?php echo $user->user_id ?>"/>
                       <input type="text" class="form-control" id="usernama" name="usernama" placeholder="username" value="<?php echo $user->user_pegawai ?>">

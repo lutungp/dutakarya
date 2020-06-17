@@ -29,10 +29,10 @@ class C_profile
         templateAdmin($this->conn2, '../views/v_profile.php', $user);
     }
 
-    public function simpaProfile($data)
+    public function simpanProfile($data)
     {
         $fieldSave = ["user_nama", "user_password", "user_updated_by", "user_updated_date", "user_revised"];
-        $dataSave = [$data["usernama"], md5($data["password"]), $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "user_revised+1"];
+        $dataSave = [$data["user_pegawai"], md5($data["password"]), $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "user_revised+1"];
         $where = "WHERE user_id = " . $data["user_id"];
         $field = "";
         foreach ($fieldSave as $key => $value) {
@@ -58,7 +58,7 @@ $data = $_GET;
 $action = isset($data["action"]) ? $data["action"] : '';
 switch ($action) {
     case 'submit':
-        $profile->simpaProfile($_POST);
+        $profile->simpanProfile($_POST);
         break;
     default:
         $profile->getProfile($username);
