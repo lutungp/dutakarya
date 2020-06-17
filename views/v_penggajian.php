@@ -20,6 +20,10 @@
 <script type="text/javascript">
     $(document).ready(function () {
         bsCustomFileInput.init();
+        var filesize = 0;
+        $('#exampleInputFile').bind('change', function() {
+            filesize = this.files[0].size;
+        });
         var url = "<?php echo BASE_URL ?>/controllers/C_penggajian.php?action=getdatapenggajian";
         // prepare the data
         var source = {
@@ -159,6 +163,7 @@
 
         $('#uploadFile').on('submit', function(event){
            event.preventDefault();
+           console.log(filesize)
            $.ajax({  
                 url: "<?php echo BASE_URL ?>/controllers/C_penggajian.php?action=importgaji&bulan=" + $("#bulan").val() + "&tahun=" + $("#tahun").val(),
                 method:"POST",

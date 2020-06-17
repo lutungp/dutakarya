@@ -122,8 +122,7 @@ class M_gajikaryawan
                     gaji_diterima
                 FROM t_gaji
                 JOIN m_user on m_user.user_id = t_gaji.m_user_id
-                WHERE t_gaji.gaji_id = '$gaji_id' AND m_user.username = " . $_SESSION["USERNAME"];
-                
+                WHERE t_gaji.gaji_id = '$gaji_id' AND m_user.user_nama = '" . $_SESSION["USERNAME"] . "'";
         $qgaji = $this->conn2->query($sql);
         
         return $qgaji->fetch_object();

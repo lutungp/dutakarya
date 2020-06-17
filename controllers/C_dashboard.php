@@ -61,9 +61,11 @@ class C_dashboard
                     FROM t_booking_hospital
                     WHERE bookinghosp_aktif = 'Y'";
         }
+        $bulan2 = $bulan+1;
         $sql = "SELECT * FROM ($sql) AS timeline 
-                WHERE bulan = '$bulan' AND tahun = '$tahun' 
+                WHERE (bulan = $bulan OR bulan = $bulan2) AND tahun = '$tahun' 
                 ORDER BY tanggal DESC";
+                
         $qtimeline = $this->conn2->query($sql);
         $data = [];
         if ($qtimeline) {
