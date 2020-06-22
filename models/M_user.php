@@ -18,6 +18,7 @@ class M_user
         $sql = "SELECT
                     user_id,
                     user_nama,
+                    user_pegawai,
                     m_usergroup_id,
                     m_usergroup.usergroup_nama,
                     CASE WHEN user_aktif = 'Y' THEN 'Aktif' ELSE 'Tidak Aktif' END AS useraktif

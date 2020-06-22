@@ -28,6 +28,7 @@
             datafields: [
                 { name: 'user_id', type: 'int' },
                 { name: 'user_nama', type: 'string' },
+                { name: 'user_pegawai', type: 'string' },
                 { name: 'm_usergroup_id', type: 'int' },
                 { name: 'usergroup_nama', type: 'string' },
                 { name: 'useraktif', type: 'string' },
@@ -81,6 +82,7 @@
             autoshowfiltericon: true,
             columns: [
                 { text: 'User Nama', datafield: 'user_nama'},
+                { text: 'Nama Pegawai', datafield: 'user_pegawai'},
                 { text: 'User Group', datafield: 'usergroup_nama'},
                 { text: 'User Aktif', datafield: 'useraktif', filterable: false},
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,

@@ -154,6 +154,7 @@
                     data:new FormData(this),
                     contentType:false,
                     processData:false,
+                    async: true,
                     success:function(data){
                         if(data == 202){
                             swal({
