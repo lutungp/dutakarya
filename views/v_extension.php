@@ -697,7 +697,274 @@
                                         <div style="font-size: 50px; margin: 10px 25px; background-color: #ff2626;">6666</div>
                                     </td>
                                 </tr>
-                                
+                                <tr class="">
+                                    <td colspan="3"></td>
+                                </tr>
+                                <tr class="EXT KAMAR-JENAZAH">
+                                    <td class="ruang-nama" colspan="3">KAMAR JENAZAH</td>
+                                </tr>
+                                <tr class="EXT KAMAR-JENAZAH">
+                                    <td class="nomor">1</td>
+                                    <td>Kamar Jenazah</td>
+                                    <td class="telpon">5059</td>
+                                </tr>
+                                <tr class="EXT MARKETING">
+                                    <td class="ruang-nama" colspan="3">MARKETING</td>
+                                </tr>
+                                <tr class="EXT MARKETING">
+                                    <td class="nomor">1</td>
+                                    <td>Ka. Sub Humas & Pemasaran</td>
+                                    <td class="telpon">5057</td>
+                                </tr>
+                                <tr class="EXT MARKETING">
+                                    <td class="nomor">2</td>
+                                    <td>Marketing</td>
+                                    <td class="telpon">5062</td>
+                                </tr>
+                                <tr class="EXT BANK-DARAH">
+                                    <td class="ruang-nama" colspan="3">BANK DARAH</td>
+                                </tr>
+                                <tr class="EXT BANK-DARAH">
+                                    <td class="nomor">1</td>
+                                    <td>Bank Darah</td>
+                                    <td class="telpon">5014</td>
+                                </tr>
+                                <tr class="EXT POLI-LUKA">
+                                    <td class="ruang-nama" colspan="3">POLI LUKA</td>
+                                </tr>
+                                <tr class="EXT POLI-LUKA">
+                                    <td class="nomor">1</td>
+                                    <td>Avanza 1</td>
+                                    <td class="telpon">5012</td>
+                                </tr>
+                                <tr class="EXT KOPERASI">
+                                    <td class="ruang-nama" colspan="3">KOPERASI</td>
+                                </tr>
+                                <tr class="EXT KOPERASI">
+                                    <td class="nomor">1</td>
+                                    <td>Koperasi</td>
+                                    <td class="telpon">5017</td>
+                                </tr>
+                                <tr class="EXT GIZI">
+                                    <td class="ruang-nama" colspan="3">GIZI</td>
+                                </tr>
+                                <tr class="EXT GIZI">
+                                    <td class="nomor">1</td>
+                                    <td>Gizi 1</td>
+                                    <td class="telpon">5024</td>
+                                </tr>
+                                <tr class="EXT GIZI">
+                                    <td class="nomor">2</td>
+                                    <td>Gizi 2</td>
+                                    <td class="telpon">5025</td>
+                                </tr>
+                                <tr class="EXT REKAM-MEDIS">
+                                    <td class="ruang-nama" colspan="3">REKAM MEDIS (R M)</td>
+                                </tr>
+                                <tr class="EXT REKAM-MEDIS">
+                                    <td class="nomor">1</td>
+                                    <td>RM 1</td>
+                                    <td class="telpon">5026</td>
+                                </tr>
+                                <tr class="EXT REKAM-MEDIS">
+                                    <td class="nomor">2</td>
+                                    <td>RM 1</td>
+                                    <td class="telpon">5027</td>
+                                </tr>
+                                <tr class="EXT PROGRAM-DAN-INFORMASI">
+                                    <td class="ruang-nama" colspan="3">PROGRAM DAN INFORMASI</td>
+                                </tr>
+                                <tr class="EXT PROGRAM-DAN-INFORMASI">
+                                    <td class="nomor">1</td>
+                                    <td>Ka. Bag. PI</td>
+                                    <td class="telpon">5063</td>
+                                </tr>
+                                <tr class="EXT PROGRAM-DAN-INFORMASI">
+                                    <td class="nomor">2</td>
+                                    <td>SOFTWARE</td>
+                                    <td class="telpon">5028</td>
+                                </tr>
+                                <tr class="EXT PROGRAM-DAN-INFORMASI">
+                                    <td class="nomor">3</td>
+                                    <td>HARDWARE</td>
+                                    <td class="telpon">5029</td>
+                                </tr>
+                                <tr class="EXT AKUNTANSI">
+                                    <td class="ruang-nama" colspan="3">AKUNTANSI</td>
+                                </tr>
+                                <tr class="EXT AKUNTANSI">
+                                    <td class="nomor">1</td>
+                                    <td>Akuntansi 1</td>
+                                    <td class="telpon">5045</td>
+                                </tr>
+                                <tr class="EXT AKUNTANSI">
+                                    <td class="nomor">2</td>
+                                    <td>Akuntansi 2</td>
+                                    <td class="telpon">5048</td>
+                                </tr>
+                                <tr class="EXT AKUNTANSI">
+                                    <td class="nomor">3</td>
+                                    <td>Akuntansi 3</td>
+                                    <td class="telpon">5049</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="ruang-nama" colspan="3">FARMASI</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="nomor">1</td>
+                                    <td>Ka. Farmasi</td>
+                                    <td class="telpon">5030</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="nomor">2</td>
+                                    <td>Ruang Rapat Farmasi</td>
+                                    <td class="telpon">5031</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="nomor">3</td>
+                                    <td>Apoteker</td>
+                                    <td class="telpon">5032</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="nomor">4</td>
+                                    <td>Dispensing</td>
+                                    <td class="telpon">5033</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="nomor">5</td>
+                                    <td>Gudang Farmasi</td>
+                                    <td class="telpon">5034</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="nomor">6</td>
+                                    <td>Farmasi Rawat Jalan</td>
+                                    <td class="telpon">5129</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="nomor">7</td>
+                                    <td>Depo Farmasi OK</td>
+                                    <td class="telpon">5228</td>
+                                </tr>
+                                <tr class="EXT FARMASI">
+                                    <td class="nomor">8</td>
+                                    <td>Depo Farmasi R. Inap</td>
+                                    <td class="telpon">5228</td>
+                                </tr>
+                                <tr class="EXT PENAGIHAN">
+                                    <td class="ruang-nama" colspan="3">PENAGIHAN</td>
+                                </tr>
+                                <tr class="EXT PENAGIHAN">
+                                    <td class="nomor">1</td>
+                                    <td>Penagihan Perusahaan</td>
+                                    <td class="telpon">5045</td>
+                                </tr>
+                                <tr class="EXT PENAGIHAN">
+                                    <td class="nomor">2</td>
+                                    <td>Penagihan BPJS</td>
+                                    <td class="telpon">5035</td>
+                                </tr>
+                                <tr class="EXT PENAGIHAN">
+                                    <td class="nomor">3</td>
+                                    <td>Penagihan BPJS</td>
+                                    <td class="telpon">5036 </td>
+                                </tr>
+                                <tr class="EXT JAMINAN">
+                                    <td class="ruang-nama" colspan="3">JAMINAN</td>
+                                </tr>
+                                <tr class="EXT JAMINAN">
+                                    <td class="nomor">1</td>
+                                    <td>Jaminan Piutang</td>
+                                    <td class="telpon">5037</td>
+                                </tr>
+                                <tr class="EXT JAMINAN">
+                                    <td class="nomor">2</td>
+                                    <td>Jaminan BPJS</td>
+                                    <td class="telpon">5038</td>
+                                </tr>
+                                <tr class="EXT JAMINAN">
+                                    <td class="nomor">2</td>
+                                    <td>Remunerasi</td>
+                                    <td class="telpon">5042</td>
+                                </tr>
+                                <tr class="EXT JAMINAN">
+                                    <td class="nomor">3</td>
+                                    <td>Sekretariat 1</td>
+                                    <td class="telpon">5043</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="ruang-nama" colspan="3">BAG. UMUM</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">1</td>
+                                    <td>Ka. Bag Umum</td>
+                                    <td class="telpon">5020</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">2</td>
+                                    <td>Ka. Rumah Tangga</td>
+                                    <td class="telpon">5003</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">3</td>
+                                    <td>Rumah Tangga</td>
+                                    <td class="telpon">5003</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">4</td>
+                                    <td>Ka. PME & PGS</td>
+                                    <td class="telpon">5001</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">5</td>
+                                    <td>PME</td>
+                                    <td class="telpon">5002</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">6</td>
+                                    <td>Pengadaan</td>
+                                    <td class="telpon">5021</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">7</td>
+                                    <td>Bangunan</td>
+                                    <td class="telpon">5022</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">8</td>
+                                    <td>Perlengkapan</td>
+                                    <td class="telpon">5023</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">9</td>
+                                    <td>Alkes</td>
+                                    <td class="telpon">5018</td>
+                                </tr>
+                                <tr class="EXT BAG-UMUM">
+                                    <td class="nomor">10</td>
+                                    <td>Laundry</td>
+                                    <td class="telpon">5019</td>
+                                </tr>
+                                <tr class="EXT SECURITY">
+                                    <td class="ruang-nama" colspan="3">SECURITY</td>
+                                </tr>
+                                <tr class="EXT SECURITY">
+                                    <td class="nomor">1</td>
+                                    <td>Pos Induk</td>
+                                    <td class="telpon">5016</td>
+                                </tr>
+                                <tr class="EXT SECURITY">
+                                    <td class="nomor">2</td>
+                                    <td>Counter Satpam</td>
+                                    <td class="telpon">5111</td>
+                                </tr>
+                                <tr class="EXT DARUSSALAM">
+                                    <td class="ruang-nama" colspan="3">DARUSSALAM</td>
+                                </tr>
+                                <tr class="EXT DARUSSALAM">
+                                    <td class="nomor">1</td>
+                                    <td>Ruang Darussalam</td>
+                                    <td class="telpon">5134</td>
+                                </tr>
                             </table>
                         </div>
                     </div>
