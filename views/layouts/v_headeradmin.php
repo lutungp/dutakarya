@@ -2,11 +2,11 @@
 <html>
 <head>
     <?php
-        define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/telemedicineRSHJ");
+        define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/adminRSHJ");
     ?>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Admin RSHAJI</title>
+  <title>Sistem Informasi RSHAJI</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -100,6 +100,12 @@
     }
     .modal-footer {
       padding: 2px !important;
+    }
+
+    @media (max-width: 480px) {
+      .content-wrapper>.content {
+        padding: 10px !important;
+      }
     }
   </style>
   <script>

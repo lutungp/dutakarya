@@ -50,7 +50,7 @@ class C_gajikaryawan
         $content .= '<style>';
         $content .= 'body{margin:0;}';
         $content .= '.koprshaji {font-family:Arial; font-weight: bold; color: #0b4848;}
-                     .header-title {font-family:Arial; font-weight: bold; text-align: center; font-size: 16px;}
+                     .header-title {font-family:Arial; font-weight: bold; text-align: center; font-size: 14px;}
                      span.cls_002{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
 div.cls_002{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
 span.cls_003{font-family:"Calibri Bold",serif;font-size:12px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
@@ -94,6 +94,9 @@ div.cls_005{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:
         $content .= '</td>';
         $content .= '</td>';
         $content .= '<td width=25% align=center>';
+        $content .= '<img src="../assets/img/logo-KARS.png"/ height="65px" width="70px">';
+        $content .= '<img src="../assets/img/logo-ISO.png"/ height="65px" width="70px">';
+        $content .= '<img src="../assets/img/logo-UKAS.png"/ height="65px" width="70px">';
         $content .= '</td>';
         $content .= '</tr>';
         $content .= '</table>';
@@ -127,8 +130,8 @@ div.cls_005{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:
         $content .= '<tr>';
         $content .= '<td style="padding:5px; width:90px;">GAJI RSHJ</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $gaji_nilai = $user->gaji_nilai > 0 ? number_format($user->gaji_nilai) : "-";
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_nilai.'</td>';
+        $gaji_pokok = $user->gaji_pokok > 0 ? number_format($user->gaji_pokok) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_pokok.'</td>';
         $content .= '<td style="padding:5px; width:90px;">Jasa Yan</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
         $gaji_jasalayanan = $user->gaji_jasalayanan > 0 ? number_format($user->gaji_jasalayanan) : "-";
@@ -183,32 +186,40 @@ div.cls_005{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:
         $content .= '<tr>';
         $content .= '<td style="padding:5px; width:90px;">T. Operasional</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_operasional = $user->gaji_operasional > 0 ? number_format($user->gaji_operasional) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_operasional.'</td>';
         $content .= '<td style="padding:5px; width:90px;">Lembur</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">162,594</td>';
+        $gaji_lembur = $user->gaji_lembur > 0 ? number_format($user->gaji_lembur) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_lembur.'</td>';
 
         $content .= '<td style="padding:5px; width:90px;">SIMPOK</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_potsimpok = $user->gaji_potsimpok > 0 ? number_format($user->gaji_potsimpok) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_potsimpok.'</td>';
         $content .= '<td style="padding:5px; width:90px;">Pot. Sekolah</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_potsekolah = $user->gaji_potsekolah > 0 ? number_format($user->gaji_potsekolah) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_potsekolah.'</td>';
         $content .= '</tr>';
         $content .= '<tr>';
         $content .= '<td style="padding:5px; width:90px;">Rapel/MOD</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_rapel = $user->gaji_rapel > 0 ? number_format($user->gaji_rapel) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_rapel.'</td>';
         $content .= '<td style="padding:5px; width:90px;">Uang Cuti</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_uangcuti = $user->gaji_uangcuti > 0 ? number_format($user->gaji_uangcuti) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_uangcuti.'</td>';
 
         $content .= '<td style="padding:5px; width:90px;">Pot. Kesehatan</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_potkesehatan = $user->gaji_potkesehatan > 0 ? number_format($user->gaji_potkesehatan) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_potkesehatan.'</td>';
         $content .= '<td style="padding:5px; width:90px;">Pot. Lain-lain</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_potlain = $user->gaji_potlain > 0 ? number_format($user->gaji_potlain) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_potlain.'</td>';
         $content .= '</tr>';
 
         $content .= '<tr>';
@@ -221,10 +232,12 @@ div.cls_005{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:
 
         $content .= '<td style="padding:5px; width:90px;">Pot. Absensi</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_potabsensi = $user->gaji_potabsensi > 0 ? number_format($user->gaji_potabsensi) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_potabsensi.'</td>';
         $content .= '<td style="padding:5px; width:90px;">Pot. FKK</td>';
         $content .= '<td style="padding:5px; text-align: center;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">-</td>';
+        $gaji_potfkk = $user->gaji_potfkk > 0 ? number_format($user->gaji_potfkk) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;">'.$gaji_potfkk.'</td>';
         $content .= '</tr>';
         
         $content .= '<tr>';
@@ -278,31 +291,39 @@ div.cls_005{font-family:Arial,serif;font-size:12px;color:rgb(0,0,0);font-weight:
         $content .= '<tr>';
         $content .= '<td style="padding:5px; width:90px;border-top: 1px solid black;">JUMLAH(1)</td>';
         $content .= '<td style="padding:5px; text-align: center;border-top: 1px solid black;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;border-top: 1px solid black;"><b>4,250,500</b></td>';
+        $jumlah1 = $user->gaji_pokok + $user->gaji_transport + $user->gaji_operasional + $user->gaji_rapel;
+        $njumlah1 = $jumlah1 > 0 ? number_format($jumlah1) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;border-top: 1px solid black;"><b>'.$njumlah1.'</b></td>';
         $content .= '<td style="padding:5px; width:90px;border-top: 1px solid black;">TOTAL(2)</td>';
         $content .= '<td style="padding:5px; text-align: center;border-top: 1px solid black;">:</td>';
-        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;border-top: 1px solid black;"><b>497,417</b></td>';
+        $jumlah2 = $user->gaji_jasalayanan + $user->gaji_shift + $user->gaji_oncall + $user->gaji_lembur + $user->gaji_uangcuti;
+        $njumlah2 = $jumlah2 > 0 ? number_format($jumlah2) : "-";
+        $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;border-top: 1px solid black;"><b>'.$njumlah2.'</b></td>';
 
         $content .= '<td style="padding:5px; width:90px;border-top: 1px solid black;"></td>';
         $content .= '<td style="padding:5px; text-align: center;border-top: 1px solid black;"></td>';
         $content .= '<td style="text-align:right;padding:5px;border-top: 1px solid black;">TOTAL(3) :</td>';
-        $content .= '<td style="padding:5px; width:90px;border-top: 1px solid black;"><b>234,045</b></td>';
+        $jumlah3 = $user->gaji_potsimwa + $user->gaji_potkoperasi + $user->gaji_potparkir + $user->gaji_potsimpok + $user->gaji_potkesehatan + $user->gaji_potabsensi + $user->gaji_potzis + $user->gaji_potqurban + $user->gaji_potinfaqmasjid + $user->gaji_potbpjstk + $user->gaji_potbpjspensiun + $user->gaji_potpajak + $user->gaji_potsekolah + $user->gaji_potlain + $user->gaji_potfkk + $user->gaji_potsp + $user->gaji_potibi;
+        $njumlah3 = $jumlah3 > 0 ? number_format($jumlah3) : "-";
+        $content .= '<td style="padding:5px; width:90px;border-top: 1px solid black;"><b>'.$njumlah3.'</b></td>';
         $content .= '<td style="padding:5px; text-align: left;border-top: 1px solid black;"></td>';
         $content .= '<td style="text-align:right;padding:5px;border-right:1px solid;border-top: 1px solid black;"></td>';
         $content .= '</tr>';
 
         $content .= '<tr>';
         $content .= '<td style="padding:5px; width:40px;border-top: 1px solid black;text-align: right;" colspan="3" rowspan="3">
-                        <p><b>THR TAHUN 2020&nbsp;&nbsp;:</p></td>';
+                        <p><b></p></td>';
         $content .= '<td style="padding:5px; width:50px;border-top: 1px solid black;border-right: 1px solid black;text-align: right;" colspan="3" rowspan="3">
-                    <b>2,120,000</b></td>';
+                    <b></b></td>';
         $content .= '</tr>';
 
         $content .= '<tr>';
+        $jumlahall = $jumlah1+$jumlah2-$jumlah3;
+        $njumlahall = $jumlahall > 0 ? number_format($jumlahall) : "-";
         $content .= '<td style="padding:5px; width:40px;border-top: 1px solid black;text-align: right;" colspan="3">
                         <p><b>TOTAL TERIMA (1+2)-3&nbsp;&nbsp;:</p></td>';
         $content .= '<td style="padding:5px; width:50px;border-top: 1px solid black;border-right: 1px solid black;text-align: right;" colspan="3">
-                    <b>4,513,872</b></td>';
+                    <b>'.$njumlahall.'</b></td>';
         $content .= '</tr>';
 
         $content .= '<tr>';

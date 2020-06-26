@@ -32,7 +32,7 @@ class C_penggajian
 
     public function getPenggajian($username)
     {
-        templateAdmin($this->conn2, '../views/v_penggajian.php');
+        templateAdmin($this->conn2, '../views/v_penggajian.php', NULL, "TRANSAKSI", "INPUT GAJI");
     }
 
     public function getDataPenggajian($data)
@@ -87,22 +87,23 @@ class C_penggajian
             
             for($i = 1;$i < count($sheetData);$i++) {
                 $j = 0;
-                $sql = "SELECT user_id FROM m_user WHERE m_user.user_pegawai = '".$sheetData[$i][$j++]."'";
+                $sql = "SELECT user_id FROM m_user WHERE m_user.user_nopegawai = '".$sheetData[$i][$j]."'";
+                
                 $qpeg = $this->conn2->query($sql);
                 $rpeg = $qpeg->fetch_object();
-                $field = [ "gaji_bulan", "gaji_tahun", "m_user_id", "gaji_nama", "gaji_nopeg", "gaji_unitpeg", "gaji_golpangkat_peg", "gaji_norekening", "gaji_pokok", "gaji_kehadiran", 
+                $field = [ "gaji_bulan", "gaji_tahun", "m_user_id", "gaji_nopeg", "gaji_nama", "gaji_unitpeg", "gaji_golpangkat_peg", "gaji_norekening", "gaji_pokok", "gaji_kehadiran", 
                             "gaji_transport", "gaji_operasional", "gaji_rapel", "gaji_jasalayanan", "gaji_shift", "gaji_lembur", "gaji_oncall", "gaji_uangcuti", "gaji_potsimwa", 
                             "gaji_potkoperasi", "gaji_potparkir", "gaji_potsimpok", "gaji_potkesehatan", "gaji_potabsensi", "gaji_potzis", "gaji_potqurban", "gaji_potinfaqmasjid", 
                             "gaji_potbpjstk", "gaji_potbpjspensiun", "gaji_potpajak", "gaji_potsekolah", "gaji_potlain", "gaji_potfkk", "gaji_potsp", "gaji_potibi", "gaji_nilai", 
                             "gaji_insentif", "gaji_potongan", "gaji_diterima", "gaji_created_by", "gaji_created_date"];
-                print_r($sheetData[$i]);
-                $dataSave = [ $bulan[$dataget["bulan"]], $dataget["tahun"], $rpeg->user_id, $sheetData[$i][0], $sheetData[$i][1], $sheetData[$i][2], $sheetData[$i][3], $sheetData[$i][4],
+                
+                if ($rpeg) {
+                    $dataSave = [ $bulan[$dataget["bulan"]], $dataget["tahun"], $rpeg->user_id, $sheetData[$i][0], $sheetData[$i][1], $sheetData[$i][2], $sheetData[$i][3], $sheetData[$i][4],
                                 $sheetData[$i][5], $sheetData[$i][6], $sheetData[$i][7], $sheetData[$i][8], $sheetData[$i][9], $sheetData[$i][10], $sheetData[$i][11], $sheetData[$i][12],
                                 $sheetData[$i][13], $sheetData[$i][14], $sheetData[$i][15], $sheetData[$i][16], $sheetData[$i][17], $sheetData[$i][18], $sheetData[$i][19], $sheetData[$i][20],
                                 $sheetData[$i][21], $sheetData[$i][22], $sheetData[$i][23], $sheetData[$i][24], $sheetData[$i][25], $sheetData[$i][26], $sheetData[$i][27], $sheetData[$i][28],
                                 $sheetData[$i][29], $sheetData[$i][30], $sheetData[$i][31], $sheetData[$i][32], $sheetData[$i][33], $sheetData[$i][34], $sheetData[$i][35], 
-                                $_SESSION["USERNAME"], date("Y-m-d H:m:s")];
-                if ($rpeg->user_id > 0) {
+                                $_SESSION["USER_ID"], date("Y-m-d H:m:s")];
                     query_create($this->conn2, 't_gaji', $field, $dataSave);
                 }
             }

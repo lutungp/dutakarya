@@ -142,7 +142,7 @@
                 <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="Delete"
                   onclick="listGaji()">
                   <i class="fas fa-list-ol"></i>
-                </button>&nbsp;&nbsp;&nbsp;Read Mail
+                </button>&nbsp;&nbsp;&nbsp;List Gaji
               </h3>
 
               <div class="card-tools">

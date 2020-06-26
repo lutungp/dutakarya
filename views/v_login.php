@@ -12,7 +12,7 @@
         background: #FFFFFF;
         max-width: 360px;
         margin: 0 auto 100px;
-        padding: 45px;
+        padding: 40px;
         text-align: center;
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
     }
@@ -117,6 +117,28 @@
         }
     }
 
+    .info-login {
+        margin: 10px;
+        background-color: #8480ec;
+        padding: 15px;
+        font-family: Arial;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        text-align : center;
+    }
+
+    @media only screen and (min-width: 500px) {
+        .form {
+            margin-bottom : 20px;
+        }
+
+        .info-login {
+            font-size: 12px;
+        }
+    }
+
+
 </style>
 <div class="login-page">
     <div class="form">
@@ -129,12 +151,15 @@
         </form> -->
         <form id="login-form" class="login-form" method="POST" action="<?php echo BASE_URL; ?>/controllers/C_login.php?action=login">
             <img src="<?php echo BASE_URL; ?>/assets/img/RSHAJI.PNG" alt="Rshaji-Jakarta-telemedicine" width="100px" heigh="50px">
-            <p><b>ADMINISTRATOR <font style="color: green;">RSHAJI</font></b></p>
+            <p><b>SDM <font style="color: green;">RSHAJI</font></b></p>
             <input type="text" id="username" name="username" placeholder="username"/>
             <input type="password" id="password" name="password" placeholder="password"/>
             <button>login</button>
             <!-- <p class="message">Not registered? <a href="#">Create an account</a></p> -->
         </form>
+    </div>
+    <div class="info-login">
+        Isi Username dengan Kode Pegawai.
     </div>
 </div>
 <script>

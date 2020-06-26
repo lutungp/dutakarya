@@ -1,11 +1,11 @@
 {
-    "name": "TRSHAJI",
-    "short_name": "TRSHAJI",
+    "name": "SDM RSHAJI",
+    "short_name": "SDM RSHAJI",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#2A3443",
-    "description": "A demo app for a fictional conference",
-    "theme_color": "#2A3443",
+    "background_color": "#FFF",
+    "description": "Sistem Informasi RS Haji Jakarta",
+    "theme_color": "#FFF",
     "icons": [
       {
         "src": "./assets/img/RSHAJI-310x310.png",

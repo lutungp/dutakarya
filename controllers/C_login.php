@@ -30,13 +30,14 @@ class C_login
     {
         $username = $data["username"];
         $password = md5($data["password"]);
-        $sql = "SELECT user_nama FROM m_user WHERE user_password = '" . $password . "' AND user_nama = '" . $username . "' and user_aktif = 'Y'";
+        $sql = "SELECT user_id, user_nama FROM m_user WHERE user_password = '" . $password . "' AND user_nama = '" . $username . "' and user_aktif = 'Y'";
         $quser = $this->conn2->query($sql);
 
         if($quser) {
             $rowuser = $quser->fetch_object();
             if($rowuser) {
                 $_SESSION["USERNAME"] = $rowuser->user_nama;
+                $_SESSION["USER_ID"] = $rowuser->user_id;
                 return "200";
             } else {
                 return "202";

@@ -53,10 +53,10 @@
                         html += "<a class='btn btn-primary btn-sm' onclick=readmore('"+val.readmore+"')>Read more</a>";
                         html += '</div>';
                         html += '</div>';
-                        html += '</div>';   
-                    } else {
+                        html += '</div>';
+                    } else if (val.title=="Pembayaran Pasien Telemedicine") {
                         html += '<div>';
-                        html += '<i class="fas fa-envelope bg-blue"></i>';
+                        html += '<i class="fas fa-money-bill-alt bg-green"></i>';
                         html += '<div class="timeline-item book-notif">';
                         html += '<span class="time"><i class="fas fa-clock"></i>&nbsp;&nbsp;'+jam+'</span>';
                         var star = '';
@@ -65,6 +65,38 @@
                             star = '<i class="fas fa-star text-warning"></i>';
                         }
                         html += '<h3 class="timeline-header">Pemberitahuan <a href="#">'+val.title+'</a>&nbsp;'+star+'</h3>';
+                        html += '<div class="timeline-body">';
+                        var databooking = JSON.parse(val.description);
+                        html += '<div>';
+                        html += '<p style=font-size:13px;>Pembayaran atas nama <b>'+databooking.pasien_nama+' (' +databooking.pasien_norm+ ')</b>.<br> Pemeriksaan Dokter <font color=green>'+databooking.pegawai_nama+'</font>. \
+                                di tanggal '+moment(databooking.bookinghosp_tanggal, "YYYY-MM-DD").format("DD-MM-YYYY")+',<br>\
+                                pukul '+moment(databooking.bookinghosp_jammulai, "hh:mm:ss").format("hh:mm")+'</p>';
+                        html += '<p style=font-size:13px;>Validasi oleh : '+databooking.user_pegawai+'</p>';
+                        html += '</div>';
+                        // html += val.description;
+                        html += '</div>';
+                        html += '</div>';
+                        html += '</div>';
+                    } else {
+                        html += '<div>';
+                        html += '<i class="fas fa-bell bg-blue"></i>';
+                        html += '<div class="timeline-item book-notif">';
+                        html += '<span class="time"><i class="fas fa-clock"></i>&nbsp;&nbsp;'+jam+'</span>';
+                        var star = '';
+                        var readmore = val.readmore.split("-");
+                        if(readmore[2]<1){
+                            star = '<i class="fas fa-star text-warning"></i>';
+                        }
+                        html += '<h3 class="timeline-header">Pemberitahuan <a href="#">'+val.title+'</a>&nbsp;'+star+'</h3>';
+                        html += '<div class="timeline-body">';
+                        var databooking = JSON.parse(val.description);
+                        html += '<div>';
+                        html += '<p style=font-size:13px;>Pemesanan atas nama <b>'+databooking.pasien_nama+' (' +databooking.pasien_norm+ ')</b>.<br> Kepada Dokter <font color=green>'+databooking.pegawai_nama+'</font>. \
+                                di tanggal '+moment(databooking.bookinghosp_tanggal, "YYYY-MM-DD").format("DD-MM-YYYY")+',<br>\
+                                pukul '+moment(databooking.bookinghosp_jammulai, "hh:mm:ss").format("hh:mm")+'</p>';
+                        html += '</div>';
+                        // html += val.description;
+                        html += '</div>';
                         html += '</div>';
                         html += '</div>';
                     }

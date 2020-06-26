@@ -37,7 +37,7 @@ class C_usergroup
     public function updateUserGroup($data)
     {
         $fieldSave = ["usergroup_kode", "usergroup_nama", "usergroup_updated_by", "usergroup_updated_date", "usergroup_revised"];
-        $dataSave = [$data["usergroup_kode"], $data["usergroup_nama"], $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "usergroup_revised+1"];
+        $dataSave = [$data["usergroup_kode"], $data["usergroup_nama"], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), "usergroup_revised+1"];
         $field = "";
         foreach ($fieldSave as $key => $value) {
             $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -58,7 +58,7 @@ class C_usergroup
                 if ($role_id > 0) {
                     $field = '';
                     $fieldSave = ["s_menu_id", "m_usergroup_id", "role_priviliges", "role_updated_by", "role_updated_date", "role_revised"];
-                    $dataSave = [$value["menu_id"], $data['usergroup_id'], $role_priviliges, $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "role_revised+1"];
+                    $dataSave = [$value["menu_id"], $data['usergroup_id'], $role_priviliges, $_SESSION["USER_ID"], date("Y-m-d H:i:s"), "role_revised+1"];
                     foreach ($fieldSave as $key => $value) {
                         $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
                         if (!preg_match("/revised/i", $value)) {
@@ -71,7 +71,7 @@ class C_usergroup
                     query_update($this->conn2, 's_role', $field, $where);
                 } else {
                     $fieldSave = ["s_menu_id", "m_usergroup_id", "role_priviliges", "role_created_by", "role_created_date"];
-                    $dataSave = [$value["menu_id"], $data['usergroup_id'], $role_priviliges, $_SESSION["USERNAME"], date("Y-m-d H:i:s")];
+                    $dataSave = [$value["menu_id"], $data['usergroup_id'], $role_priviliges, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     query_create($this->conn2, 's_role', $fieldSave, $dataSave);
                 }
             }

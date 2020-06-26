@@ -12,10 +12,22 @@
               <form id="formProfile" class="form-horizontal" action="<?php echo BASE_URL; ?>/controllers/C_profile.php?action=submit" method="POST">
                 <div class="card-body">
                   <div class="form-group row">
+                    <label for="password1" class="col-sm-4 col-form-label">Kode Pegawai</label>
+                    <div class="col-sm-8">
+                      <input type="text" id="user_nopegawai" name="user_nopegawai" class="form-control"  value="<?php echo $user->user_nopegawai ?>" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group row">
                     <label for="userpegawai" class="col-sm-4 col-form-label">Nama Pegawai</label>
                     <div class="col-sm-8">
                         <input type="hidden" id="user_id" name="user_id" value="<?php echo $user->user_id ?>"/>
-                      <input type="text" class="form-control" id="userpegawai" name="userpegawai" placeholder="Nama Pegawai" value="<?php echo $user->user_pegawai ?>">
+                      <input type="text" class="form-control" id="userpegawai" name="userpegawai" placeholder="Nama Pegawai" value="<?php echo $user->user_pegawai ?>" readonly>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="password1" class="col-sm-4 col-form-label">Nama User</label>
+                    <div class="col-sm-8">
+                      <input type="text" id="user_nama" name="user_nama" class="form-control"  value="<?php echo $user->user_nama ?>">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -70,10 +82,13 @@
                 type:$(this).attr("method"),
                 dataType: 'html',
                 success:function(hasil) {
+                    hasil = parseInt(hasil);
                     if(hasil == 200) {
-                        swal("Info!", "User " + $("#userpegawai").val() + " Berhasil disimpan", "success");
-                    } else {
-                        swal("Info!", "User " + $("#userpegawai").val() + " Gagal disimpan", "error");
+                      swal("Info!", "User " + $("#userpegawai").val() + " Berhasil disimpan", "success");
+                    } if(hasil == 203) {
+                      swal("Info!", "User " + $("#userpegawai").val() + " gagal disimpan, Nama User sudah ada yang memakai", "success");
+                    } else if(hasil == 202) {
+                      swal("Info!", "User " + $("#userpegawai").val() + " Gagal disimpan", "error");
                     }
                 }
             })

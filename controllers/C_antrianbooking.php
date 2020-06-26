@@ -206,6 +206,10 @@ class C_antrianbooking
         $tglbayar = date("Y-m-d H:i:s");
         $sql = "UPDATE t_booking_hospital SET bookinghosp_status = 'SUDAH BAYAR', bookinghosp_tglbayar = '" . $tglbayar . "' WHERE bookinghosp_id = $bookinghosp_id ";
         $action = $this->conn2->query($sql);
+
+        $sql = "UPDATE t_tagihan_pasien SET tagihanpasien_dibayar = 'SUDAH', tagihanpasien_dibayar_tgl = '" . $tglbayar . "' WHERE t_bookinghosp_id = $bookinghosp_id ";
+        $action = $this->conn2->query($sql);
+        
         if($action){
             return "200";
         } else {

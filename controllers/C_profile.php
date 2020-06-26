@@ -31,10 +31,23 @@ class C_profile
 
     public function simpanProfile($data)
     {
-        $fieldSave = ["user_pegawai", "user_password", "user_updated_by", "user_updated_date", "user_revised"];
-        $dataSave = [$data["userpegawai"], md5($data["password"]), $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "user_revised+1"];
+        $fieldSave = ["user_nama", "user_pegawai", "user_password", "user_updated_by", "user_updated_date", "user_revised"];
+        $dataSave = [$data["user_nama"], $data["userpegawai"], md5($data["password"]), $_SESSION["USER_ID"], date("Y-m-d H:i:s"), "user_revised+1"];
         $where = "WHERE user_id = " . $data["user_id"];
+        $_SESSION["USERNAME"] = $data["user_nama"];
         $field = "";
+
+        /* cek nama user kembar */
+        $sqlcekuser = "SELECT count(*) as cek FROM m_user WHERE m_user.user_id != " . $data["user_id"] . " AND m_user.user_nama = '" . $data["user_nama"] . "' ";
+        $qcekuser = $this->conn2->query($sqlcekuser);
+        if ($qcekuser) {
+            $rcekuser = $qcekuser->fetch_object();
+            if ($rcekuser->cek > 0) {
+                echo "203";
+                exit();
+            }
+        }
+
         foreach ($fieldSave as $key => $value) {
             $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
             if (!preg_match("/revised/i", $value)) {

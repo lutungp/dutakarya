@@ -1,3 +1,16 @@
+<style>
+    @media (min-width: 500px) {
+        .buttondaftar {
+            margin-top : 30px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .buttondaftar {
+            margin-top : 5px;
+        }
+    }
+</style>
 <link type="text/css" rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
 <script src="<?php echo BASE_URL ?>/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 <section class="content">
@@ -14,10 +27,12 @@
                                 <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                 </div>
                                 <input type="text" id="date1" class="form-control datepicker" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
-                                &nbsp;<button type="button" id="btn-filter" class="btn btn-primary"><i class="fas fa-search"></i>&nbsp;Cari</button>
-                                &nbsp;<button type="button" id="btn-excel" class="btn btn-success"><i class="far fa-file-excel"></i>&nbsp;Excel</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-4 buttondaftar">
+                        &nbsp;<button type="button" id="btn-filter" class="btn btn-primary btn-sm"><i class="fas fa-search"></i>&nbsp;Cari</button>
+                        &nbsp;<button type="button" id="btn-excel" class="btn btn-success btn-sm"><i class="far fa-file-excel"></i>&nbsp;Excel</button>
                     </div>
                     <!-- /.input group -->
                 </div>
