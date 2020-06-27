@@ -8,5 +8,4 @@ Route::add('/',function(){
     header("Location: controllers/C_dashboard");
 });
 
-// http://103.231.200.60/
 Route::run('/');
