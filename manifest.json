@@ -1,0 +1,16 @@
+{
+    "name": "SDM RSHAJI",
+    "short_name": "SDM RSHAJI",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#FFF",
+    "description": "Sistem Informasi RS Haji Jakarta",
+    "theme_color": "#FFF",
+    "icons": [
+      {
+        "src": "./assets/img/RSHAJI-310x310.png",
+        "sizes": "310x310",
+        "type": "image/png"
+      }
+    ]
+  }
