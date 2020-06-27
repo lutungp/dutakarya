@@ -25,8 +25,9 @@ class C_profile
 
     public function getProfile($username)
     {
-        $user = getUserProfile($this->conn2, $_SESSION["USERNAME"]);
-        templateAdmin($this->conn2, '../views/v_profile.php', $user);
+        // $data["user"] = getUserProfile($this->conn2, $_SESSION["USERNAME"]);
+        $data["pegawai"] = getPegawaiProfile($this->conn2, $_SESSION["USER_ID"]);
+        templateAdmin($this->conn2, '../views/v_profile.php', $data);
     }
 
     public function simpanProfile($data)

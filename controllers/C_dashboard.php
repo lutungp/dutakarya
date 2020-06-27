@@ -19,7 +19,7 @@ class C_dashboard
         $this->config = $config;
 
         if(!isset($_SESSION["USERNAME"])) {
-            header("Location: " . $config['base_url'] . "./controllers/C_login.php");
+            header("Location: " . $config['base_url'] . "/controllers/C_login.php");
         }
     }
 
@@ -138,7 +138,7 @@ switch ($action) {
         break;
     default:
         if(!isset($_SESSION["USERNAME"])) {
-            header("Location: " . $config['base_url'] . "./controllers/C_login.php");
+            header("Location: " . $config['base_url'] . "/controllers/C_login");
         } else {
             templateAdmin($conn2, '../views/v_dashboard.php'); 
         }

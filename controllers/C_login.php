@@ -19,7 +19,7 @@ class C_login
     {
         if(isset($_SESSION["USERNAME"]))  {
             if($_SESSION["USERNAME"] != '') {
-                header("Location: " . $config['base_url'] . "/controllers/C_dashboard.php");
+                header("Location: " . $config['base_url'] . "/controllers/C_dashboard");
             }
         } else {
             template('../views/v_login.php');
@@ -28,8 +28,8 @@ class C_login
 
     public function cekuser($data)
     {
-        $username = $data["username"];
-        $password = md5($data["password"]);
+        $username = $this->conn2->real_escape_string($data["username"]);
+        $password = $this->conn2->real_escape_string(md5($data["password"]));
         $sql = "SELECT user_id, user_nama FROM m_user WHERE user_password = '" . $password . "' AND user_nama = '" . $username . "' and user_aktif = 'Y'";
         $quser = $this->conn2->query($sql);
 

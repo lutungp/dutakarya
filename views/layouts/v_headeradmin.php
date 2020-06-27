@@ -74,6 +74,8 @@
       <script src="<?php echo BASE_URL ?>/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
       <script src="<?php echo BASE_URL ?>/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
       <script src="<?php echo BASE_URL ?>/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+      <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/plugins/select2/css/select2.min.css">
+      <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <style>
     .content-wrapper>.content {
       padding: 0 1.5rem;
@@ -106,6 +108,14 @@
       .content-wrapper>.content {
         padding: 10px !important;
       }
+
+      .content-header {
+        padding: 2px !important;
+      }
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 15px;
     }
   </style>
   <script>

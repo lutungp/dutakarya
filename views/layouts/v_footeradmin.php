@@ -19,5 +19,6 @@
         </aside>
         <!-- /.control-sidebar -->
         </div>
+        <script src="<?php echo BASE_URL ?>/assets/plugins/select2/js/select2.full.min.js"></script>
     </body>
 </html>
