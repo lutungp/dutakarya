@@ -66,7 +66,7 @@
             autoshowfiltericon: true,
             columns: [
                 { text: 'User Nama', datafield: 'user_nama'},
-                { text: 'Nama Pegawai', datafield: 'user_pegawai'},
+                // { text: 'Nama Pegawai', datafield: 'user_pegawai'},
                 { text: 'User Group', datafield: 'usergroup_nama'},
                 { text: 'User Aktif', datafield: 'useraktif', filterable: false},
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
@@ -147,10 +147,10 @@
                                             <label for="user_nama">User Nama</label>
                                             <input type="text" id="user_nama" name="user_nama" class="form-control">
                                         </div>
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label for="user_nama">Pegawai</label>
                                             <select id="m_pegawai_id" name="m_pegawai_id" style="width: 100%;"></select>
-                                        </div>
+                                        </div> -->
                                         <div class="form-group">
                                             <label for="user_nama">User Group</label>
                                             <select id="m_usergroup_id" class="form-control" style="width: 100%;">
