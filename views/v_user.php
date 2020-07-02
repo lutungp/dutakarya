@@ -1,23 +1,6 @@
-<link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/styles/jqx.base.css" type="text/css" />
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxcore.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxdata.js"></script> 
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxbuttons.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxscrollbar.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxmenu.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxdropdownlist.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.filter.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.sort.js"></script> 
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.pager.js"></script> 
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.selection.js"></script> 
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxgrid.edit.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxnumberinput.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxwindow.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/jqwidgets/jqxinput.js"></script>
-<script type="text/javascript" src="<?php echo BASE_URL ?>/assets/plugins/jqwidgets/scripts/demos.js"></script>
-
-
+<?php 
+    require_once(__ROOT__.'/layouts/header_jqwidget.php');
+?>
 <script type="text/javascript">
     $(document).ready(function () {
         var url = "<?php echo BASE_URL ?>/controllers/C_user.php?action=getUser";
@@ -32,6 +15,8 @@
                 { name: 'm_usergroup_id', type: 'int' },
                 { name: 'usergroup_nama', type: 'string' },
                 { name: 'useraktif', type: 'string' },
+                { name: 'm_pegawai_id', type: 'string' },
+                { name: 'pegawai_nama', type: 'string' },
             ],
             id: 'user_id',
             url: url,
@@ -65,8 +50,7 @@
             loadError: function (xhr, status, error) { }
         });
         // initialize jqxGrid
-        $("#grid").jqxGrid(
-        {
+        $("#grid").jqxGrid({
             width: '100%',
             source: dataAdapter,                
             pageable: true,
@@ -97,6 +81,9 @@
                         $("#user_nama").val(dataRecord.user_nama);
                         $("#m_usergroup_id").val(dataRecord.m_usergroup_id);
                         $("#user_password").val('');
+                        $("#m_pegawai_id").data('select2').trigger('select', {
+                            data: {"id": dataRecord.m_pegawai_id, "text": dataRecord.pegawai_nama }
+                        });
                     }
                 },
                 { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
@@ -107,6 +94,26 @@
                     }
                 }
             ]
+        });
+
+        $("#m_pegawai_id").select2({
+          ajax: {
+            url: '<?php echo BASE_URL ?>/controllers/C_user.php?action=getpegawai',
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+              return {
+                searchTerm: params.term // search term
+              };
+            },
+            processResults: function (response) {
+              return {
+                results: response
+              };
+            },
+          cache: true
+          }
         });
     });
 </script>
@@ -139,6 +146,10 @@
                                             <input type="hidden" id="user_id" name="user_id">
                                             <label for="user_nama">User Nama</label>
                                             <input type="text" id="user_nama" name="user_nama" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="user_nama">Pegawai</label>
+                                            <select id="m_pegawai_id" name="m_pegawai_id" style="width: 100%;"></select>
                                         </div>
                                         <div class="form-group">
                                             <label for="user_nama">User Group</label>
@@ -225,6 +236,7 @@
             m_usergroup_id : $("#m_usergroup_id").val(),
             user_password : $("#user_password").val(),
             user_password2 : $("#user_password2").val(),
+            m_pegawai_id : $("#m_pegawai_id").val(), 
         };
 
         $.ajax({

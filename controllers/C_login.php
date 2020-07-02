@@ -3,16 +3,19 @@
 include '../config/database.php';
 include '../config/config.php';
 include '../config/helpers.php';
+include '../models/M_login.php';
 
 class C_login
 {
     public $conn = false;
     public $conn2 = false;
+    public $model = false;
 
-    public function __construct($conn, $conn2)
+    public function __construct($conn, $conn2, $config)
     {
         $this->conn = $conn;
         $this->conn2 = $conn2;
+        $this->model = new M_login($conn, $conn2, $config);
     }
 
     public function login($config)
@@ -38,6 +41,8 @@ class C_login
             if($rowuser) {
                 $_SESSION["USERNAME"] = $rowuser->user_nama;
                 $_SESSION["USER_ID"] = $rowuser->user_id;
+                $usergroup = $this->model->getRole($rowuser->user_id);
+                $_SESSION["USERROLE"] = $usergroup;
                 return "200";
             } else {
                 return "202";
@@ -63,7 +68,7 @@ class C_login
     }
 }
 
-$login = new C_login($conn, $conn2);
+$login = new C_login($conn, $conn2, $config);
 $data = $_GET;
 $action = isset($data["action"]) ? $data["action"] : "";
 switch ($action) {

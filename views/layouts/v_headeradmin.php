@@ -2,11 +2,12 @@
 <html>
 <head>
     <?php
-        define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/adminRSHJ");
+        define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/dutakarya");
+        define('__ROOT__', dirname(dirname(__FILE__)));
     ?>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Sistem Informasi RSHAJI</title>
+  <title>DUTA KARYA</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome -->
@@ -77,6 +78,9 @@
       <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/plugins/select2/css/select2.min.css">
       <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <style>
+    html,body {
+      font-size: 14px;
+    }
     .content-wrapper>.content {
       padding: 0 1.5rem;
     }
@@ -117,6 +121,7 @@
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         line-height: 15px;
     }
+
   </style>
   <script>
     function formatMoney(number, decPlaces, decSep, thouSep) {

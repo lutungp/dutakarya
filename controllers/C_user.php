@@ -30,9 +30,9 @@ class C_user
 
     public function createUser($data)
     {
-        $fieldSave = ["user_nama", "user_password", "m_usergroup_id", "user_created_by", "user_created_date", "user_revised"];
+        $fieldSave = ["user_nama", "user_password", "m_usergroup_id", "m_pegawai_id", "user_created_by", "user_created_date", "user_revised"];
         $password = md5($data["user_password"]);
-        $dataSave = [$data["user_nama"], $password, $data["m_usergroup_id"], $_SESSION["USERNAME"], date("Y-m-d H:i:s"), 0];
+        $dataSave = [$data["user_nama"], $password, $data["m_usergroup_id"], $data["m_pegawai_id"], $_SESSION["USERNAME"], date("Y-m-d H:i:s"), 0];
         $action = query_create($this->conn2, 'm_user', $fieldSave, $dataSave);
         if ($action > 0) {
             echo "200";
@@ -43,9 +43,9 @@ class C_user
 
     public function updateUser($data)
     {
-        $fieldSave = ["user_nama", "user_password", "m_usergroup_id", "user_updated_by", "user_updated_date", "user_revised"];
+        $fieldSave = ["user_nama", "user_password", "m_pegawai_id", "m_usergroup_id", "user_updated_by", "user_updated_date", "user_revised"];
         $password = md5($data["user_password"]);
-        $dataSave = [$data["user_nama"], $password, $data["m_usergroup_id"], $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "user_revised+1"];
+        $dataSave = [$data["user_nama"], $password, $data["m_pegawai_id"], $data["m_usergroup_id"], $_SESSION["USERNAME"], date("Y-m-d H:i:s"), "user_revised+1"];
         $field = "";
         foreach ($fieldSave as $key => $value) {
             $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -64,6 +64,12 @@ class C_user
             echo "202";
         }
     }
+
+    public function getPegawai($search)
+    {
+        $regional = $this->model->getPegawai($search);
+        echo json_encode($regional);
+    }
 }
 
 $user = new C_user($conn, $conn2, $config);
@@ -81,6 +87,11 @@ switch ($action) {
             $user->updateUser($_POST);
         }
         
+        break;
+    
+    case 'getpegawai':
+        $search = isset($_POST['searchTerm']) ? $_POST['searchTerm'] : '';
+        $user->getPegawai($search);
         break;
     
     default:

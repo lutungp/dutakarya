@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-    define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/adminRSHJ");
+    define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/dutakarya");
 ?>
 <head>
 	<meta charset="utf-8">
@@ -9,7 +9,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-	<title>Sistem Informasi RS HAJI JAKARTA</title>
+	<title>DUTA KARYA</title>
 
 	<!-- Google font -->
 	<link href="https://fonts.googleapis.com/css?family=Lato:400,400i,700" rel="stylesheet">

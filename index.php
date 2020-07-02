@@ -1,7 +1,7 @@
 <?php
 // Include router class
 include('Route.php');
-define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/adminRSHJ");
+define("BASE_URL", "http://" . $_SERVER['HTTP_HOST'] . "/dutakarya");
 
 // Add base route (startpage)
 Route::add('/',function(){

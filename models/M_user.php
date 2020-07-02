@@ -20,10 +20,13 @@ class M_user
                     user_nama,
                     user_pegawai,
                     m_usergroup_id,
+                    m_pegawai_id,
+                    CONCAT('[', m_pegawai.pegawai_kode, '] ', m_pegawai.pegawai_nama) AS pegawai_nama,
                     m_usergroup.usergroup_nama,
                     CASE WHEN user_aktif = 'Y' THEN 'Aktif' ELSE 'Tidak Aktif' END AS useraktif
                 FROM m_user 
-                LEFT JOIN m_usergroup ON m_usergroup.usergroup_id = m_user.m_usergroup_id ";
+                LEFT JOIN m_usergroup ON m_usergroup.usergroup_id = m_user.m_usergroup_id
+                LEFT JOIN m_pegawai ON m_pegawai.pegawai_id = m_user.m_pegawai_id ";
         $quser = $this->conn2->query($sql);
         $user = [];
         while ($result = $quser->fetch_array(MYSQLI_ASSOC)) {
@@ -49,6 +52,24 @@ class M_user
             );
         }
         return $usergroup;
+    }
+
+    public function getPegawai($search)
+    {
+        if ($search <> '') {
+            $search = " WHERE UPPER(m_pegawai.pegawai_nama) LIKE '%".strtoupper($search)."%'";
+        }
+        $sql = " SELECT 
+                    m_pegawai.pegawai_id AS id, 
+                    CONCAT('[', m_pegawai.pegawai_kode, '] ', m_pegawai.pegawai_nama) AS text 
+                FROM m_pegawai $search LIMIT 20";
+        $qpegawai = $this->conn2->query($sql);
+        $rpegawai = array();
+        while ($val = $qpegawai->fetch_array()) {
+            array_push($rpegawai, $val);
+        }
+
+        return $rpegawai;
     }
     
 }

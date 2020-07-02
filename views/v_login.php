@@ -90,11 +90,11 @@
         color: #EF3B3A;
     }
     body {
-        background: #76b852; /* fallback for old browsers */
-        background: -webkit-linear-gradient(right, #76b852, #8DC26F);
-        background: -moz-linear-gradient(right, #76b852, #8DC26F);
-        background: -o-linear-gradient(right, #76b852, #8DC26F);
-        background: linear-gradient(to left, #76b852, #8DC26F);
+        background: #005ebb; /* fallback for old browsers */
+        background: -webkit-linear-gradient(right, #005ebb, #8DC26F);
+        background: -moz-linear-gradient(right, #005ebb, #8DC26F);
+        background: -o-linear-gradient(right, #005ebb, #8DC26F);
+        background: linear-gradient(to left, #005ebb, #8DC26F);
         font-family: "Roboto", sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;      
@@ -150,16 +150,13 @@
             <p class="message">Already registered? <a href="#">Sign In</a></p>
         </form> -->
         <form id="login-form" class="login-form" method="POST" action="<?php echo BASE_URL; ?>/controllers/C_login.php?action=login">
-            <img src="<?php echo BASE_URL; ?>/assets/img/RSHAJI.PNG" alt="Rshaji-Jakarta-telemedicine" width="100px" heigh="50px">
-            <p><b>SDM <font style="color: green;">RSHAJI</font></b></p>
+            <!-- <img src="<?php // echo BASE_URL; ?>/assets/img/RSHAJI.PNG" alt="Rshaji-Jakarta-telemedicine" width="100px" heigh="50px"> -->
+            <p><b>Inventory <font style="color: green;">Duta Karya</font></b></p>
             <input type="text" id="username" name="username" placeholder="username"/>
             <input type="password" id="password" name="password" placeholder="password"/>
             <button>login</button>
             <!-- <p class="message">Not registered? <a href="#">Create an account</a></p> -->
         </form>
-    </div>
-    <div class="info-login">
-        Isi Username dengan Kode Pegawai.
     </div>
 </div>
 <script>

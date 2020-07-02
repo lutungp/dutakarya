@@ -5,7 +5,7 @@
     <div class="sidebar">
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <a href="<?php echo BASE_URL ?>/controllers/C_profile.php" class="d-block"><?php echo $user->user_pegawai ?></a>
+          <a href="<?php echo BASE_URL ?>/controllers/C_profile" class="d-block"><?php echo $user->user_pegawai ?></a>
         </div>
       </div>
 
@@ -13,7 +13,7 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item has-treeview">
-          <a href="<?php echo BASE_URL ?>/controllers/C_dashboard.php" class="nav-link">
+          <a href="<?php echo BASE_URL ?>/controllers/C_dashboard" class="nav-link">
             <i class="nav-icon"></i>
             <p>Dashboard</p>
           </a>
