@@ -112,7 +112,6 @@
                         <div style="margin-top: 10px;" id="cellendeditevent"></div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

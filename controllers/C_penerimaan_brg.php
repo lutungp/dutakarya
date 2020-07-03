@@ -41,6 +41,19 @@ class C_penerimaan_brg
     {
         templateAdmin($this->conn2, '../views/penerimaanbrg/v_formpenerimaan_brg.php', NULL, 'TRANSAKSI', 'PENERIMAAN BARANG');
     }
+
+    public function getRekanan($data)
+    {
+        $search = isset($data['searchTerm']) ? $data['searchTerm'] : '';
+        $result = $this->model->getRekanan($search);
+        echo json_encode($result);
+    }
+
+    public function getBarang()
+    {
+        $result = $this->model->getBarangSatkonv();
+        echo json_encode($result);
+    }
 }
 
 $penerimaan = new C_penerimaan_brg($conn, $conn2, $config);
@@ -55,6 +68,12 @@ switch ($action) {
         break;
     case 'formtransaksi':
         $penerimaan->formTransaksi($_POST);
+        break;
+    case 'getrekanan':
+        $penerimaan->getRekanan($_GET);
+        break;
+    case 'getbarang':
+        $penerimaan->getBarang();
         break;
     default:
         $penerimaan->Penerimaan();

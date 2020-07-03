@@ -41,4 +41,68 @@ class M_penerimaan_brg
         return $result;
     }
 
+    public function getRekanan($search)
+    {
+        $sql = "SELECT
+                m_rekanan.rekanan_id AS id,
+                m_rekanan.rekanan_kode,
+                m_rekanan.rekanan_nama AS text
+            FROM m_rekanan WHERE rekanan_aktif = 'Y'";
+        if ($search <> '') {
+            $sql .= " AND m_rekanan.rekanan_nama LIKE '%".$search."%' ";
+        }
+
+        $qrekanan = $this->conn2->query($sql);
+        $rekanan = [];
+        while ($result = $qrekanan->fetch_array(MYSQLI_ASSOC)) {
+            array_push($rekanan, $result);
+        }
+        return $rekanan;
+    }
+
+    public function getBarangSatkonv()
+    {
+        $sql = " SELECT  
+                    barang_id,
+                    barang_kode,
+                    barang_nama,
+                    m_satuan_id
+                FROM m_barang
+                WHERE m_barang.barang_aktif = 'Y' ";
+
+        $qbarang = $this->conn2->query($sql);
+        $data['barang'] = [];
+        while ($result = $qbarang->fetch_array(MYSQLI_ASSOC)) {
+            array_push($data['barang'], $result);
+        }
+
+        $sql = " SELECT  
+                    satkonv_id,
+                    m_barang_id,
+                    m_satuan_id,
+                    satkonv_nilai
+                FROM m_satuan_konversi
+                WHERE m_satuan_konversi.satkonv_aktif = 'Y' ";
+
+        $qsatuankonv = $this->conn2->query($sql);
+        $data['satuan_konversi'] = [];
+        while ($result = $qsatuankonv->fetch_array(MYSQLI_ASSOC)) {
+            array_push($data['satuan_konversi'], $result);
+        }
+
+        $sql = " SELECT  
+                    satuan_id,
+                    satuan_nama
+                FROM m_satuan
+                WHERE m_satuan.satuan_aktif = 'Y' ";
+
+        $qsatuankonv = $this->conn2->query($sql);
+        $data['satuan'] = [];
+        while ($result = $qsatuankonv->fetch_array(MYSQLI_ASSOC)) {
+            array_push($data['satuan'], $result);
+        }
+
+        return $data;
+    }
+
 }
