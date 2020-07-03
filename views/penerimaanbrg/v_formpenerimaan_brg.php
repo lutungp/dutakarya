@@ -5,14 +5,15 @@
 <script>
     $(document).ready(function(){
         var barangAdapter = false;
-        var satuanAdapter = false; 
+        var satuanAdapter = false;
+        var barang = [];
+        var satuan = [];
         $.get("<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=getbarang", function(data, status){
             data = JSON.parse(data);
             databarang = data['barang'];
-            var barang = [];
             for (let index = 0; index < databarang.length; index++) {
                 const element = databarang[index];
-                barang.push({ value: element.barang_id, label: element.barang_nama, satuan_id : element.m_satuan_id });
+                barang.push({ value: element.barang_id, label: element.barang_nama, satuan_id : element.m_satuan_id, satuan_nama : element.satuan_nama });
             }
             
             var barangSource = {
@@ -28,7 +29,6 @@
             });
 
             var datasatuan = data['satuan'];
-            var satuan = [];
             for (let index = 0; index < datasatuan.length; index++) {
                 const element = datasatuan[index];
                 satuan.push({ value: element.satuan_id, label: element.satuan_nama });
@@ -52,8 +52,8 @@
                     {
                         penerimaandet_id : 0,
                         t_penerimaan_id : 0,
-                        m_barang_id : 0,
-                        m_satuan_id : 0,
+                        m_barang_id : '',
+                        m_satuan_id : '',
                         penerimaan_qty : 0
                     }
                 ],
@@ -70,6 +70,7 @@
             $("#penerimaanGrid").jqxGrid({
                 height : 200,
                 width: "100%",
+                height: 360,
                 source: penerimaanAdapter,
                 selectionmode: 'singlecell',
                 editable: true,
@@ -94,18 +95,33 @@
             });
 
             $("#penerimaanGrid").on('select', function (event) {
-                console.log(event)
                 if (event.args) {
                     var item = event.args.item;
-                    if (item) {
-                        
-                        // var valueelement = $("<div></div>");
-                        // valueelement.text("Value: " + item.value);
-                        // var labelelement = $("<div></div>");
-                        // labelelement.text("Label: " + item.label);
-                        // $("#selectionlog").children().remove();
-                        // $("#selectionlog").append(labelelement);
-                        // $("#selectionlog").append(valueelement);
+                    if (event.args.owner.id == 'dropdownlisteditorpenerimaanGridm_barang_id') {
+                        barang_id = item.value;
+                        var datasatkonv = data['satuan_konversi'];
+                        datasatkonv = datasatkonv.filter(p=>parseInt(p.m_barang_id)==barang_id);
+                        var satkonv = [];
+                        for (let index = 0; index < datasatkonv.length; index++) {
+                            const element = datasatkonv[index];
+                            satkonv.push({ value: element.satkonv_id, label: element.satuan_nama, satkonv_nilai : element.satkonv_nilai });
+                        }
+                        var selectbarang = barang.filter(p=>parseInt(p.value)==barang_id);
+                        satkonv.push({ value: 0, label: selectbarang[0].satuan_nama, satkonv_nilai : 1 });
+                        var satuanSource = {
+                                datatype: "array",
+                                datafields: [
+                                    { name: 'label', type: 'string' },
+                                    { name: 'value', type: 'int' },
+                                    { name: 'satkonv_nilai', type: 'float' }
+                                ],
+                                localdata: satkonv
+                        };
+                        satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
+                            autoBind: true
+                        });
+
+                        $("#penerimaanGrid").jqxGrid('updatebounddata', 'cells');
                     }
                 }
             });
@@ -139,7 +155,7 @@
                 <div class="card-header primary">
                     <h3 class="card-title">Penerimaan barang</h3>
                 </div>
-                <form role="form">
+                <form id="formpenerimaan">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
@@ -150,19 +166,22 @@
                                 <div class="form-group">
                                     <label for="penerimaan_tgl">Tanggal</label>
                                     <input type="text" class="form-control tgllahir" id="penerimaan_tgl" name="penerimaan_tgl"
-                                    data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask>
+                                    data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask require>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="m_rekanan_id">Rekanan</label>
-                                    <select id="m_rekanan_id" name="m_rekanan_id" style="width: 100%;"></select>
+                                    <select id="m_rekanan_id" name="m_rekanan_id" style="width: 100%;" require></select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div id="penerimaanGrid" style="margin: 10px;"></div>
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -194,5 +213,10 @@
                 cache: true
             }
         });
+
+        $('#formpenerimaan').submit(function (event) {
+            event.preventDefault();
+            console.log($(this).serialize())
+        })
     });
 </script>

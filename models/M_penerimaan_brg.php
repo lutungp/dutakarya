@@ -66,8 +66,10 @@ class M_penerimaan_brg
                     barang_id,
                     barang_kode,
                     barang_nama,
-                    m_satuan_id
+                    m_satuan_id,
+                    m_satuan.satuan_nama
                 FROM m_barang
+                LEFT JOIN m_satuan ON m_satuan.satuan_id = m_barang.m_satuan_id
                 WHERE m_barang.barang_aktif = 'Y' ";
 
         $qbarang = $this->conn2->query($sql);
@@ -79,9 +81,11 @@ class M_penerimaan_brg
         $sql = " SELECT  
                     satkonv_id,
                     m_barang_id,
+                    m_satuan.satuan_nama,
                     m_satuan_id,
                     satkonv_nilai
                 FROM m_satuan_konversi
+                LEFT JOIN m_satuan ON m_satuan.satuan_id = m_satuan_konversi.m_satuan_id
                 WHERE m_satuan_konversi.satkonv_aktif = 'Y' ";
 
         $qsatuankonv = $this->conn2->query($sql);
