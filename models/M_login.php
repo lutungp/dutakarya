@@ -18,6 +18,7 @@ class M_login
         $sql = "SELECT
                     usergroup_kode,
                     s_role.s_menu_id,
+                    s_menu.menu_kode,
                     s_menu.menu_nama,
                     s_role.role_priviliges
                 FROM
@@ -28,14 +29,16 @@ class M_login
                 WHERE
                     m_usergroup.usergroup_aktif = 'Y'
                 AND s_role.role_aktif = 'Y' AND m_user.user_id = $user_id";
+
         $qrole = $this->conn2->query($sql);
         $rrole = array();
-        while ($rrole = $qrole->fetch_array()) {
+        while ($val = $qrole->fetch_array()) {
             $rrole[] = array(
-                "usergroup_kode" => md5($rrole['usergroup_kode']),
-                "s_menu_id" => md5($rrole['s_menu_id']),
-                "menu_nama" => md5($rrole['menu_nama']),
-                "role_priviliges" => $rrole['role_priviliges'],
+                "usergroup_kode" => md5($val['usergroup_kode']),
+                "s_menu_id" => md5($val['s_menu_id']),
+                "menu_nama" => md5($val['menu_nama']),
+                "menu_kode" => md5($val['menu_kode']),
+                "role_priviliges" => $val['role_priviliges'],
             );
         }
 

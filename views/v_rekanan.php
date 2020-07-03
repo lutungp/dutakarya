@@ -1,4 +1,5 @@
 <?php 
+    require_once(__ROOT__.'/layouts/userrole.php');
     require_once(__ROOT__.'/layouts/header_jqwidget.php');
 ?>
 
@@ -129,7 +130,12 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body default">
-                    <button type="button" id="btn-filter" class="btn btn-primary btn-sm" onclick="adduser()">Tambah</button>
+                    <button type="button" id="btn-filter" class="btn btn-primary btn-sm" onclick="adduser()"
+                    <?php
+                        if ($create == '') {
+                            echo "disabled";
+                        }
+                    ?>>Tambah</button>
                     <div id='jqxWidget' style="margin-top: 5px;">
                         <div id="grid"></div>
                         <div id="cellbegineditevent"></div>

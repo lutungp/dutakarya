@@ -20,7 +20,7 @@ class C_profile
         $this->config = $config;
 
         if(!isset($_SESSION["USERNAME"])) {
-            header("Location: " . $config['base_url'] . "./controllers/C_login.php");
+            header("Location: " . $config['base_url'] . "./controllers/C_login");
         }
 
         $this->model = new M_profile($conn, $conn2, $config);
