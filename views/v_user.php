@@ -1,5 +1,6 @@
 <?php 
     require_once(__ROOT__.'/layouts/header_jqwidget.php');
+    require_once(__ROOT__.'/layouts/userrole.php');
 ?>
 <script type="text/javascript">
     $(document).ready(function () {
