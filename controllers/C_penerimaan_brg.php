@@ -28,7 +28,18 @@ class C_penerimaan_brg
 
     public function Penerimaan()
     {
-        templateAdmin($this->conn2, '../views/v_penerimaan_brg.php');
+        templateAdmin($this->conn2, '../views/penerimaanbrg/v_penerimaan_brg.php', NULL, 'TRANSAKSI', 'PENERIMAAN BARANG');
+    }
+
+    public function getPenerimaan()
+    {
+        $data = $this->model->getPenerimaan();
+        echo json_encode($data);
+    }
+
+    public function formTransaksi()
+    {
+        templateAdmin($this->conn2, '../views/penerimaanbrg/v_formpenerimaan_brg.php', NULL, 'TRANSAKSI', 'PENERIMAAN BARANG');
     }
 }
 
@@ -36,8 +47,14 @@ $penerimaan = new C_penerimaan_brg($conn, $conn2, $config);
 $data = $_GET;
 $action = isset($data["action"]) ? $data["action"] : '';
 switch ($action) {
+    case 'getpenerimaan':
+        $penerimaan->getPenerimaan();
+        break;
     case 'submit':
         $penerimaan->simpanPenerimaan($_POST);
+        break;
+    case 'formtransaksi':
+        $penerimaan->formTransaksi($_POST);
         break;
     default:
         $penerimaan->Penerimaan();

@@ -179,7 +179,7 @@
                 dataType: 'html',
                 success:function(hasil) {
                     if(hasil == 200) {
-                        window.location.href='<?php echo BASE_URL ?>/controllers/C_Login.php';
+                        window.location.href='<?php echo BASE_URL ?>/controllers/C_Login';
                     } else {
                         $("#username").val('');
                         $("#password").val('');
