@@ -13,7 +13,7 @@
             datafields: [
                 { name: 'penerimaan_id', type: 'int' },
                 { name: 'penerimaan_no', type: 'string' },
-                { name: 'penerimaan_tgl', type: 'date' },
+                { name: 'penerimaan_tgl', type: 'string' },
                 { name: 'm_rekanan_id', type: 'int' },
                 { name: 'rekanan_nama', type: 'string' },
                 { name: 'penerimaan_aktif', type: 'string' },
@@ -66,10 +66,9 @@
             },
             autoshowfiltericon: true,
             columns: [
-                { text: 'No. Transaksi', datafield: 'penerimaan_no', width : 200, cellsalign: 'center'},
+                { text: 'No. Transaksi', datafield: 'penerimaan_no'},
                 { text: 'Rekanan', datafield: 'rekanan_nama'},
-                { text: 'Tanggal', datafield: 'penerimaan_tgl', cellsformat: 'dd-mm-yyyy', cellsalign: 'center', width : 200},
-                // { text: 'Penerimaan Aktif', datafield: 'penerimaan_aktif', filterable: false},
+                { text: 'Penerimaan Aktif', datafield: 'penerimaan_aktif', filterable: false},
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
                         return "Edit";
