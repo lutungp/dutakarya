@@ -7,10 +7,12 @@
     var satuanAdapter = false;
     var barang = [];
     var satuan = [];
+    var satKonv = [];
     $(document).ready(function(){
         $.get("<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=getbarang", function(data, status){
             data = JSON.parse(data);
             databarang = data['barang'];
+            satKonv = data['satuan_konversi'];
             for (let index = 0; index < databarang.length; index++) {
                 const element = databarang[index];
                 barang.push({ value: element.barang_id, label: element.barang_nama, satuan_id : element.m_satuan_id, satuan_nama : element.satuan_nama });
@@ -126,7 +128,7 @@
                                 valueMember: 'value'
                             });
                         }, 
-                        width : 300
+                        width : 300,
                     },
                     { text: 'Qty', datafield: 'penerimaandet_qty', cellsalign: 'right'},
                 ]
@@ -213,11 +215,18 @@
                 var rec = $('#penerimaanGrid').jqxGrid('getrenderedrowdata', i);
                 m_barang_id = barang.filter(p=>p.label==rec.m_barang_id);
                 m_satuan_id = satuan.filter(p=>p.label==rec.m_satuan_id);
+                dtsatkonv = satKonv.filter(p=>parseInt(p.m_barang_id)==parseInt(m_barang_id[0].value||0)&&parseInt(p.m_satuan_id)==parseInt(m_satuan_id[0].value||0));
+                
+                satkonv_nilai = 1;
+                if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
+                
                 rows.push({
                     'penerimaandet_id' : rec.penerimaandet_id,
                     't_penerimaan_id' : $('#penerimaan_id').val(),
                     'm_barang_id' : parseInt(m_barang_id[0].value||0),
+                    'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
                     'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
+                    'satkonv_nilai' : parseFloat(satkonv_nilai),
                     'penerimaandet_qty' : rec.penerimaandet_qty,
                 }); 
             }

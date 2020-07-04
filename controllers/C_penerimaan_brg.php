@@ -59,6 +59,7 @@ class C_penerimaan_brg
     {
         $penerimaan_tgl = date('Y-m-d', strtotime($data['penerimaan_tgl']));
         $penerimaan_id = $data['penerimaan_id'];
+        $penerimaan_no = $data['penerimaan_no'];
         if ($penerimaan_id > 0) {
             $fieldSave = ['penerimaan_tgl', 'm_rekanan_id', 'penerimaan_updated_by', 'penerimaan_updated_date', 'penerimaan_revised'];
             $dataSave = [$penerimaan_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penerimaan_revised+1'];
@@ -81,7 +82,8 @@ class C_penerimaan_brg
         }
         
         foreach ($data['rows'] as $key => $val) {
-            if ($val['penerimaandet_id'] > 0) {
+            $penerimaandet_id = $val['penerimaandet_id'];
+            if ($penerimaandet_id > 0) {
                 $fieldSave = ['t_penerimaan_id', 'm_barang_id', 'm_satuan_id', 'penerimaandet_qty', 'penerimaandet_updated_by', 'penerimaandet_updated_date', 'penerimaandet_revised'];
                 $dataSave = [$penerimaan_id, $val['m_barang_id'], $val['m_satuan_id'], $val['penerimaandet_qty'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penerimaandet_revised+1'];
                 $field = "";
@@ -96,11 +98,35 @@ class C_penerimaan_brg
                 $where = "WHERE penerimaandet_id = " . $val['penerimaandet_id'];
                 query_update($this->conn2, 't_penerimaan_detail', $fieldSave, $dataSave);
             } else {
-                $penerimaan_no = getPenomoran($this->conn2, 'TM', 't_penerimaan', 'penerimaan_id', 'penerimaan_no', $penerimaan_tgl);
                 $fieldSave = ['t_penerimaan_id', 'm_barang_id', 'm_satuan_id', 'penerimaandet_qty', 'penerimaandet_created_by', 'penerimaandet_created_date'];
                 $dataSave = [$penerimaan_id, $val['m_barang_id'], $val['m_satuan_id'], $val['penerimaandet_qty'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
-                query_create($this->conn2, 't_penerimaan_detail', $fieldSave, $dataSave);
+                $penerimaandet_id = query_create($this->conn2, 't_penerimaan_detail', $fieldSave, $dataSave);
             }
+
+            $barangtrans_awal = $this->model->getStokAkhir($val['m_barang_id']);
+
+            $datastock = array(
+                't_trans_id'      => $penerimaan_id,
+                't_transdet_id'   => $penerimaandet_id,
+                'barangtrans_jenis' => 'PENERIMAAN BRG',
+                'barangtrans_no'  => $penerimaan_no,
+                'barangtrans_tgl' => $penerimaan_tgl,
+                'm_barang_id'  => $val['m_barang_id'],
+                'm_barangsatuan_id' => $val['m_barangsatuan_id'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'barangtrans_jml' => $val['penerimaandet_qty'],
+                'barangtrans_konv' => $val['satkonv_nilai'],
+                'barangtrans_awal' => $barangtrans_awal,
+                'barangtrans_masuk' => $val['penerimaandet_qty'] * $val['satkonv_nilai'],
+                'barangtrans_akhir' => $barangtrans_awal + ($val['penerimaandet_qty'] * $val['satkonv_nilai'])
+            );
+
+            $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 
+                         'barangtrans_jml', 'barangtrans_konv', 'barangtrans_awal', 'barangtrans_masuk', 'barangtrans_akhir', 'barangtrans_status', 'barangtrans_created_by', 'barangtrans_created_date'];
+            $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
+                         $datastock['barangtrans_jml'], $datastock['barangtrans_konv'], $datastock['barangtrans_awal'], $datastock['barangtrans_masuk'], $datastock['barangtrans_akhir'], 'MASUK', $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+
+            query_create($this->conn2, 't_barangtrans', $fieldTransSave, $dataTransSave);
         }
 
         if ($penerimaan_id > 0) {

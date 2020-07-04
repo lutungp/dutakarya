@@ -109,4 +109,32 @@ class M_penerimaan_brg
         return $data;
     }
 
+    public function getBarangSatuan($barang_id)
+    {
+        $sql = " SELECT  
+                barang_id,
+                barang_kode,
+                barang_nama,
+                m_satuan_id
+            FROM m_barang
+            WHERE m_barang.barang_id = $barang_id ";
+
+        $qbarang = $this->conn2->query($sql);
+        $rbarang = $qbarang->fetch_object();
+
+        return $rbarang->m_satuan_id;
+    }
+
+    public function getStokAkhir($barang_id)
+    {
+        $sql = "SELECT barangtrans_akhir FROM t_barangtrans WHERE m_barang_id = $barang_id";
+        $qbarang = $this->conn2->query($sql);
+        $barangtrans_akhir = 0;
+        if ($qbarang) {
+            $rbarang = $qbarang->fetch_object();
+            $barangtrans_akhir = isset($rbarang->barangtrans_akhir) ? $rbarang->barangtrans_akhir : 0;
+        }
+        return $barangtrans_akhir;
+    }
+
 }
