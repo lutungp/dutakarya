@@ -137,4 +137,91 @@ class M_penerimaan_brg
         return $barangtrans_akhir;
     }
 
+    public function getPenerimaanData($penerimaan_id)
+    {
+        $sql = " SELECT 
+                    penerimaan_id,
+                    penerimaan_no,
+                    penerimaan_tgl,
+                    m_rekanan_id,
+                    m_rekanan.rekanan_nama,
+                    penerimaan_catatan
+                FROM t_penerimaan
+                LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_penerimaan.m_rekanan_id
+                WHERE penerimaan_aktif = 'Y' 
+                AND penerimaan_id = $penerimaan_id ";
+        $qpenerimaan = $this->conn2->query($sql);
+        $rpenerimaan = $qpenerimaan->fetch_object();
+        return $rpenerimaan;
+    }
+
+    public function getPenerimaanDataDetail($penerimaan_id, $penerimaandet_id = '')
+    {
+        $sql = " SELECT
+                    t_penerimaan_detail.penerimaandet_id,
+                    t_penerimaan_detail.t_penerimaan_id,
+                    t_penerimaan_detail.m_barang_id,
+                    t_penerimaan_detail.m_satuan_id,
+                    m_satuan_konversi.satkonv_nilai,
+                    t_penerimaan_detail.penerimaandet_qty 
+                FROM t_penerimaan_detail 
+                LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_penerimaan_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_penerimaan_detail.m_barang_id ";
+        if ($penerimaandet_id <> '') {
+            $sql .= "AND t_penerimaan_id IN (" . $penerimaandet_id . ") ";
+        }
+
+        if ($penerimaan_id > 0) {
+            $sql .= " WHERE penerimaandet_aktif = 'Y' AND t_penerimaan_id = $penerimaan_id ";
+        }
+        
+        $qpenerimaan = $this->conn2->query($sql);
+        $rpenerimaan = array();
+        while ($val = $qpenerimaan->fetch_array()) {
+            $rpenerimaan[] = array(
+                'penerimaandet_id' => $val['penerimaandet_id'],
+                't_penerimaan_id' => $val['t_penerimaan_id'],
+                'm_barang_id' => $val['m_barang_id'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'penerimaandet_qty' => $val['penerimaandet_qty'],
+                'satkonv_nilai' => $val['satkonv_nilai']
+            );
+        }
+
+        return $rpenerimaan;
+    }
+
+    public function getPenerimaanDataDetail2($penerimaandet_id)
+    {
+        $sql = " SELECT
+                    t_penerimaan_detail.penerimaandet_id,
+                    t_penerimaan_detail.t_penerimaan_id,
+                    t_penerimaan_detail.m_barang_id,
+                    m_barang.m_satuan_id AS satuanutama,
+                    t_penerimaan_detail.m_satuan_id,
+                    m_satuan_konversi.satkonv_nilai,
+                    t_penerimaan_detail.penerimaandet_qty 
+                FROM t_penerimaan_detail 
+                LEFT JOIN m_barang ON m_barang.barang_id = t_penerimaan_detail.m_barang_id
+                LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_penerimaan_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_penerimaan_detail.m_barang_id ";
+        if ($penerimaandet_id <> '') {
+            $sql .= "AND t_penerimaan_id IN (" . $penerimaandet_id . ") ";
+        }
+        
+        $qpenerimaan = $this->conn2->query($sql);
+        $rpenerimaan = array();
+        while ($val = $qpenerimaan->fetch_array()) {
+            $rpenerimaan[] = array(
+                'penerimaandet_id' => $val['penerimaandet_id'],
+                't_penerimaan_id' => $val['t_penerimaan_id'],
+                'm_barang_id' => $val['m_barang_id'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'satuanutama' => $val['satuanutama'],
+                'penerimaandet_qty' => $val['penerimaandet_qty'],
+                'satkonv_nilai' => $val['satkonv_nilai']
+            );
+        }
+
+        return $rpenerimaan;
+    }
+
 }

@@ -76,6 +76,7 @@
                         editrow = row;
                         var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
                         $("#grid").offset();
+                        window.location.href='<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=formtransaksi&id='+dataRecord.penerimaan_id;
                     }
                 },
                 { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,

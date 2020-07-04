@@ -8,7 +8,27 @@
     var barang = [];
     var satuan = [];
     var satKonv = [];
+    var hapusdetail = [];
     $(document).ready(function(){
+        datapenerimaan = JSON.parse('<?php echo $dataparse ?>');
+        var datapenerimaandetail = [];
+        if(datapenerimaan!==null) {
+            datapenerimaandetail = datapenerimaan.datapenerimaandetail;
+        }
+
+        var generaterow = function (i) {
+            var row = {};
+            row["penerimaandet_id"] = 0;
+            row["t_penerimaan_id"] = 0;
+            row["satuankonv"] = '';
+            row["m_barang_id"] = '';
+            row["m_satuan_id"] = '';
+            row["satkonv_nilai"] = 1;
+            row["penerimaandet_qtyold"] = 0;
+            row["penerimaandet_qty"] = 0;
+            return row;
+        }
+
         $.get("<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=getbarang", function(data, status){
             data = JSON.parse(data);
             databarang = data['barang'];
@@ -47,36 +67,83 @@
                 autoBind: true
             });
             // prepare the data
+            var datapenerimaandet = [];
+            
+            for (let index = 0; index < datapenerimaandetail.length; index++) {
+                const element = datapenerimaandetail[index];
+                let datdet = {
+                    penerimaandet_id : element.penerimaandet_id,
+                    t_penerimaan_id : element.t_penerimaan_id,
+                    m_barang_id : element.m_barang_id,
+                    m_satuan_id : element.m_satuan_id,
+                    satkonv_nilai : element.satkonv_nilai,
+                    penerimaandet_qtyold : element.penerimaandet_qty,
+                    penerimaandet_qty : element.penerimaandet_qty,
+                    satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==element.m_barang_id))
+                };
+                datapenerimaandet.push(datdet);
+            }
             var penerimaanGridSource = {
                 datatype: "array",
-                localdata:  [
-                    {
-                        penerimaandet_id : 0,
-                        t_penerimaan_id : 0,
-                        m_barang_id : '',
-                        m_satuan_id : '',
-                        penerimaandet_qty : 0,
-                        satuankonv : []
-                    }
-                ],
+                localdata:  datapenerimaandet,
                 datafields: [
                     { name: 'penerimaandet_id', type: 'int'},
                     { name: 't_penerimaan_id', type: 'int'},
                     { name: 'satuankonv'},
                     { name: 'm_barang_id', value: 'm_barang_id', values: { source: barangAdapter.records, value: 'value', name: 'label' } },
                     { name: 'm_satuan_id', value: 'm_satuan_id', values: { source: satuanAdapter.records, value: 'value', name: 'label' } },
+                    { name: 'satkonv_nilai'},
+                    { name: 'penerimaandet_qtyold', type: 'float'},
                     { name: 'penerimaandet_qty', type: 'float'}
-                ]
+                ],
+                addrow: function (rowid, rowdata, position, commit) {
+                    // synchronize with the server - send insert command
+                    // call commit with parameter true if the synchronization with the server is successful 
+                    //and with parameter false if the synchronization failed.
+                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
+                    commit(true);
+                },
+                deleterow: function (rowid, commit) {
+                    // synchronize with the server - send delete command
+                    // call commit with parameter true if the synchronization with the server is successful 
+                    //and with parameter false if the synchronization failed.
+                    commit(true);
+                }
             };
 
             var penerimaanAdapter = new $.jqx.dataAdapter(penerimaanGridSource);
             $("#penerimaanGrid").jqxGrid({
-                height : 200,
                 width: "100%",
                 height: 360,
                 source: penerimaanAdapter,
-                selectionmode: 'singlecell',
                 editable: true,
+                showtoolbar: true,
+                rendertoolbar: function (toolbar) {
+                    var me = this;
+                    var container = $("<div style='margin: 5px;'></div>");
+                    toolbar.append(container);
+                    container.append('<input id="addrowbutton" type="button" value="Tambah" />');
+                    container.append('<input style="margin-left: 5px;" id="deleterowbutton" type="button" value="Hapus" />');
+                    $("#addrowbutton").jqxButton();
+                    $("#deleterowbutton").jqxButton();
+                    // create new row.
+                    $("#addrowbutton").on('click', function () {
+                        var datarow = generaterow();
+                        var commit = $("#penerimaanGrid").jqxGrid('addrow', null, datarow);
+                    });
+                    // delete row.
+                    $("#deleterowbutton").on('click', function () {
+                        var selectedrowindex = $("#penerimaanGrid").jqxGrid('getselectedrowindex');
+                        var rowscount = $("#penerimaanGrid").jqxGrid('getdatainformation').rowscount;
+                        if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                            var rechapus = $('#penerimaanGrid').jqxGrid('getrenderedrowdata', selectedrowindex);
+                            hapusdetail.push({penerimaandet_id : rechapus.penerimaandet_id});
+
+                            var id = $("#penerimaanGrid").jqxGrid('getrowid', selectedrowindex);
+                            var commit = $("#penerimaanGrid").jqxGrid('deleterow', id);
+                        }
+                    });
+                },
                 columns: [
                     {
                         text: 'Barang', datafield: 'm_barang_id', displayfield: 'm_barang_id', columntype: 'dropdownlist',
@@ -100,7 +167,7 @@
 
                                     brg = barang.filter(p=>parseInt(p.value)==val);
                                     satkonv.push({ value: brg[0].satuan_id, label: brg[0].satuan_nama, satkonv_nilai : 1 });
-                                    recorddata.satuankonv = satkonv;
+                                    recorddata.satuankonv = JSON.stringify(satkonv);
                                     $("#penerimaanGrid").jqxGrid('setcellvalue', row, "m_satuan_id", "");
                                 }
                             });
@@ -109,6 +176,26 @@
                     },
                     {
                         text: 'Satuan', datafield: 'm_satuan_id', displayfield: 'm_satuan_id', columntype: 'dropdownlist',
+                        createeditor: function (row, value, editor) {
+                            var recorddata = $('#penerimaanGrid').jqxGrid('getrenderedrowdata', row);
+                            
+                            var satuanSource = {
+                                    datatype: "array",
+                                    datafields: [
+                                        { name: 'label', type: 'string' },
+                                        { name: 'value', type: 'int' }
+                                    ],
+                                    localdata: JSON.parse(recorddata.satuankonv)
+                            };
+                            satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
+                                autoBind: true
+                            });
+                            editor.jqxDropDownList({
+                                source: satuanAdapter,
+                                displayMember: 'label',
+                                valueMember: 'value'
+                            });
+                        },
                         initeditor: function (row, value, editor) {
                             var recorddata = $('#penerimaanGrid').jqxGrid('getrenderedrowdata', row);
                             var satuanSource = {
@@ -117,7 +204,7 @@
                                         { name: 'label', type: 'string' },
                                         { name: 'value', type: 'int' }
                                     ],
-                                    localdata: recorddata.satuankonv
+                                    localdata: JSON.parse(recorddata.satuankonv)
                             };
                             satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
                                 autoBind: true
@@ -130,7 +217,9 @@
                         }, 
                         width : 300,
                     },
-                    { text: 'Qty', datafield: 'penerimaandet_qty', cellsalign: 'right'},
+                    { text: 'Qty', datafield: 'penerimaandet_qty', cellsalign: 'right',
+                        
+                    },
                 ]
             });
         });
@@ -157,7 +246,7 @@
                                 <div class="form-group">
                                     <label for="penerimaan_tgl">Tanggal</label>
                                     <input type="text" class="form-control tgllahir" id="penerimaan_tgl" name="penerimaan_tgl"
-                                    data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy" data-mask require>
+                                    data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask require>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -167,12 +256,19 @@
                                 </div>
                             </div>
                         </div>
+                        <br>
+                        <!-- <div class="row">
+                            <div class="col-md-4">
+                                <button type="button" id="tambah" class="btn btn-primary btn-sm">Tambah</button>
+                                <button type="button" id="hapus" class="btn btn-danger btn-sm">Hapus</button>
+                            </div>
+                        </div> -->
                         <div class="row">
                             <div id="penerimaanGrid" style="margin: 10px;"></div>
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-danger btn-sm">Batal</button>
+                        <button type="button" id="batal" class="btn btn-danger btn-sm" disabled>Batal</button>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <button type="submit" class="btn btn-default btn-sm float-right" style="margin-right: 5px;">Cetak</button>
                     </div>
@@ -228,6 +324,7 @@
                     'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
                     'satkonv_nilai' : parseFloat(satkonv_nilai),
                     'penerimaandet_qty' : rec.penerimaandet_qty,
+                    'penerimaandet_qtyold' : rec.penerimaandet_qtyold,
                 }); 
             }
             
@@ -240,7 +337,8 @@
                     penerimaan_no : $('#penerimaan_no').val(),
                     penerimaan_tgl : moment($('#penerimaan_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
                     m_rekanan_id : $('#m_rekanan_id').val(),
-                    rows : rows
+                    rows : rows,
+                    'hapusdetail' : hapusdetail
                 },
                 success : function (res) {
                     if (res == 200) {
@@ -253,14 +351,21 @@
                 }
             });
         })
+
+        datapenerimaan = JSON.parse('<?php echo $dataparse ?>');
+        if(datapenerimaan!==null) {
+            var dat = datapenerimaan.datapenerimaan;
+            $('#penerimaan_id').val(dat.penerimaan_id);
+            $('#penerimaan_no').val(dat.penerimaan_no);
+            $('#penerimaan_tgl').val(moment(dat.penerimaan_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $("#m_rekanan_id").data('select2').trigger('select', {
+                data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
+            });
+            $('#batal').removeAttr('disabled')
+        }
     });
 
     function resetForm() {
-        $("#penerimaanGrid").jqxGrid('updatebounddata');
-        $('#penerimaan_id').val(0);
-        $('#penerimaan_no').val('');
-        var now = new Date();
-        $('#penerimaan_tgl').val(moment(now).format('DD-MM-YYYY'));
-        $('#m_rekanan_id').val('');
+        $("#penerimaanGrid").jqxGrid('refreshdata');
     }
 </script>
