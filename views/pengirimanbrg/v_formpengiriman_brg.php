@@ -367,6 +367,67 @@
             });
             $('#batal').removeAttr('disabled')
         }
+
+        $('#batal').on('click', function () {
+            var griddata = $('#pengirimanGrid').jqxGrid('getdatainformation');
+            var rows = [];
+            for (var i = 0; i < griddata.rowscount; i++){
+                var rec = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', i);
+                m_barang_id = barang.filter(p=>p.label==rec.m_barang_id);
+                m_satuan_id = satuan.filter(p=>p.label==rec.m_satuan_id);
+                dtsatkonv = satKonv.filter(p=>parseInt(p.m_barang_id)==parseInt(m_barang_id[0].value||0)&&parseInt(p.m_satuan_id)==parseInt(m_satuan_id[0].value||0));
+                
+                satkonv_nilai = 1;
+                if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
+                
+                rows.push({
+                    'pengirimandet_id' : rec.pengirimandet_id,
+                    't_pengiriman_id' : $('#pengiriman_id').val(),
+                    'm_barang_id' : parseInt(m_barang_id[0].value||0),
+                    'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
+                    'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
+                    'satkonv_nilai' : parseFloat(satkonv_nilai),
+                    'pengirimandet_qty' : rec.pengirimandet_qty,
+                    'pengirimandet_qtyold' : rec.pengirimandet_qtyold,
+                });
+            }
+
+            swal({
+                title: "Batalkan pengiriman " + dataRecord.barang_nama,
+                text: "Alasan dihapus :",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+            }, function (inputValue) {
+                if (inputValue === false) return false;
+                if (inputValue === "") {
+                    swal.showInputError("Tuliskan alasan anda !");
+                    return false
+                }
+                $.ajax({
+                    url: "<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=batal",
+                    type: "post",
+                    datatype : 'json',
+                    data: {
+                        pengiriman_id : $('#pengiriman_id').val(),
+                        pengiriman_no : $('#pengiriman_no').val(),
+                        pengiriman_tgl : moment($('#pengiriman_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                        m_rekanan_id : $('#m_rekanan_id').val(),
+                        rows : rows,
+                        alasan : inputValue
+                    },
+                    success : function (res) {
+                        if (res == 200) {
+                            resetForm();
+                            swal("Info!", "Pengiriman Berhasil dibatalkan", "success");
+                            $("#ModalSatuan").modal('toggle');
+                        } else {
+                            swal("Info!", "Pengiriman Gagal dibatalkan", "error");
+                        }
+                    }
+                });
+            });
+        });
     });
 
     function resetForm() {

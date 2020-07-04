@@ -310,6 +310,11 @@
         $('#formpenerimaan').submit(function (event) {
             event.preventDefault();
             var griddata = $('#penerimaanGrid').jqxGrid('getdatainformation');
+            if(griddata.rowscount == 0) {
+                swal("Info!", "Penerimaan Gagal disimpan, detail barang masih kosong", "warning");
+                return false;
+            }
+            
             var rows = [];
             for (var i = 0; i < griddata.rowscount; i++){
                 var rec = $('#penerimaanGrid').jqxGrid('getrenderedrowdata', i);
@@ -367,6 +372,71 @@
             });
             $('#batal').removeAttr('disabled')
         }
+
+        $('#batal').on('click', function() {
+            var griddata = $('#penerimaanGrid').jqxGrid('getdatainformation');
+            if(griddata.rowscount == 0) {
+                swal("Info!", "Penerimaan Gagal disimpan, detail barang masih kosong", "warning");
+                return false;
+            }
+            swal({
+                title: "Batalkan penerimaan " + $('#penerimaan_no').val(),
+                text: "Alasan dihapus :",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+            }, function (inputValue) {
+                if (inputValue === false) return false;
+                if (inputValue === "") {
+                    swal.showInputError("Tuliskan alasan anda !");
+                    return false
+                }
+                var rows = [];
+                for (var i = 0; i < griddata.rowscount; i++){
+                    var rec = $('#penerimaanGrid').jqxGrid('getrenderedrowdata', i);
+                    m_barang_id = barang.filter(p=>p.label==rec.m_barang_id);
+                    m_satuan_id = satuan.filter(p=>p.label==rec.m_satuan_id);
+                    dtsatkonv = satKonv.filter(p=>parseInt(p.m_barang_id)==parseInt(m_barang_id[0].value||0)&&parseInt(p.m_satuan_id)==parseInt(m_satuan_id[0].value||0));
+                    
+                    satkonv_nilai = 1;
+                    if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
+                    
+                    rows.push({
+                        'penerimaandet_id' : rec.penerimaandet_id,
+                        't_penerimaan_id' : $('#penerimaan_id').val(),
+                        'm_barang_id' : parseInt(m_barang_id[0].value||0),
+                        'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
+                        'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
+                        'satkonv_nilai' : parseFloat(satkonv_nilai),
+                        'penerimaandet_qty' : rec.penerimaandet_qty,
+                        'penerimaandet_qtyold' : rec.penerimaandet_qtyold,
+                    }); 
+                }
+
+                $.ajax({
+                    url: "<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=batal",
+                    type: "post",
+                    datatype : 'json',
+                    data: {
+                        penerimaan_id : $('#penerimaan_id').val(),
+                        penerimaan_no : $('#penerimaan_no').val(),
+                        penerimaan_tgl : moment($('#penerimaan_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                        m_rekanan_id : $('#m_rekanan_id').val(),
+                        rows : rows,
+                        alasan : inputValue
+                    },
+                    success : function (res) {
+                        if (res == 200) {
+                            resetForm();
+                            swal("Info!", "Penerimaan Berhasil dibatalkan", "success");
+                            $("#ModalSatuan").modal('toggle');
+                        } else {
+                            swal("Info!", "Penerimaan Gagal dibatalkan", "error");
+                        }
+                    }
+                });
+            });
+        });
     });
 
     function resetForm() {

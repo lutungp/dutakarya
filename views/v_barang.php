@@ -254,7 +254,7 @@
                         editrow = row;
                         var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
                         swal({
-                            title: "Hapus satuan " + dataRecord.barang_nama,
+                            title: "Hapus barang " + dataRecord.barang_nama,
                             text: "Alasan dihapus :",
                             type: "input",
                             showCancelButton: true,

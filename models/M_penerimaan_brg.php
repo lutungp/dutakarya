@@ -211,9 +211,10 @@ class M_penerimaan_brg
                     t_penerimaan_detail.penerimaandet_qty 
                 FROM t_penerimaan_detail 
                 LEFT JOIN m_barang ON m_barang.barang_id = t_penerimaan_detail.m_barang_id
-                LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_penerimaan_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_penerimaan_detail.m_barang_id ";
+                LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_penerimaan_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_penerimaan_detail.m_barang_id 
+                WHERE 1=1 ";
         if ($penerimaandet_id <> '') {
-            $sql .= "AND t_penerimaan_id IN (" . $penerimaandet_id . ") ";
+            $sql .= "AND penerimaandet_id IN (" . $penerimaandet_id . ") ";
         }
         
         $qpenerimaan = $this->conn2->query($sql);
