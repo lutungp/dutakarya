@@ -370,6 +370,12 @@
     });
 
     function resetForm() {
-        $("#penerimaanGrid").jqxGrid('refreshdata');
+        var now = new Date();
+        $('#penerimaan_id').val(0);
+        $('#penerimaan_no').val('');
+        $('#m_rekanan_id').val('');
+        $('#m_rekanan_id').trigger('change');
+        $('#penerimaan_tgl').val(moment(now, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+        $("#penerimaanGrid").jqxGrid('clear');
     }
 </script>

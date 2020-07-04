@@ -20,8 +20,7 @@ class M_pengiriman_brg
                     pengiriman_no,
                     pengiriman_tgl,
                     m_rekanan_id,
-                    m_rekanan.rekanan_nama,
-                    pengiriman_catatan
+                    m_rekanan.rekanan_nama
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 WHERE pengiriman_aktif = 'Y'";
@@ -34,7 +33,6 @@ class M_pengiriman_brg
                 'pengiriman_tgl' => $val['pengiriman_tgl'],
                 'm_rekanan_id' => $val['m_rekanan_id'],
                 'rekanan_nama' => $val['rekanan_nama'],
-                'pengiriman_catatan' => $val['pengiriman_catatan'],
             );
         }
 
@@ -154,8 +152,7 @@ class M_pengiriman_brg
                     pengiriman_no,
                     pengiriman_tgl,
                     m_rekanan_id,
-                    m_rekanan.rekanan_nama,
-                    pengiriman_catatan
+                    m_rekanan.rekanan_nama
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 WHERE pengiriman_aktif = 'Y' 

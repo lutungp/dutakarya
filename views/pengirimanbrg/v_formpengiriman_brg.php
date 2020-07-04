@@ -370,6 +370,12 @@
     });
 
     function resetForm() {
-        $("#pengirimanGrid").jqxGrid('refreshdata');
+        var now = new Date();
+        $('#pengiriman_id').val(0);
+        $('#pengiriman_no').val('');
+        $('#m_rekanan_id').val('');
+        $('#m_rekanan_id').trigger('change');
+        $('#pengiriman_tgl').val(moment(now, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+        $("#pengirimanGrid").jqxGrid('clear');
     }
 </script>
