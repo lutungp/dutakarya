@@ -125,7 +125,7 @@ class M_penerimaan_brg
         return $rbarang->m_satuan_id;
     }
 
-    public function getStokAkhir($barang_id)
+    public function getStokAkhir($barang_id, $tanggal)
     {
         $sql = "SELECT * FROM (
                     SELECT
