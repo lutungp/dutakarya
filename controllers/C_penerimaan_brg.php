@@ -42,6 +42,7 @@ class C_penerimaan_brg
         $result = NULL;
         if (isset($data['id']) > 0) {
             $penerimaan_id = $data['id'];
+            $result['penerimaan_id'] = $penerimaan_id;
             $result['datapenerimaan'] = $this->model->getPenerimaanData($penerimaan_id);
             $result['datapenerimaandetail'] = $this->model->getPenerimaanDataDetail($penerimaan_id);
         }
@@ -118,7 +119,7 @@ class C_penerimaan_brg
                 $qtyold = $val['penerimaandet_qtyold'] * $val['satkonv_nilai'];
                 $qty    = $val['penerimaandet_qty'] * $val['satkonv_nilai'];
                 if($qty <> $qtyold) {
-                    $barangtrans_awal = $this->model->getStokAkhir($val['m_barang_id']);
+                    $barangtrans_awal = $this->model->getStokAkhir($val['m_barang_id'], $penerimaan_tgl);
                     $barangtrans_masuk  = 0;
                     $barangtrans_keluar = 0;
                     $barangtrans_jenis = '';
@@ -193,7 +194,7 @@ class C_penerimaan_brg
         $detail = $this->model->getPenerimaanDataDetail2($penerimaandet_id);
         
         foreach ($detail as $key => $val) {
-            $barangtrans_awal = $this->model->getStokAkhir($val['m_barang_id']);
+            $barangtrans_awal = $this->model->getStokAkhir($val['m_barang_id'], $penerimaan_tgl);
             $barangtrans_keluar = $val['satkonv_nilai'] * $val['penerimaandet_qty'];
             $datastock = array(
                 't_trans_id'      => $val['t_penerimaan_id'],
@@ -209,7 +210,7 @@ class C_penerimaan_brg
                 'barangtrans_awal' => $barangtrans_awal,
                 'barangtrans_masuk' => 0,
                 'barangtrans_keluar' => $barangtrans_keluar,
-                'barangtrans_akhir' => $barangtrans_awal + $barangtrans_keluar,
+                'barangtrans_akhir' => $barangtrans_awal - $barangtrans_keluar,
                 'barangtrans_status' => 'KELUAR'
             );
             $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 

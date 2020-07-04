@@ -5,20 +5,20 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        var url = "<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=getpenerimaan";
+        var url = "<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=getpengiriman";
         // prepare the data
         var source =
         {
             datatype: "json",
             datafields: [
-                { name: 'penerimaan_id', type: 'int' },
-                { name: 'penerimaan_no', type: 'string' },
-                { name: 'penerimaan_tgl', type: 'string' },
+                { name: 'pengiriman_id', type: 'int' },
+                { name: 'pengiriman_no', type: 'string' },
+                { name: 'pengiriman_tgl', type: 'date' },
                 { name: 'm_rekanan_id', type: 'int' },
                 { name: 'rekanan_nama', type: 'string' },
-                { name: 'penerimaan_aktif', type: 'string' },
+                { name: 'pengiriman_aktif', type: 'string' },
             ],
-            id: 'penerimaan_id',
+            id: 'pengiriman_id',
             url: url,
             updaterow: function (rowid, rowdata, commit) {
                 // synchronize with the server - send update command
@@ -52,10 +52,11 @@
 
         // initialize jqxGrid
         $("#grid").jqxGrid({
+            height : '100%',
             width: '100%',
             source: dataAdapter,                
             pageable: true,
-            autoheight: true,
+            // autoheight: true,
             sortable: true,
             altrows: true,
             enabletooltips: true,
@@ -66,9 +67,10 @@
             },
             autoshowfiltericon: true,
             columns: [
-                { text: 'No. Transaksi', datafield: 'penerimaan_no'},
+                { text: 'No. Transaksi', datafield: 'pengiriman_no', width : 200, cellsalign: 'center'},
                 { text: 'Rekanan', datafield: 'rekanan_nama'},
-                { text: 'Penerimaan Aktif', datafield: 'penerimaan_aktif', filterable: false},
+                { text: 'Tanggal', datafield: 'pengiriman_tgl', cellsformat: 'dd-mm-yyyy', cellsalign: 'center', width : 200},
+                <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
                         return "Edit";
@@ -76,26 +78,10 @@
                         editrow = row;
                         var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
                         $("#grid").offset();
-                        window.location.href='<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=formtransaksi&id='+dataRecord.penerimaan_id;
+                        window.location.href='<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=formtransaksi&id='+dataRecord.pengiriman_id;
                     }
                 },
-                { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
-                    cellsrenderer: function () {
-                        return "Delete";
-                    }, buttonclick: function (row) {
-                        editrow = row;
-                        var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
-                        swal({
-                            title: "Hapus satuan " + dataRecord.rekanan_nama,
-                            text: "Alasan dihapus :",
-                            type: "input",
-                            showCancelButton: true,
-                            closeOnConfirm: false,
-                        }, function (inputValue) {
-                            
-                        });
-                    }
-                }
+                <?php } ?>
             ]
         });
     });
@@ -120,6 +106,6 @@
 <script>
 
     function addtransaksi() {
-        window.location.href='<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=formtransaksi';
+        window.location.href='<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=formtransaksi';
     }
 </script>

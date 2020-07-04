@@ -127,7 +127,16 @@ class M_penerimaan_brg
 
     public function getStokAkhir($barang_id)
     {
-        $sql = "SELECT barangtrans_akhir FROM t_barangtrans WHERE m_barang_id = $barang_id";
+        $sql = "SELECT * FROM (
+                    SELECT
+                        ROW_NUMBER() OVER ( PARTITION BY t_barangtrans.m_barang_id ORDER BY barangtrans_tgl DESC, barangtrans_id DESC ) AS rnumber,
+                        barangtrans_akhir 
+                    FROM
+                        t_barangtrans 
+                    WHERE
+                        m_barang_id = $barang_id AND barangtrans_tgl <= '$tanggal'
+                    ) AS barangtrans 
+                WHERE barangtrans.rnumber <= 1 ";
         $qbarang = $this->conn2->query($sql);
         $barangtrans_akhir = 0;
         if ($qbarang) {

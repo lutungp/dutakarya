@@ -52,10 +52,11 @@
 
         // initialize jqxGrid
         $("#grid").jqxGrid({
+            height : '100%',
             width: '100%',
             source: dataAdapter,                
             pageable: true,
-            autoheight: true,
+            // autoheight: true,
             sortable: true,
             altrows: true,
             enabletooltips: true,
@@ -70,6 +71,7 @@
                 { text: 'Rekanan', datafield: 'rekanan_nama'},
                 { text: 'Tanggal', datafield: 'penerimaan_tgl', cellsformat: 'dd-mm-yyyy', cellsalign: 'center', width : 200},
                 // { text: 'Penerimaan Aktif', datafield: 'penerimaan_aktif', filterable: false},
+                <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
                         return "Edit";
@@ -80,23 +82,7 @@
                         window.location.href='<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=formtransaksi&id='+dataRecord.penerimaan_id;
                     }
                 },
-                { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
-                    cellsrenderer: function () {
-                        return "Delete";
-                    }, buttonclick: function (row) {
-                        editrow = row;
-                        var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
-                        swal({
-                            title: "Hapus satuan " + dataRecord.rekanan_nama,
-                            text: "Alasan dihapus :",
-                            type: "input",
-                            showCancelButton: true,
-                            closeOnConfirm: false,
-                        }, function (inputValue) {
-                            
-                        });
-                    }
-                }
+                <?php } ?>
             ]
         });
     });

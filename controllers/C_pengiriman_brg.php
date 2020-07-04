@@ -1,0 +1,248 @@
+<?php
+
+include '../config/database.php';
+include '../config/config.php';
+include '../config/helpers.php';
+include '../models/M_pengiriman_brg.php';
+
+class C_pengiriman_brg
+{
+    public $conn = false;
+    public $conn2 = false;
+    public $config = false;
+
+    private $model = false;
+
+    public function __construct($conn, $conn2, $config)
+    {
+        $this->conn = $conn;
+        $this->conn2 = $conn2;
+        $this->config = $config;
+
+        if(!isset($_SESSION["USERNAME"])) {
+            header("Location: " . $config['base_url'] . "./controllers/C_login");
+        }
+
+        $this->model = new M_pengiriman_brg($conn, $conn2, $config);
+    }
+
+    public function Pengiriman()
+    {
+        templateAdmin($this->conn2, '../views/pengirimanbrg/v_pengiriman_brg.php', NULL, 'TRANSAKSI', 'PENGIRIMAN BARANG');
+    }
+
+    public function getPengiriman()
+    {
+        $data = $this->model->getPengiriman();
+        echo json_encode($data);
+    }
+
+    public function formTransaksi($data)
+    {
+        $result = NULL;
+        if (isset($data['id']) > 0) {
+            $pengiriman_id = $data['id'];
+            $result['pengiriman_id'] = $pengiriman_id;
+            $result['datapengiriman'] = $this->model->getPengirimanData($pengiriman_id);
+            $result['datapengirimandetail'] = $this->model->getPengirimanDataDetail($pengiriman_id);
+        }
+
+        templateAdmin($this->conn2, '../views/pengirimanbrg/v_formpengiriman_brg.php', json_encode($result), 'TRANSAKSI', 'PENGIRIMAN BARANG');
+    }
+
+    public function getRekanan($data)
+    {
+        $search = isset($data['searchTerm']) ? $data['searchTerm'] : '';
+        $result = $this->model->getRekanan($search);
+        echo json_encode($result);
+    }
+
+    public function getBarang()
+    {
+        $result = $this->model->getBarangSatkonv();
+        echo json_encode($result);
+    }
+
+    public function simpanPengiriman($data)
+    {
+        $pengiriman_tgl = date('Y-m-d', strtotime($data['pengiriman_tgl']));
+        $pengiriman_id = $data['pengiriman_id'];
+        $pengiriman_no = $data['pengiriman_no'];
+
+        if ($pengiriman_id > 0) {
+            $fieldSave = ['pengiriman_tgl', 'm_rekanan_id', 'pengiriman_updated_by', 'pengiriman_updated_date', 'pengiriman_revised'];
+            $dataSave = [$pengiriman_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengiriman_revised+1'];
+            $field = "";
+            foreach ($fieldSave as $key => $value) {
+                $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+                if (!preg_match("/revised/i", $value)) {
+                    $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+                } else {
+                    $field .= "$value = $dataSave[$key]" . $regex . " ";
+                }
+            }
+            $where = "WHERE pengiriman_id = " . $data['pengiriman_id'];
+            query_update($this->conn2, 't_pengiriman', $field, $where);
+        } else {
+            $pengiriman_no = getPenomoran($this->conn2, 'KM', 't_pengiriman', 'pengiriman_id', 'pengiriman_no', $pengiriman_tgl);
+            $fieldSave = ['pengiriman_no', 'pengiriman_tgl', 'm_rekanan_id', 'pengiriman_created_by', 'pengiriman_created_date'];
+            $dataSave = [$pengiriman_no, $pengiriman_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+            $pengiriman_id = query_create($this->conn2, 't_pengiriman', $fieldSave, $dataSave);
+        }
+        /* nonaktif detail terlebih dahulu */
+        if (isset($data['hapusdetail'])) {
+            $this->nonaktifdetail($data['hapusdetail'], $pengiriman_no, $pengiriman_tgl);
+        }
+        
+        if (isset($data['rows'])) {
+            foreach ($data['rows'] as $key => $val) {
+                $pengirimandet_id = $val['pengirimandet_id'];
+                if ($pengirimandet_id > 0) {
+                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_updated_by', 'pengirimandet_updated_date', 'pengirimandet_revised'];
+                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengirimandet_revised+1'];
+                    $field = "";
+                    foreach ($fieldSave as $key => $value) {
+                        $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+                        if (!preg_match("/revised/i", $value)) {
+                            $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+                        } else {
+                            $field .= "$value = $dataSave[$key]" . $regex . " ";
+                        }
+                    }
+                    $where = "WHERE pengirimandet_id = " . $val['pengirimandet_id'];
+                    query_update($this->conn2, 't_pengiriman_detail', $field, $where);
+                } else {
+                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_created_by', 'pengirimandet_created_date'];
+                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                    $pengirimandet_id = query_create($this->conn2, 't_pengiriman_detail', $fieldSave, $dataSave);
+                }
+
+                $qtyold = $val['pengirimandet_qtyold'] * $val['satkonv_nilai'];
+                $qty    = $val['pengirimandet_qty'] * $val['satkonv_nilai'];
+                if($qty <> $qtyold) {
+                    $barangtrans_awal = $this->model->getStokAkhir($val['m_barang_id'], $data['pengiriman_tgl']);
+                    $barangtrans_masuk  = 0;
+                    $barangtrans_keluar = 0;
+                    $barangtrans_jenis = '';
+                    $barangtrans_status = '';
+                    $barangtrans_akhir = 0;
+                    if ($qty > $qtyold) {
+                        $barangtrans_keluar = $qty - $qtyold;
+                        $barangtrans_jenis = 'PENGIRIMAN BRG';
+                        $barangtrans_status = 'KELUAR';
+                        $barangtrans_akhir = $barangtrans_awal - $barangtrans_keluar;
+                    } else if ($qty < $qtyold) {
+                        $barangtrans_masuk = $qtyold - $qty;
+                        $barangtrans_jenis = 'PENGURANGAN PENGIRIMAN BRG';
+                        $barangtrans_status = 'MASUK';
+                        $barangtrans_akhir = $barangtrans_awal + $barangtrans_masuk;
+                    }
+
+                    $datastock = array(
+                        't_trans_id'      => $pengiriman_id,
+                        't_transdet_id'   => $pengirimandet_id,
+                        'barangtrans_jenis' => $barangtrans_jenis,
+                        'barangtrans_no'  => $pengiriman_no,
+                        'barangtrans_tgl' => $pengiriman_tgl,
+                        'm_barang_id'  => $val['m_barang_id'],
+                        'm_barangsatuan_id' => $val['m_barangsatuan_id'],
+                        'm_satuan_id' => $val['m_satuan_id'],
+                        'barangtrans_jml' => $val['pengirimandet_qty'],
+                        'barangtrans_konv' => $val['satkonv_nilai'],
+                        'barangtrans_awal' => $barangtrans_awal,
+                        'barangtrans_masuk' => $barangtrans_masuk,
+                        'barangtrans_keluar' => $barangtrans_keluar,
+                        'barangtrans_akhir' => $barangtrans_akhir,
+                        'barangtrans_status' => $barangtrans_status
+                    );
+
+                    $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 
+                                'barangtrans_jml', 'barangtrans_konv', 'barangtrans_awal', 'barangtrans_masuk', 'barangtrans_keluar', 'barangtrans_akhir', 'barangtrans_status', 'barangtrans_created_by', 'barangtrans_created_date'];
+                    $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
+                                $datastock['barangtrans_jml'], $datastock['barangtrans_konv'], $datastock['barangtrans_awal'], $datastock['barangtrans_masuk'], $datastock['barangtrans_keluar'], $datastock['barangtrans_akhir'], $barangtrans_status, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                    query_create($this->conn2, 't_barangtrans', $fieldTransSave, $dataTransSave);
+                }
+            }
+        }
+
+        if ($pengiriman_id > 0) {
+            echo "200";
+        } else {
+            echo "202";
+        }
+    }
+
+    public function nonaktifdetail($data, $pengiriman_no, $pengiriman_tgl)
+    {
+        $pengirimandet_idArr = array();
+        for ($i=0; $i < count($data); $i++) { 
+            array_push($pengirimandet_idArr, $data[$i]['pengirimandet_id']);
+        }
+        $pengirimandet_id = implode(',', $pengirimandet_idArr);
+        $fieldSave = ["pengirimandet_aktif","pengirimandet_void_by", "pengirimandet_void_date"];
+        $dataSave = ["N", $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+        $where = "WHERE pengirimandet_id IN (".$pengirimandet_id.")";
+        $action = query_update($this->conn2, 't_pengiriman_detail', $field, $where);
+        $detail = $this->model->getPengirimanDataDetail2($pengirimandet_id);
+        
+        foreach ($detail as $key => $val) {
+            $barangtrans_awal = $this->model->getStokAkhir($val['m_barang_id'], $pengiriman_tgl);
+            $barangtrans_masuk = $val['satkonv_nilai'] * $val['pengirimandet_qty'];
+            $datastock = array(
+                't_trans_id'      => $val['t_pengiriman_id'],
+                't_transdet_id'   => $val['pengirimandet_id'],
+                'barangtrans_jenis' => 'BTL PENGIRIMAN BRG',
+                'barangtrans_no'  => $pengiriman_no,
+                'barangtrans_tgl' => $pengiriman_tgl,
+                'm_barang_id'  => $val['m_barang_id'],
+                'm_barangsatuan_id' => $val['satuanutama'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'barangtrans_jml' => $val['pengirimandet_qty'],
+                'barangtrans_konv' => $val['satkonv_nilai'],
+                'barangtrans_awal' => $barangtrans_awal,
+                'barangtrans_masuk' => $barangtrans_masuk,
+                'barangtrans_keluar' => 0,
+                'barangtrans_akhir' => $barangtrans_awal + $barangtrans_keluar,
+                'barangtrans_status' => 'MASUK'
+            );
+            $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 
+                         'barangtrans_jml', 'barangtrans_konv', 'barangtrans_awal', 'barangtrans_masuk', 'barangtrans_akhir', 'barangtrans_status', 'barangtrans_created_by', 'barangtrans_created_date'];
+            $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
+                         $datastock['barangtrans_jml'], $datastock['barangtrans_konv'], $datastock['barangtrans_awal'], $datastock['barangtrans_masuk'], $datastock['barangtrans_akhir'], $datastock['barangtrans_status'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+            query_create($this->conn2, 't_barangtrans', $fieldTransSave, $dataTransSave);
+        }
+    }
+}
+
+$pengiriman = new C_pengiriman_brg($conn, $conn2, $config);
+$data = $_GET;
+$action = isset($data["action"]) ? $data["action"] : '';
+switch ($action) {
+    case 'getpengiriman':
+        $pengiriman->getPengiriman($_POST);
+        break;
+    case 'submit':
+        $pengiriman->simpanPengiriman($_POST);
+        break;
+    case 'formtransaksi':
+        $pengiriman->formTransaksi($_GET);
+        break;
+    case 'getrekanan':
+        $pengiriman->getRekanan($_GET);
+        break;
+    case 'getbarang':
+        $pengiriman->getBarang();
+        break;
+    default:
+        $pengiriman->Pengiriman();
+    break;
+}
