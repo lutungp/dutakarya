@@ -139,32 +139,32 @@ class C_barang
 
 }
 
-$user = new C_barang($conn, $conn2, $config);
+$barang = new C_barang($conn, $conn2, $config);
 $data = $_GET;
 $action = isset($data["action"]) ? $data["action"] : "";
 switch ($action) {
     case 'getbarang':
-        $user->getBarang();
+        $barang->getBarang();
         break;
     
     case 'createbarang':
         if($_POST['dataForm']["barang_id"] == 0) {
-            $user->createBarang($_POST['dataForm'], $_POST['dataSatKonv']);
+            $barang->createBarang($_POST['dataForm'], $_POST['dataSatKonv']);
         } else {
-            $user->updateBarang($_POST['dataForm'], $_POST['dataSatKonv']);
+            $barang->updateBarang($_POST['dataForm'], $_POST['dataSatKonv']);
         }    
         break;
     
     case 'getsatuan':
-        $user->getSatuan($_POST);
+        $barang->getSatuan($_POST);
         break;
     
     case 'deletebarang':
-        $user->deleteBarang($_POST);
+        $barang->deleteBarang($_POST);
         break;
 
     case 'getsatkonv':
-        $user->getSatkonv($_POST["barang_id"]);
+        $barang->getSatkonv($_POST["barang_id"]);
         break;
     
     default:
