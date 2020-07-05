@@ -156,6 +156,15 @@ class C_pengiriman_brg
                         'barangtrans_status' => $barangtrans_status
                     );
 
+                    if (strtotime($pengiriman_tgl) < strtotime(date('Y-m-d'))) {
+                        /* jika melakukan backdate */
+                        $fieldBackDate = ['barangtrans_awal', 'barangtrans_akhir'];
+
+                        $field = " barangtrans_awal=barangtrans_awal+(($barangtrans_masuk-$barangtrans_keluar)),  barangtrans_akhir=barangtrans_akhir+(($barangtrans_masuk-$barangtrans_keluar))";
+                        $where = "WHERE barangtrans_tgl >= '" . $pengiriman_tgl . "' AND barangtrans_created_date < now() AND m_barang_id = " . $datastock['m_barang_id'];
+                        query_update($this->conn2, 't_barangtrans', $field, $where);
+                    }
+
                     $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 
                                 'barangtrans_jml', 'barangtrans_konv', 'barangtrans_awal', 'barangtrans_masuk', 'barangtrans_keluar', 'barangtrans_akhir', 'barangtrans_status', 'barangtrans_created_by', 'barangtrans_created_date'];
                     $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
@@ -214,6 +223,14 @@ class C_pengiriman_brg
                 'barangtrans_akhir' => $barangtrans_awal + $barangtrans_keluar,
                 'barangtrans_status' => 'MASUK'
             );
+            if (strtotime($pengiriman_tgl) < strtotime(date('Y-m-d'))) {
+                /* jika melakukan backdate */
+                $fieldBackDate = ['barangtrans_awal', 'barangtrans_akhir'];
+
+                $field = " barangtrans_awal=barangtrans_awal+$barangtrans_keluar,  barangtrans_akhir=barangtrans_akhir+$barangtrans_keluar ";
+                $where = "WHERE barangtrans_tgl >= '" . $pengiriman_tgl . "' AND barangtrans_created_date < now() AND m_barang_id = " . $datastock['m_barang_id'];
+                query_update($this->conn2, 't_barangtrans', $field, $where);
+            }
             $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 
                          'barangtrans_jml', 'barangtrans_konv', 'barangtrans_awal', 'barangtrans_masuk', 'barangtrans_akhir', 'barangtrans_status', 'barangtrans_created_by', 'barangtrans_created_date'];
             $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
