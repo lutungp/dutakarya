@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        var url = "<?php echo BASE_URL ?>/controllers/C_penerimaan_1brg.php?action=getpenerimaan";
+        var url = "<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=getpenerimaan";
         // prepare the data
         var source =
         {

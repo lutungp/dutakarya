@@ -5,39 +5,33 @@
 ?>
 <script>
     var barangAdapter = false;
-    var satuanAdapter = false;
     var barang = [];
-    var satuan = [];
-    var satKonv = [];
     var hapusdetail = [];
     $(document).ready(function(){
-        databaranghna = JSON.parse('<?php echo $dataparse ?>');
-        var databaranghnadetail = [];
-        if(databaranghna!==null) {
-            databaranghnadetail = databaranghna.databaranghnadetail;
-        }
+        renderGrid();
+    });
 
+    function renderGrid() {
         var generaterow = function (i) {
             var row = {};
             row["baranghnadet_id"] = 0;
             row["t_baranghna_id"] = 0;
             row["m_barang_id"] = '';
+            row["baranghnadet_last"] = 0;
             row["baranghnadet_harga"] = 0;
             return row;
         }
-
+        databaranghna = JSON.parse('<?php echo $dataparse ?>');
+        var databaranghnadetail = [];
+        if(databaranghna!==null) {
+            databaranghnadetail = databaranghna.databaranghnadetail;
+        }
         $.get("<?php echo BASE_URL ?>/controllers/C_hargabrg.php?action=getbarang", function(data, status){
             data = JSON.parse(data);
             databarang = data['barang'];
-            satKonv = data['satuan_konversi'];
             for (let index = 0; index < databarang.length; index++) {
                 const element = databarang[index];
                 barang.push({ value: element.barang_id, label: element.barang_nama, satuan_id : element.m_satuan_id, satuan_nama : element.satuan_nama });
-            }
-            datasatuan = data['satuan'];
-            for (let index = 0; index < datasatuan.length; index++) {
-                const element = datasatuan[index];
-                satuan.push({ value: element.satuan_id, label: element.satuan_nama });
             }
             
             var barangSource = {
@@ -60,10 +54,8 @@
                     baranghnadet_id : element.baranghnadet_id,
                     t_baranghna_id : element.t_baranghna_id,
                     m_barang_id : element.m_barang_id,
-                    m_satuan_id : element.m_satuan_id,
-                    satkonv_nilai : element.satkonv_nilai,
+                    baranghnadet_last : element.baranghnadet_last,
                     baranghnadet_harga : element.baranghnadet_harga,
-                    satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==element.m_barang_id))
                 };
                 databaranghnadet.push(datdet);
             }
@@ -73,9 +65,8 @@
                 datafields: [
                     { name: 'baranghnadet_id', type: 'int'},
                     { name: 't_baranghna_id', type: 'int'},
-                    { name: 'satuankonv'},
                     { name: 'm_barang_id', value: 'm_barang_id', values: { source: barangAdapter.records, value: 'value', name: 'label' } },
-                    { name: 'satkonv_nilai'},
+                    { name: 'baranghnadet_last', type: 'float'},
                     { name: 'baranghnadet_harga', type: 'float'}
                 ],
                 addrow: function (rowid, rowdata, position, commit) {
@@ -137,29 +128,27 @@
                             });
                             editor.on('select', function (event) {
                                 var recorddata = $('#baranghnaGrid').jqxGrid('getrenderedrowdata', row);
-                                var datasatkonv = data['satuan_konversi'];
                                 if (event.args) {
                                     var val = event.args.item.value;
-                                    dtsatkonv = datasatkonv.filter(p=>parseInt(p.m_barang_id)==val);
-                                    var satkonv = [];
-                                    for (let index = 0; index < dtsatkonv.length; index++) {
-                                        const element = dtsatkonv[index];
-                                        satkonv.push({ value: parseInt(element.satkonv_id), label: element.satuan_nama, satkonv_nilai : parseFloat(element.satkonv_nilai) });
+                                    var baranghna_tglawal = $('#baranghna_tglawal').val()
+                                    var data = {
+                                        barang_id : val,
+                                        baranghna_tglawal : moment(baranghna_tglawal, "DD-MM-YYYY").format("YYYY-MM-DD")
                                     }
-
-                                    brg = barang.filter(p=>parseInt(p.value)==val);
-                                    satkonv.push({ value: brg[0].satuan_id, label: brg[0].satuan_nama, satkonv_nilai : 1 });
-                                    recorddata.satuankonv = JSON.stringify(satkonv);
-                                    $("#baranghnaGrid").jqxGrid('setcellvalue', row, "m_satuan_id", "");
+                                    $.post("<?php echo BASE_URL ?>/controllers/C_hargabrg.php?action=getlasthna", data, function(result){
+                                        var lasthna = JSON.parse(result);
+                                        $("#baranghnaGrid").jqxGrid('setcellvalue', row, "baranghnadet_last", lasthna.baranghnadet_harga);
+                                    });
                                 }
                             });
                         },
                     },
-                    { text: 'Harga', datafield: 'baranghnadet_harga', cellsalign: 'right' },
+                    { text: 'Harga Sebelumnya', datafield: 'baranghnadet_last', cellsalign: 'right', width : 200 },
+                    { text: 'Harga', datafield: 'baranghnadet_harga', cellsalign: 'right', width : 200 },
                 ]
             });
         });
-    });
+    }
 </script>
 <section class="content">
     <div class="row">
@@ -180,9 +169,11 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="baranghna_tgl">Tanggal</label>
-                                    <input type="text" class="form-control tgllahir" id="baranghna_tgl" name="baranghna_tgl"
-                                    data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask require>
+                                    <label for="baranghna_tglawal">Tanggal Berlaku</label>
+                                    <input type="text" class="form-control baranghna_tglawal" id="baranghna_tglawal" name="baranghna_tglawal"
+                                    data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask 
+                                    onchange="renderGrid()"
+                                    require>
                                 </div>
                             </div>
                         </div>
@@ -208,13 +199,13 @@
     $(function(){
         $('[data-mask]').inputmask();
         var now = new Date();
-        $('#baranghna_tgl').val(moment(now).format('DD-MM-YYYY'));
+        $('#baranghna_tglawal').val(moment(now).format('DD-MM-YYYY'));
 
         $('#formbaranghna').submit(function (event) {
             event.preventDefault();
             var griddata = $('#baranghnaGrid').jqxGrid('getdatainformation');
             if(griddata.rowscount == 0) {
-                swal("Info!", "baranghna Gagal disimpan, detail barang masih kosong", "warning");
+                swal("Info!", "HNA Gagal disimpan, detail barang masih kosong", "warning");
                 return false;
             }
             
@@ -222,11 +213,6 @@
             for (var i = 0; i < griddata.rowscount; i++){
                 var rec = $('#baranghnaGrid').jqxGrid('getrenderedrowdata', i);
                 m_barang_id = barang.filter(p=>p.label==rec.m_barang_id);
-                m_satuan_id = satuan.filter(p=>p.label==rec.m_satuan_id);
-                dtsatkonv = satKonv.filter(p=>parseInt(p.m_barang_id)==parseInt(m_barang_id[0].value||0)&&parseInt(p.m_satuan_id)==parseInt(m_satuan_id[0].value||0));
-                
-                satkonv_nilai = 1;
-                if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
                 
                 rows.push({
                     'baranghnadet_id' : rec.baranghnadet_id,
@@ -243,16 +229,16 @@
                 data: {
                     baranghna_id : $('#baranghna_id').val(),
                     baranghna_no : $('#baranghna_no').val(),
-                    baranghna_tgl : moment($('#baranghna_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                    baranghna_tglawal : moment($('#baranghna_tglawal').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
                     rows : rows,
                     'hapusdetail' : hapusdetail
                 },
                 success : function (res) {
                     if (res == 200) {
                         resetForm();
-                        swal("Info!", "baranghna Berhasil disimpan", "success");
+                        swal("Info!", "HNA Berhasil disimpan", "success");
                     } else {
-                        swal("Info!", "baranghna Gagal disimpan", "error");
+                        swal("Info!", "HNA Gagal disimpan", "error");
                     }
                 }
             });
@@ -263,14 +249,15 @@
             var dat = databaranghna.databaranghna;
             $('#baranghna_id').val(dat.baranghna_id);
             $('#baranghna_no').val(dat.baranghna_no);
-            $('#baranghna_tgl').val(moment(dat.baranghna_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            console.log(dat.baranghna_tglawal)
+            $('#baranghna_tglawal').val(moment(dat.baranghna_tglawal, 'YYYY-MM-DD').format('DD-MM-YYYY'));
             $('#batal').removeAttr('disabled')
         }
 
         $('#batal').on('click', function() {
             var griddata = $('#baranghnaGrid').jqxGrid('getdatainformation');
             if(griddata.rowscount == 0) {
-                swal("Info!", "baranghna Gagal disimpan, detail barang masih kosong", "warning");
+                swal("Info!", "HNA Gagal disimpan, detail barang masih kosong", "warning");
                 return false;
             }
             swal({
@@ -289,11 +276,6 @@
                 for (var i = 0; i < griddata.rowscount; i++){
                     var rec = $('#baranghnaGrid').jqxGrid('getrenderedrowdata', i);
                     m_barang_id = barang.filter(p=>p.label==rec.m_barang_id);
-                    m_satuan_id = satuan.filter(p=>p.label==rec.m_satuan_id);
-                    dtsatkonv = satKonv.filter(p=>parseInt(p.m_barang_id)==parseInt(m_barang_id[0].value||0)&&parseInt(p.m_satuan_id)==parseInt(m_satuan_id[0].value||0));
-                    
-                    satkonv_nilai = 1;
-                    if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
                     
                     rows.push({
                         'baranghnadet_id' : rec.baranghnadet_id,
@@ -310,28 +292,37 @@
                     data: {
                         baranghna_id : $('#baranghna_id').val(),
                         baranghna_no : $('#baranghna_no').val(),
-                        baranghna_tgl : moment($('#baranghna_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                        baranghna_tglawal : moment($('#baranghna_tglawal').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
                         rows : rows,
                         alasan : inputValue
                     },
                     success : function (res) {
                         if (res == 200) {
                             resetForm();
-                            swal("Info!", "baranghna Berhasil dibatalkan", "success");
+                            swal("Info!", "HNA Berhasil dibatalkan", "success");
                         } else {
-                            swal("Info!", "baranghna Gagal dibatalkan", "error");
+                            swal("Info!", "HNA Gagal dibatalkan", "error");
                         }
                     }
                 });
             });
         });
+
+        databaranghna = JSON.parse('<?php echo $dataparse ?>');
+        if(databaranghna!==null) {
+            var dat = databaranghna.databaranghna;
+            $('#baranghna_id').val(dat.baranghna_id);
+            $('#baranghna_no').val(dat.baranghna_no);
+            $('#baranghna_tglawal').val(moment(dat.baranghna_tglawal, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('#batal').removeAttr('disabled')
+        }
     });
 
     function resetForm() {
         var now = new Date();
         $('#baranghna_id').val(0);
         $('#baranghna_no').val('');
-        $('#baranghna_tgl').val(moment(now, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+        $('#baranghna_tglawal').val(moment(now, 'YYYY-MM-DD').format('DD-MM-YYYY'));
         $("#baranghnaGrid").jqxGrid('clear');
     }
 </script>

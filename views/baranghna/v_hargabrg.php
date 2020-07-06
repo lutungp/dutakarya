@@ -12,7 +12,6 @@
             datafields: [
                 { name: 'baranghna_id', type: 'int' },
                 { name: 'baranghna_no', type: 'string' },
-                { name: 'baranghna_tgl', type: 'date' },
                 { name: 'baranghna_tglawal', type: 'date' },
                 { name: 'baranghna_tglakhir', type: 'date' },
                 { name: 'baranghna_aktif', type: 'string' },
@@ -66,11 +65,10 @@
             autoshowfiltericon: true,
             columns: [
                 { text: 'No. Transaksi', datafield: 'baranghna_no', cellsalign: 'center'},
-                { text: 'Tanggal', datafield: 'baranghna_tgl', cellsformat: 'dd-mm-yyyy', cellsalign: 'center'},
-                { text: 'Berlaku Mulai', datafield: 'baranghna_tglawal', cellsformat: 'dd-mm-yyyy', cellsalign: 'center'},
-                { text: 'Berlaku Hingga', datafield: 'baranghna_tglakhir', cellsformat: 'dd-mm-yyyy', cellsalign: 'center'},
+                { text: 'Berlaku Mulai', datafield: 'baranghna_tglawal', cellsformat: 'dd-MM-yyyy', cellsalign: 'center'},
+                { text: 'Berlaku Hingga', datafield: 'baranghna_tglakhir', cellsformat: 'dd-MM-yyyy', cellsalign: 'center'},
                 { text: 'Dibuat Oleh', datafield: 'user_nama', cellsalign: 'center'},
-                { text: 'Dibuat Tgl', datafield: 'baranghna_created_date', cellsformat: 'dd-mm-yyyy', cellsalign: 'center'},
+                { text: 'Dibuat Tgl', datafield: 'baranghna_created_date', cellsformat: 'dd-MM-yyyy', cellsalign: 'center'},
                 <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
