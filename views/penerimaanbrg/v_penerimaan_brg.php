@@ -69,7 +69,7 @@
             columns: [
                 { text: 'No. Transaksi', datafield: 'penerimaan_no', width : 200, cellsalign: 'center'},
                 { text: 'Rekanan', datafield: 'rekanan_nama'},
-                { text: 'Tanggal', datafield: 'penerimaan_tgl', cellsformat: 'dd-mm-yyyy', cellsalign: 'center', width : 200},
+                { text: 'Tanggal', datafield: 'penerimaan_tgl', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 200},
                 // { text: 'Penerimaan Aktif', datafield: 'penerimaan_aktif', filterable: false},
                 <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
