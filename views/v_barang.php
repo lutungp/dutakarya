@@ -5,6 +5,7 @@
 <script type="text/javascript">
     var satbesar = [];
     $(document).ready(function () {
+        $('#tabs').jqxTabs({ width: '100%', height: '100%', position: 'top'}); 
         var url = "<?php echo BASE_URL ?>/controllers/C_barang.php?action=getbarang";
         // prepare the data
         var source = {
@@ -99,7 +100,8 @@
             var satkonvgridAdapter = new $.jqx.dataAdapter(satkonvGridSource);
             $("#satuanGrid").jqxGrid({
                 height : 200,
-                width: "95%",
+                // width: "95%",
+                width : "100%",
                 source: satkonvgridAdapter,
                 selectionmode: 'singlecell',
                 editable: true,
@@ -108,7 +110,7 @@
                         text: 'Satuan Konv', datafield: 'm_satuan_id', displayfield: 'm_satuan_id', columntype: 'dropdownlist',
                         createeditor: function (row, value, editor) {
                             editor.jqxDropDownList({ source: satbesarAdapter, displayMember: 'label', valueMember: 'value' });
-                        }, width : 200
+                        }
                     },
                     { text: 'Nilai', datafield: 'satkonv_nilai'},
                 ]
@@ -219,9 +221,9 @@
                                             text: 'Satuan Konv', datafield: 'm_satuan_id', displayfield: 'm_satuan_id', columntype: 'dropdownlist',
                                             createeditor: function (row, value, editor) {
                                                 editor.jqxDropDownList({ source: satbesarAdapter, displayMember: 'label', valueMember: 'value' });
-                                            }, width : 200
+                                            }, width : 323
                                         },
-                                        { text: 'Nilai', datafield: 'satkonv_nilai'},
+                                        { text: 'Nilai', datafield: 'satkonv_nilai', width : 150},
                                     ]
                                 });
                                 $("#satuanGrid").on('cellselect', function (event) {
@@ -350,8 +352,19 @@
                                             <select id="m_satuan_id" name="m_satuan_id" style="width: 100%;"></select>
                                         </div>
                                     </div>
-                                </div>
-                                <div id="satuanGrid" style="margin: 10px;"></div>
+                                    <div id='tabs'>
+                                        <ul>
+                                            <li style="margin-left: 30px;">Satuan Konversi</li>
+                                            <li>Harga</li>
+                                        </ul>
+                                        <div>
+                                            <div id="satuanGrid" style="margin: 10px;"></div>
+                                        </div>
+                                        <div>
+                                            
+                                        </div>
+                                    </div>
+                                </div> 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" onclick="submitForm()">Simpan</button>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="resetForm()">Close</button>

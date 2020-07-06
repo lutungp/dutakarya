@@ -5,20 +5,21 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        var url = "<?php echo BASE_URL ?>/controllers/C_penerimaan_1brg.php?action=getpenerimaan";
+        var url = "<?php echo BASE_URL ?>/controllers/C_hargabrg.php?action=getbaranghna";
         // prepare the data
-        var source =
-        {
+        var source = {
             datatype: "json",
             datafields: [
-                { name: 'penerimaan_id', type: 'int' },
-                { name: 'penerimaan_no', type: 'string' },
-                { name: 'penerimaan_tgl', type: 'date' },
-                { name: 'm_rekanan_id', type: 'int' },
-                { name: 'rekanan_nama', type: 'string' },
-                { name: 'penerimaan_aktif', type: 'string' },
+                { name: 'baranghna_id', type: 'int' },
+                { name: 'baranghna_no', type: 'string' },
+                { name: 'baranghna_tgl', type: 'date' },
+                { name: 'baranghna_tglawal', type: 'date' },
+                { name: 'baranghna_tglakhir', type: 'date' },
+                { name: 'baranghna_aktif', type: 'string' },
+                { name: 'user_nama', type: 'string' },
+                { name: 'baranghna_created_date', type: 'date' },
             ],
-            id: 'penerimaan_id',
+            id: 'baranghna_id',
             url: url,
             updaterow: function (rowid, rowdata, commit) {
                 // synchronize with the server - send update command
@@ -41,8 +42,6 @@
             filtergroup.addfilter(filter_or_operator, filter2);
             // add the filters.
             $("#grid").jqxGrid('addfilter', 'rekanan_nama', filtergroup);
-            // // apply the filters.
-            // $("#grid").jqxGrid('applyfilters');
         }
         var dataAdapter = new $.jqx.dataAdapter(source, {
             downloadComplete: function (data, status, xhr) { },
@@ -56,7 +55,6 @@
             width: '100%',
             source: dataAdapter,                
             pageable: true,
-            // autoheight: true,
             sortable: true,
             altrows: true,
             enabletooltips: true,
@@ -67,10 +65,12 @@
             },
             autoshowfiltericon: true,
             columns: [
-                { text: 'No. Transaksi', datafield: 'penerimaan_no', width : 200, cellsalign: 'center'},
-                { text: 'Rekanan', datafield: 'rekanan_nama'},
-                { text: 'Tanggal', datafield: 'penerimaan_tgl', cellsformat: 'dd-mm-yyyy', cellsalign: 'center', width : 200},
-                // { text: 'Penerimaan Aktif', datafield: 'penerimaan_aktif', filterable: false},
+                { text: 'No. Transaksi', datafield: 'baranghna_no', cellsalign: 'center'},
+                { text: 'Tanggal', datafield: 'baranghna_tgl', cellsformat: 'dd-mm-yyyy', cellsalign: 'center'},
+                { text: 'Berlaku Mulai', datafield: 'baranghna_tglawal', cellsformat: 'dd-mm-yyyy', cellsalign: 'center'},
+                { text: 'Berlaku Hingga', datafield: 'baranghna_tglakhir', cellsformat: 'dd-mm-yyyy', cellsalign: 'center'},
+                { text: 'Dibuat Oleh', datafield: 'user_nama', cellsalign: 'center'},
+                { text: 'Dibuat Tgl', datafield: 'baranghna_created_date', cellsformat: 'dd-mm-yyyy', cellsalign: 'center'},
                 <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
@@ -79,7 +79,7 @@
                         editrow = row;
                         var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
                         $("#grid").offset();
-                        window.location.href='<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=formtransaksi&id='+dataRecord.penerimaan_id;
+                        window.location.href='<?php echo BASE_URL ?>/controllers/C_hargabrg.php?action=formtransaksi&id='+dataRecord.baranghna_id;
                     }
                 },
                 <?php } ?>
@@ -107,6 +107,6 @@
 <script>
 
     function addtransaksi() {
-        window.location.href='<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=formtransaksi';
+        window.location.href='<?php echo BASE_URL ?>/controllers/C_hargabrg.php?action=formtransaksi';
     }
 </script>

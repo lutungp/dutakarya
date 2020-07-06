@@ -353,7 +353,7 @@
                     if (res == 200) {
                         resetForm();
                         swal("Info!", "Penerimaan Berhasil disimpan", "success");
-                        $("#ModalSatuan").modal('toggle');
+                        
                     } else {
                         swal("Info!", "Penerimaan Gagal disimpan", "error");
                     }
@@ -429,7 +429,7 @@
                         if (res == 200) {
                             resetForm();
                             swal("Info!", "Penerimaan Berhasil dibatalkan", "success");
-                            $("#ModalSatuan").modal('toggle');
+                            
                         } else {
                             swal("Info!", "Penerimaan Gagal dibatalkan", "error");
                         }
