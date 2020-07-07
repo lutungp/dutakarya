@@ -23,10 +23,15 @@
             row["t_pengiriman_id"] = 0;
             row["satuankonv"] = '';
             row["m_barang_id"] = '';
+            row["baranghnadet_harga"] = 0;
+            row['pengirimandet_harga'] = 0;
             row["m_satuan_id"] = '';
             row["satkonv_nilai"] = 1;
             row["pengirimandet_qtyold"] = 0;
             row["pengirimandet_qty"] = 0;
+            row['pengirimandet_subtotal'] = 0;
+            row['pengirimandet_potongan'] = 0;
+            row['pengirimandet_total'] = 0;
             return row;
         }
 
@@ -77,9 +82,14 @@
                     t_pengiriman_id : element.t_pengiriman_id,
                     m_barang_id : element.m_barang_id,
                     m_satuan_id : element.m_satuan_id,
+                    baranghnadet_harga : element.baranghnadet_harga,
                     satkonv_nilai : element.satkonv_nilai,
+                    pengirimandet_harga : element.pengirimandet_harga,
                     pengirimandet_qtyold : element.pengirimandet_qty,
                     pengirimandet_qty : element.pengirimandet_qty,
+                    pengirimandet_subtotal : element.pengirimandet_subtotal,
+                    pengirimandet_potongan : element.pengirimandet_potongan,
+                    pengirimandet_total : element.pengirimandet_total,
                     satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==element.m_barang_id))
                 };
                 datapengirimandet.push(datdet);
@@ -92,10 +102,15 @@
                     { name: 't_pengiriman_id', type: 'int'},
                     { name: 'satuankonv'},
                     { name: 'm_barang_id', value: 'm_barang_id', values: { source: barangAdapter.records, value: 'value', name: 'label' } },
+                    { name: 'baranghnadet_harga', type: 'float'},
+                    { name: 'pengirimandet_harga', type: 'float'},
                     { name: 'm_satuan_id', value: 'm_satuan_id', values: { source: satuanAdapter.records, value: 'value', name: 'label' } },
                     { name: 'satkonv_nilai'},
                     { name: 'pengirimandet_qtyold', type: 'float'},
-                    { name: 'pengirimandet_qty', type: 'float'}
+                    { name: 'pengirimandet_qty', type: 'float'},
+                    { name: 'pengirimandet_subtotal', type: 'float'},
+                    { name: 'pengirimandet_potongan', type: 'float'},
+                    { name: 'pengirimandet_total', type: 'float'},
                 ],
                 addrow: function (rowid, rowdata, position, commit) {
                     // synchronize with the server - send insert command
@@ -119,6 +134,7 @@
                 source: pengirimanAdapter,
                 editable: true,
                 showtoolbar: true,
+                selectionmode: 'singlecell',
                 rendertoolbar: function (toolbar) {
                     var me = this;
                     var container = $("<div style='margin: 5px;'></div>");
@@ -156,7 +172,7 @@
                             });
                             editor.on('select', function (event) {
                                 var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
-                                var datasatkonv = data['satuan_konversi'];
+                                var datasatkonv = satKonv;
                                 if (event.args) {
                                     var val = event.args.item.value;
                                     dtsatkonv = datasatkonv.filter(p=>parseInt(p.m_barang_id)==val);
@@ -169,7 +185,17 @@
                                     brg = barang.filter(p=>parseInt(p.value)==val);
                                     satkonv.push({ value: brg[0].satuan_id, label: brg[0].satuan_nama, satkonv_nilai : 1 });
                                     recorddata.satuankonv = JSON.stringify(satkonv);
-                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "m_satuan_id", "");
+                                    var pengiriman_tgl = $('#pengiriman_tgl').val()
+                                    var data = {
+                                        barang_id : val,
+                                        baranghna_tglawal : moment(pengiriman_tgl, "DD-MM-YYYY").format("YYYY-MM-DD")
+                                    }
+                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "m_satuan_id", brg[0].satuan_nama);
+                                    $.post("<?php echo BASE_URL ?>/controllers/C_hargabrg.php?action=getlasthna", data, function(result){
+                                        var lasthna = JSON.parse(result);
+                                        recorddata.baranghnadet_harga = lasthna.baranghnadet_harga;
+                                        $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", lasthna.baranghnadet_harga);
+                                    });
                                 }
                             });
                         },
@@ -215,16 +241,63 @@
                                 displayMember: 'label',
                                 valueMember: 'value'
                             });
+
+                            editor.on('select', function (event) {
+                                var datasatkonv = satKonv;
+                                if (event.args) {
+                                    var val = event.args.item.value;
+                                    var satuankonv = JSON.parse(recorddata.satuankonv);
+                                    var dtsatkonv = satuankonv.filter(p=>parseInt(p.value)==parseInt(val));
+                                    recorddata.satkonv_nilai = dtsatkonv[0].satkonv_nilai;
+                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.baranghnadet_harga) * parseFloat(dtsatkonv[0].satkonv_nilai)));
+                                }
+                            });
                         }, 
-                        width : 300,
                     },
-                    { text: 'Qty', datafield: 'pengirimandet_qty', cellsalign: 'right',
-                        
+                    { text: 'Harga', datafield: 'pengirimandet_harga', cellsalign: 'right', editable : false},
+                    { text: 'Qty', datafield: 'pengirimandet_qty', cellsalign: 'right', columntype: 'numberinput',
+                        createeditor: function (row, value, editor) {
+                            editor.jqxNumberInput({ decimalDigits: 0 });
+                            editor.on('keyup', function (event) {
+                                var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
+                                var val = event.target.value||0;
+                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_subtotal", (parseFloat(recorddata.pengirimandet_harga) * parseFloat(val)));
+                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(recorddata.pengirimandet_subtotal) - parseFloat(val)));
+                                settotal();
+                            });
+                        }
                     },
+                    { text: 'Subtotal', datafield: 'pengirimandet_subtotal', cellsalign: 'right', editable : false },
+                    { text: 'Potongan', datafield: 'pengirimandet_potongan', cellsalign: 'right', columntype: 'numberinput',
+                        createeditor: function (row, value, editor) {
+                            editor.jqxNumberInput({ decimalDigits: 0 });
+                            editor.on('keyup', function (event) {
+                                var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
+                                var val = event.target.value||0;
+                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(recorddata.pengirimandet_subtotal) - parseFloat(val)));
+                                settotal();
+                            });
+                        } 
+                    },
+                    { text: 'Subtotal', datafield: 'pengirimandet_total', cellsalign: 'right', editable : false },
                 ]
             });
+
+            settotal();
         });
     });
+
+    function settotal() {
+        var griddata = $('#pengirimanGrid').jqxGrid('getdatainformation');
+        var rows = [];
+        var total = 0;
+        for (var i = 0; i < griddata.rowscount; i++){
+            var rec = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', i);
+            total = total + parseFloat(rec.pengirimandet_total);
+        }
+        
+        $('#pengiriman_total').val(total);
+    }
 </script>
 <section class="content">
     <div class="row">
@@ -254,6 +327,10 @@
                                 <div class="form-group">
                                     <label for="m_rekanan_id">Rekanan</label>
                                     <select id="m_rekanan_id" name="m_rekanan_id" style="width: 100%;" require></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pengiriman_total">TOTAL</label>
+                                    <input type="number" class="form-control" style="text-align: right;" id="pengiriman_total" name="pengiriman_total" value="0" readonly>
                                 </div>
                             </div>
                         </div>
@@ -327,11 +404,15 @@
                     'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
                     'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
                     'satkonv_nilai' : parseFloat(satkonv_nilai),
+                    'baranghnadet_harga' : parseFloat(rec.baranghnadet_harga),
+                    'pengirimandet_harga' : parseFloat(rec.pengirimandet_harga),
                     'pengirimandet_qty' : rec.pengirimandet_qty,
                     'pengirimandet_qtyold' : rec.pengirimandet_qtyold,
+                    'pengirimandet_subtotal' : parseFloat(rec.pengirimandet_subtotal),
+                    'pengirimandet_potongan' : parseFloat(rec.pengirimandet_potongan),
+                    'pengirimandet_total' : parseFloat(rec.pengirimandet_total),
                 }); 
             }
-            
             $.ajax({
                 url: "<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=submit",
                 type: "post",
@@ -387,8 +468,13 @@
                     'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
                     'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
                     'satkonv_nilai' : parseFloat(satkonv_nilai),
+                    'baranghnadet_harga' : parseFloat(rec.baranghnadet_harga),
+                    'pengirimandet_harga' : parseFloat(rec.pengirimandet_harga),
                     'pengirimandet_qty' : rec.pengirimandet_qty,
                     'pengirimandet_qtyold' : rec.pengirimandet_qtyold,
+                    'pengirimandet_subtotal' : parseFloat(rec.pengirimandet_subtotal),
+                    'pengirimandet_potongan' : parseFloat(rec.pengirimandet_potongan),
+                    'pengirimandet_total' : parseFloat(rec.pengirimandet_total),
                 });
             }
 

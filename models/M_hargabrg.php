@@ -141,16 +141,25 @@ class M_hargabrg
 
     public function getLastHNA($barang_id, $baranghna_tglawal)
     {
-        $sql = " SELECT
-                    m_barang_id,
-                    baranghnadet_harga
-                FROM t_baranghna_detail
-                INNER JOIN t_baranghna ON t_baranghna.baranghna_id = t_baranghna_detail.t_baranghna_id
-                WHERE t_baranghna_detail.baranghnadet_aktif = 'Y' AND t_baranghna.baranghna_aktif = 'Y'
-                AND (t_baranghna_detail.baranghnadet_tglakhir <= '$baranghna_tglawal' OR t_baranghna_detail.baranghnadet_tglakhir IS NULL) 
-                AND m_barang_id = $barang_id
-                ORDER BY t_baranghna_detail.baranghnadet_tglawal DESC,  t_baranghna_detail.baranghnadet_created_date DESC 
-                LIMIT 1 ";
+        $sql = "SELECT
+                    * 
+                FROM
+                    (
+                    SELECT
+                        ROW_NUMBER() OVER ( PARTITION BY m_barang_id ORDER BY t_baranghna_detail.baranghnadet_tglawal DESC, t_baranghna_detail.baranghnadet_created_date DESC ) AS rnumber,
+                        m_barang_id,
+                        baranghnadet_harga,
+                        t_baranghna_detail.baranghnadet_tglawal 
+                    FROM
+                        t_baranghna_detail
+                        INNER JOIN t_baranghna ON t_baranghna.baranghna_id = t_baranghna_detail.t_baranghna_id 
+                    WHERE t_baranghna_detail.baranghnadet_aktif = 'Y' 
+                        AND t_baranghna.baranghna_aktif = 'Y' 
+                        AND t_baranghna_detail.m_barang_id = $barang_id
+                        AND t_baranghna_detail.baranghnadet_tglawal <= '$baranghna_tglawal'
+                    ) AS last 
+                WHERE last.rnumber = 1 ";
+                
         $qbarang = $this->conn2->query($sql);
         $rbarang = $qbarang->fetch_object();
         return $rbarang;

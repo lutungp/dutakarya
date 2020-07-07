@@ -169,8 +169,14 @@ class M_pengiriman_brg
                     t_pengiriman_detail.t_pengiriman_id,
                     t_pengiriman_detail.m_barang_id,
                     t_pengiriman_detail.m_satuan_id,
-                    m_satuan_konversi.satkonv_nilai,
-                    t_pengiriman_detail.pengirimandet_qty 
+                    COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
+                    (t_pengiriman_detail.pengirimandet_harga/COALESCE(m_satuan_konversi.satkonv_nilai, 1)) AS baranghnadet_harga,
+                    t_pengiriman_detail.pengirimandet_harga,
+                    t_pengiriman_detail.pengirimandet_qty,
+                    t_pengiriman_detail.pengirimandet_subtotal,
+                    t_pengiriman_detail.pengirimandet_subtotal,
+                    t_pengiriman_detail.pengirimandet_potongan,
+                    t_pengiriman_detail.pengirimandet_total
                 FROM t_pengiriman_detail 
                 LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_pengiriman_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_pengiriman_detail.m_barang_id ";
         if ($pengirimandet_id <> '') {
@@ -189,8 +195,13 @@ class M_pengiriman_brg
                 't_pengiriman_id' => $val['t_pengiriman_id'],
                 'm_barang_id' => $val['m_barang_id'],
                 'm_satuan_id' => $val['m_satuan_id'],
+                'baranghnadet_harga' => $val['baranghnadet_harga'],
+                'pengirimandet_harga' => $val['pengirimandet_harga'],
+                'satkonv_nilai' => $val['satkonv_nilai'],
                 'pengirimandet_qty' => $val['pengirimandet_qty'],
-                'satkonv_nilai' => $val['satkonv_nilai']
+                'pengirimandet_subtotal' => $val['pengirimandet_subtotal'],
+                'pengirimandet_potongan' => $val['pengirimandet_potongan'],
+                'pengirimandet_total' => $val['pengirimandet_total']
             );
         }
 

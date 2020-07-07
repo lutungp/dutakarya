@@ -98,8 +98,10 @@ class C_pengiriman_brg
             foreach ($data['rows'] as $key => $val) {
                 $pengirimandet_id = $val['pengirimandet_id'];
                 if ($pengirimandet_id > 0) {
-                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_updated_by', 'pengirimandet_updated_date', 'pengirimandet_revised'];
-                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengirimandet_revised+1'];
+                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
+                                  'pengirimandet_updated_by', 'pengirimandet_updated_date', 'pengirimandet_revised'];
+                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_harga'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
+                                    $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengirimandet_revised+1'];
                     $field = "";
                     foreach ($fieldSave as $key => $value) {
                         $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -112,8 +114,10 @@ class C_pengiriman_brg
                     $where = "WHERE pengirimandet_id = " . $val['pengirimandet_id'];
                     query_update($this->conn2, 't_pengiriman_detail', $field, $where);
                 } else {
-                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_created_by', 'pengirimandet_created_date'];
-                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
+                                    'pengirimandet_created_by', 'pengirimandet_created_date'];
+                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_harga'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
+                                $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     $pengirimandet_id = query_create($this->conn2, 't_pengiriman_detail', $fieldSave, $dataSave);
                 }
 
@@ -173,7 +177,7 @@ class C_pengiriman_brg
                 }
             }
         }
-
+        
         if ($pengiriman_id > 0) {
             echo "200";
         } else {
