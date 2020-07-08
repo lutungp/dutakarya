@@ -152,7 +152,9 @@ class M_pengiriman_brg
                     pengiriman_no,
                     pengiriman_tgl,
                     m_rekanan_id,
-                    m_rekanan.rekanan_nama
+                    m_rekanan.rekanan_kode,
+                    m_rekanan.rekanan_nama,
+                    m_rekanan.rekanan_alamat
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 WHERE pengiriman_aktif = 'Y' 
@@ -168,7 +170,9 @@ class M_pengiriman_brg
                     t_pengiriman_detail.pengirimandet_id,
                     t_pengiriman_detail.t_pengiriman_id,
                     t_pengiriman_detail.m_barang_id,
+                    m_barang.barang_nama,
                     t_pengiriman_detail.m_satuan_id,
+                    m_satuan.satuan_nama,
                     COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
                     (t_pengiriman_detail.pengirimandet_harga/COALESCE(m_satuan_konversi.satkonv_nilai, 1)) AS baranghnadet_harga,
                     t_pengiriman_detail.pengirimandet_harga,
@@ -177,7 +181,9 @@ class M_pengiriman_brg
                     t_pengiriman_detail.pengirimandet_subtotal,
                     t_pengiriman_detail.pengirimandet_potongan,
                     t_pengiriman_detail.pengirimandet_total
-                FROM t_pengiriman_detail 
+                FROM t_pengiriman_detail
+                JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
+                JOIN m_satuan ON m_satuan.satuan_id = t_pengiriman_detail.m_satuan_id
                 LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_pengiriman_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_pengiriman_detail.m_barang_id ";
         if ($pengirimandet_id <> '') {
             $sql .= "AND t_pengiriman_id IN (" . $pengirimandet_id . ") ";
@@ -194,7 +200,9 @@ class M_pengiriman_brg
                 'pengirimandet_id' => $val['pengirimandet_id'],
                 't_pengiriman_id' => $val['t_pengiriman_id'],
                 'm_barang_id' => $val['m_barang_id'],
+                'barang_nama' => $val['barang_nama'],
                 'm_satuan_id' => $val['m_satuan_id'],
+                'satuan_nama' => $val['satuan_nama'],
                 'baranghnadet_harga' => $val['baranghnadet_harga'],
                 'pengirimandet_harga' => $val['pengirimandet_harga'],
                 'satkonv_nilai' => $val['satkonv_nilai'],

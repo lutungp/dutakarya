@@ -103,13 +103,13 @@
       padding: 2px !important;
     }
 
+    .content-header {
+      padding: 10px !important;
+    }
+
     @media (max-width: 480px) {
       .content-wrapper>.content {
         padding: 10px !important;
-      }
-
-      .content-header {
-        padding: 2px !important;
       }
     }
 
@@ -157,18 +157,7 @@
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0 text-dark"></h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
+    <div class="content-header"></div>
     <!-- /.content-header -->
 
     <!-- Main content -->

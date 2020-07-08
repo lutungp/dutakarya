@@ -3,6 +3,12 @@
     require_once(__ROOT__.'/layouts/header_jqwidget.php');
     $data = json_decode($dataparse);
 ?>
+<style>
+    #pengiriman_total {
+        font-size : 18px;
+        font-weight : bold;
+    }
+</style>
 <script>
     var barangAdapter = false;
     var satuanAdapter = false;
@@ -128,6 +134,9 @@
             };
 
             var pengirimanAdapter = new $.jqx.dataAdapter(pengirimanGridSource);
+            var tooltiprenderer = function (element) {
+                $(element).jqxTooltip({position: 'mouse', content: 'Tekan tombol F9 pada keyboard disaat focus pada column potongan' });
+            }
             $("#pengirimanGrid").jqxGrid({
                 width: "100%",
                 height: 360,
@@ -268,13 +277,21 @@
                         }
                     },
                     { text: 'Subtotal', datafield: 'pengirimandet_subtotal', cellsalign: 'right', editable : false },
-                    { text: 'Potongan', datafield: 'pengirimandet_potongan', cellsalign: 'right', columntype: 'numberinput',
+                    { text: 'Potongan', datafield: 'pengirimandet_potongan', cellsalign: 'right', columntype: 'numberinput', rendered: tooltiprenderer,
                         createeditor: function (row, value, editor) {
                             editor.jqxNumberInput({ decimalDigits: 0 });
                             editor.on('keyup', function (event) {
                                 var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
                                 var val = event.target.value||0;
-                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(recorddata.pengirimandet_subtotal) - parseFloat(val)));
+                                if (event.keyCode == '120') {
+                                    /* jika tekan tombol F9 */
+                                    if (parseFloat(val)<=100) {
+                                        editor.val(val/100*parseFloat(recorddata.pengirimandet_subtotal))
+                                        $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(recorddata.pengirimandet_subtotal) - parseFloat(val/100*parseFloat(recorddata.pengirimandet_subtotal))));
+                                    }
+                                } else {
+                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(recorddata.pengirimandet_subtotal) - parseFloat(val)));
+                                }
                                 settotal();
                             });
                         } 
@@ -295,7 +312,8 @@
             var rec = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', i);
             total = total + parseFloat(rec.pengirimandet_total);
         }
-        
+        total = total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        console.log(total)
         $('#pengiriman_total').val(total);
     }
 </script>
@@ -330,7 +348,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="pengiriman_total">TOTAL</label>
-                                    <input type="number" class="form-control" style="text-align: right;" id="pengiriman_total" name="pengiriman_total" value="0" readonly>
+                                    <input type="text" class="form-control" style="text-align: right;" id="pengiriman_total" name="pengiriman_total" value="0" readonly>
                                 </div>
                             </div>
                         </div>
@@ -351,7 +369,7 @@
                         <?php if (($create <> '' && isset($data->pengiriman_id) == 0) || ($update <> '' && $data->pengiriman_id > 0)) { ?>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
-                        <button type="submit" class="btn btn-default btn-sm float-right" style="margin-right: 5px;">Cetak</button>
+                        <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button>
                     </div>
                 </form>
             </div>
@@ -426,6 +444,7 @@
                     'hapusdetail' : hapusdetail
                 },
                 success : function (res) {
+                    window.open('<?php echo BASE_URL;?>/controllers/C_pengiriman_brg.php?action=exportpdf&id=' + $('#pengiriman_id').val());
                     if (res == 200) {
                         resetForm();
                         swal("Info!", "Pengiriman Berhasil disimpan", "success");
@@ -515,6 +534,11 @@
             });
         });
     });
+
+    function cetak() {
+        var pengiriman_id = $('#pengiriman_id').val();
+        window.open('<?php echo BASE_URL;?>/controllers/C_pengiriman_brg.php?action=exportpdf&id=' + pengiriman_id);
+    }
 
     function resetForm() {
         var now = new Date();
