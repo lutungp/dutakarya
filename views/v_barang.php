@@ -246,7 +246,48 @@
                                     }
                                 });
                             }
-                        })
+                        });
+
+                        $.ajax({
+                            url: "<?php echo BASE_URL ?>/controllers/C_barang.php?action=getharga",
+                            type: "post",
+                            data: {barang_id : dataRecord.barang_id},
+                            success : function (res) {
+                                var resultHNA = JSON.parse(res);
+                                var dataHNA = [];
+                                for (let index = 0; index < resultHNA.length; index++) {
+                                    const element = resultHNA[index];
+                                    var data = {
+                                        'baranghna_no' : element.baranghna_no,
+                                        'baranghnadet_tglawal' : element.baranghnadet_tglawal,
+                                        'baranghnadet_harga' : element.baranghnadet_harga,
+                                    }
+                                    dataHNA.push(data);
+                                }
+
+                                var hargaGridSource = {
+                                    datatype: "array",
+                                    localdata:  dataHNA,
+                                    datafields: [
+                                        { name: 'baranghna_no', type: 'string'},
+                                        { name: 'baranghnadet_tglawal', type: 'date'},
+                                        { name: 'baranghnadet_harga', type: 'float'}
+                                    ]
+                                };
+                                var hargagridAdapter = new $.jqx.dataAdapter(hargaGridSource);
+                                $("#hargaGrid").jqxGrid({
+                                    height : 200,
+                                    width : "95%",
+                                    source: hargagridAdapter,
+                                    selectionmode: 'singlecell',
+                                    columns: [
+                                        { text: 'Transaksi', datafield: 'baranghna_no', displayfield: 'baranghna_no', cellsalign:'center' },
+                                        { text: 'Tanggal Berlaku', datafield: 'baranghnadet_tglawal', cellsformat: 'dd-MM-yyyy', displayfield: 'baranghnadet_tglawal', width : 150, cellsalign:'center' },
+                                        { text: 'Nilai Harga', datafield: 'baranghnadet_harga', displayfield: 'baranghnadet_harga', cellsalign:'right', width : 100 },
+                                    ]
+                                });
+                            }
+                        });
                     }
                 },
                 { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
@@ -361,7 +402,7 @@
                                             <div id="satuanGrid" style="margin: 10px;"></div>
                                         </div>
                                         <div>
-                                            
+                                            <div id="hargaGrid" style="margin: 10px;"></div>
                                         </div>
                                     </div>
                                 </div> 

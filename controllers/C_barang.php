@@ -137,6 +137,12 @@ class C_barang
         echo json_encode($datasatkonv);
     }
 
+    public function getHarga($barang_id)
+    {
+        $data = $this->model->getHarga($barang_id);
+        echo json_encode($data);
+    }
+
 }
 
 $barang = new C_barang($conn, $conn2, $config);
@@ -165,6 +171,10 @@ switch ($action) {
 
     case 'getsatkonv':
         $barang->getSatkonv($_POST["barang_id"]);
+        break;
+    
+    case 'getharga':
+        $barang->getHarga($_POST["barang_id"]);
         break;
     
     default:

@@ -59,4 +59,28 @@ class M_barang
         return $satkonv;
     }
     
+    public function getHarga($barang_id)
+    {
+        $sql = "SELECT 
+                    t_baranghna.baranghna_no,
+                    t_baranghna_detail.baranghnadet_tglawal,
+                    t_baranghna_detail.baranghnadet_harga
+                FROM t_baranghna
+                JOIN t_baranghna_detail ON t_baranghna_detail.t_baranghna_id = t_baranghna.baranghna_id
+                WHERE t_baranghna.baranghna_aktif = 'Y'
+                AND t_baranghna_detail.m_barang_id = $barang_id
+                AND t_baranghna_detail.baranghnadet_aktif = 'Y'
+                ORDER BY t_baranghna_detail.baranghnadet_tglawal ASC, t_baranghna_detail.baranghnadet_created_date ASC ";
+        $qbaranghna = $this->conn2->query($sql);
+        $rbaranghna = array();
+        while ($val = $qbaranghna->fetch_array()) {
+            $rbaranghna[] = array(
+                'baranghna_no' => $val['baranghna_no'],
+                'baranghnadet_tglawal' => $val['baranghnadet_tglawal'],
+                'baranghnadet_harga' => $val['baranghnadet_harga'],
+            );
+        }
+
+        return $rbaranghna;
+    }
 }
