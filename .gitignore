@@ -1,3 +1,4 @@
-config
+config/config.php
+config/database.php
 vendor
 assets
