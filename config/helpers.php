@@ -181,7 +181,8 @@ function getPenomoran($conn2, $kode, $table, $id, $no, $tanggal)
     $nourut = 1;
     if ($action) {
         $row = $action->fetch_object();
-        $nourut = intval($row->last) + 1;
+        $last = isset($row->last) ? $row->last : 0;
+        $nourut = intval($last);
     }
     $bulan = date('m', strtotime($tanggal));
     $tahun = date('Y', strtotime($tanggal));
