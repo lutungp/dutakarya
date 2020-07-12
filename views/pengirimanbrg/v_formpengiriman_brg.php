@@ -498,7 +498,7 @@
             }
 
             swal({
-                title: "Batalkan pengiriman " + dataRecord.barang_nama,
+                title: "Batalkan pengiriman " + $('#pengiriman_no').val(),
                 text: "Alasan dihapus :",
                 type: "input",
                 showCancelButton: true,

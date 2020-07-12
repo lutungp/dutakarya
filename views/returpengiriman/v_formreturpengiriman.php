@@ -334,65 +334,61 @@
         $('#batal').on('click', function () {
             var griddata = $('#returGrid').jqxGrid('getdatainformation');
             var rows = [];
-            // for (var i = 0; i < griddata.rowscount; i++){
-            //     var rec = $('#returGrid').jqxGrid('getrenderedrowdata', i);
-            //     m_barang_id = barang.filter(p=>p.label==rec.m_barang_id);
-            //     m_satuan_id = satuan.filter(p=>p.label==rec.m_satuan_id);
-            //     dtsatkonv = satKonv.filter(p=>parseInt(p.m_barang_id)==parseInt(m_barang_id[0].value||0)&&parseInt(p.m_satuan_id)==parseInt(m_satuan_id[0].value||0));
+            var griddata = $('#returGrid').jqxGrid('getdatainformation');
+            var rows = [];
+            for (var i = 0; i < griddata.rowscount; i++){
+                var rec = $('#returGrid').jqxGrid('getrenderedrowdata', i);
                 
-            //     satkonv_nilai = 1;
-            //     if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
-                
-            //     rows.push({
-            //         'returdet_id' : rec.returdet_id,
-            //         't_retur_id' : $('#retur_id').val(),
-            //         'm_barang_id' : parseInt(m_barang_id[0].value||0),
-            //         'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
-            //         'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
-            //         'satkonv_nilai' : parseFloat(satkonv_nilai),
-            //         'baranghnadet_harga' : parseFloat(rec.baranghnadet_harga),
-            //         'returdet_harga' : parseFloat(rec.returdet_harga),
-            //         'returdet_qtyold' : rec.returdet_qtyold,
-            //         'returdet_qty' : rec.returdet_qty,
-            //     });
-            // }
+                m_satuan_id = satuan.filter(p=>p.label==rec.m_satuan_id);
+                rows.push({
+                    'returdet_id' : rec.returdet_id,
+                    't_retur_id' : $('#retur_id').val(),
+                    't_pengirimandet_id' : rec.t_pengirimandet_id,
+                    'm_barang_id' : rec.m_barang_id,
+                    'm_barangsatuan_id' : parseInt(rec.m_barangsatuan_id),
+                    'm_satuan_id' : parseInt(m_satuan_id[0].value),
+                    'satkonv_nilai' : rec.satkonv_nilai,
+                    'returdet_qtyold' : rec.returdet_qtyold,
+                    'returdet_qty' : rec.returdet_qty,
+                }); 
+            }
 
-            // swal({
-            //     title: "Batalkan retur " + dataRecord.barang_nama,
-            //     text: "Alasan dihapus :",
-            //     type: "input",
-            //     showCancelButton: true,
-            //     closeOnConfirm: false,
-            // }, function (inputValue) {
-            //     if (inputValue === false) return false;
-            //     if (inputValue === "") {
-            //         swal.showInputError("Tuliskan alasan anda !");
-            //         return false
-            //     }
-            //     $.ajax({
-            //         url: "<?php // echo BASE_URL ?>/controllers/C_returpengiriman.php?action=batal",
-            //         type: "post",
-            //         datatype : 'json',
-            //         data: {
-            //             retur_id : $('#retur_id').val(),
-            //             t_pengiriman_id : $('#t_pengiriman_id').val(),
-            //             retur_no : $('#retur_no').val(),
-            //             retur_tgl : moment($('#retur_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
-            //             m_rekanan_id : $('#m_rekanan_id').val(),
-            //             rows : rows,
-            //             alasan : inputValue
-            //         },
-            //         success : function (res) {
-            //             if (res == 200) {
-            //                 resetForm();
-            //                 swal("Info!", "Retur Berhasil dibatalkan", "success");
-            //                 $("#ModalSatuan").modal('toggle');
-            //             } else {
-            //                 swal("Info!", "Retur Gagal dibatalkan", "error");
-            //             }
-            //         }
-            //     });
-            // });
+            swal({
+                title: "Batalkan retur " + $('#retur_no').val(),
+                text: "Alasan dihapus :",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+            }, function (inputValue) {
+                if (inputValue === false) return false;
+                if (inputValue === "") {
+                    swal.showInputError("Tuliskan alasan anda !");
+                    return false
+                }
+                $.ajax({
+                    url: "<?php echo BASE_URL ?>/controllers/C_returpengiriman.php?action=batal",
+                    type: "post",
+                    datatype : 'json',
+                    data: {
+                        retur_id : $('#retur_id').val(),
+                        t_pengiriman_id : $('#t_pengiriman_id').val(),
+                        retur_no : $('#retur_no').val(),
+                        retur_tgl : moment($('#retur_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                        m_rekanan_id : $('#m_rekanan_id').val(),
+                        rows : rows,
+                        alasan : inputValue
+                    },
+                    success : function (res) {
+                        if (res == 200) {
+                            resetForm();
+                            swal("Info!", "Retur Berhasil dibatalkan", "success");
+                            $("#ModalSatuan").modal('toggle');
+                        } else {
+                            swal("Info!", "Retur Gagal dibatalkan", "error");
+                        }
+                    }
+                });
+            });
         });
 
         $('#t_pengiriman_id').select2({
@@ -474,7 +470,7 @@
     function resetForm() {
         var now = new Date();
         $('#retur_id').val(0);
-        $('#t_pengiriman_id').val(0);
+        $("#t_pengiriman_id").empty()
         $('#retur_no').val('');
         $('#m_rekanan_id').val('');
         $('#m_rekanan_id').trigger('change');

@@ -247,6 +247,19 @@ class C_returpengiriman
                 $where = "WHERE barangtrans_tgl >= '" . $retur_tgl . "' AND barangtrans_created_date < now() AND m_barang_id = " . $datastock['m_barang_id'];
                 query_update($this->conn2, 't_barangtrans', $field, $where);
             }
+
+            $fieldSaveKirim = ['t_returdet_qty']; /* memberi flag pada pengiriman barang */
+            $dataSaveKirim = [ "t_returdet_qty-".$barangtrans_keluar ];
+            
+            $fieldkirim = "";
+            foreach ($fieldSaveKirim as $key => $value) {
+                $regex = (integer)$key < count($fieldSaveKirim)-1 ? "," : "";
+                $fieldkirim .= "$value = $dataSaveKirim[$key]" . $regex . " ";
+            }
+            
+            $wherekirim = "WHERE pengirimandet_id = " . $val['t_pengirimandet_id'];
+            query_update($this->conn2, 't_pengiriman_detail', $fieldkirim, $wherekirim);
+
             $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 
                          'barangtrans_jml', 'barangtrans_konv', 'barangtrans_awal', 'barangtrans_masuk', 'barangtrans_akhir', 'barangtrans_status', 'barangtrans_created_by', 'barangtrans_created_date'];
             $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
