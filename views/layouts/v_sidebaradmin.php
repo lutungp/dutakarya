@@ -5,7 +5,7 @@
     <div class="sidebar">
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="info">
-          <a href="<?php echo BASE_URL ?>/controllers/C_profile" class="d-block"><?php echo $user->user_pegawai ?></a>
+          <a href="#" class="d-block"><?php echo $user->user_pegawai ?></a>
         </div>
       </div>
 

@@ -329,7 +329,7 @@
                     }
                 }
             });
-        })
+        });
 
         $('#batal').on('click', function () {
             var griddata = $('#returGrid').jqxGrid('getdatainformation');
