@@ -29,6 +29,7 @@
             row["t_pengiriman_id"] = 0;
             row["satuankonv"] = '';
             row["m_barang_id"] = '';
+            row["m_barangsatuan_id"] = 0,
             row["baranghnadet_harga"] = 0;
             row['pengirimandet_harga'] = 0;
             row["m_satuan_id"] = '';
@@ -87,6 +88,7 @@
                     pengirimandet_id : element.pengirimandet_id,
                     t_pengiriman_id : element.t_pengiriman_id,
                     m_barang_id : element.m_barang_id,
+                    m_barangsatuan_id : element.m_barangsatuan_id,
                     m_satuan_id : element.m_satuan_id,
                     baranghnadet_harga : element.baranghnadet_harga,
                     satkonv_nilai : element.satkonv_nilai,
@@ -108,6 +110,7 @@
                     { name: 't_pengiriman_id', type: 'int'},
                     { name: 'satuankonv'},
                     { name: 'm_barang_id', value: 'm_barang_id', values: { source: barangAdapter.records, value: 'value', name: 'label' } },
+                    { name: 'm_barangsatuan_id', type: 'int'},
                     { name: 'baranghnadet_harga', type: 'float'},
                     { name: 'pengirimandet_harga', type: 'float'},
                     { name: 'm_satuan_id', value: 'm_satuan_id', values: { source: satuanAdapter.records, value: 'value', name: 'label' } },
@@ -194,7 +197,7 @@
                                     brg = barang.filter(p=>parseInt(p.value)==val);
                                     satkonv.push({ value: brg[0].satuan_id, label: brg[0].satuan_nama, satkonv_nilai : 1 });
                                     recorddata.satuankonv = JSON.stringify(satkonv);
-                                    var pengiriman_tgl = $('#pengiriman_tgl').val()
+                                    var pengiriman_tgl = $('#pengiriman_tgl').val();
                                     var data = {
                                         barang_id : val,
                                         baranghna_tglawal : moment(pengiriman_tgl, "DD-MM-YYYY").format("YYYY-MM-DD")
@@ -211,56 +214,93 @@
                         width : 300,
                     },
                     {
-                        text: 'Satuan', datafield: 'm_satuan_id', displayfield: 'm_satuan_id', columntype: 'dropdownlist',
-                        createeditor: function (row, value, editor) {
-                            var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
+                        text: 'Satuan', datafield: 'm_satuan_id', displayfield: 'm_satuan_id', columntype: 'combobox',
+                        // createeditor: function (row, value, editor) {
+                        //     var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
                             
-                            var satuanSource = {
-                                    datatype: "array",
-                                    datafields: [
-                                        { name: 'label', type: 'string' },
-                                        { name: 'value', type: 'int' }
-                                    ],
-                                    localdata: JSON.parse(recorddata.satuankonv)
-                            };
-                            satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
-                                autoBind: true
-                            });
-                            editor.jqxDropDownList({
-                                source: satuanAdapter,
-                                displayMember: 'label',
-                                valueMember: 'value'
-                            });
-                        },
+                        //     var satuanSource = {
+                        //             datatype: "array",
+                        //             datafields: [
+                        //                 { name: 'label', type: 'string' },
+                        //                 { name: 'value', type: 'int' }
+                        //             ],
+                        //             localdata: JSON.parse(recorddata.satuankonv)
+                        //     };
+                        //     satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
+                        //         autoBind: true
+                        //     });
+                        //     editor.jqxDropDownList({
+                        //         source: satuanAdapter,
+                        //         displayMember: 'label',
+                        //         valueMember: 'value'
+                        //     });
+                        // },
                         initeditor: function (row, value, editor) {
                             var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
-                            var satuanSource = {
-                                    datatype: "array",
-                                    datafields: [
-                                        { name: 'label', type: 'string' },
-                                        { name: 'value', type: 'int' }
-                                    ],
-                                    localdata: JSON.parse(recorddata.satuankonv)
-                            };
-                            satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
-                                autoBind: true
-                            });
-                            editor.jqxDropDownList({
-                                source: satuanAdapter,
-                                displayMember: 'label',
-                                valueMember: 'value'
-                            });
+                            // console.log(recorddata)
+                            // var satuanSource = {
+                            //         datatype: "array",
+                            //         datafields: [
+                            //             { name: 'label', type: 'string' },
+                            //             { name: 'value', type: 'int' }
+                            //         ],
+                            //         localdata: JSON.parse(recorddata.satuankonv)
+                            // };
+                            // satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
+                            //     autoBind: true
+                            // });
+                            // editor.jqxDropDownList({
+                            //     source: satuanAdapter,
+                            //     displayMember: 'label',
+                            //     valueMember: 'value'
+                            // });
 
+                            // editor.on('select', function (event) {
+                            //     var datasatkonv = satKonv;
+                            //     if (event.args) {
+                            //         var val = event.args.item.value;
+                            //         var satuankonv = JSON.parse(recorddata.satuankonv);
+                            //         var dtsatkonv = satuankonv.filter(p=>parseInt(p.value)==parseInt(val));
+                            //         recorddata.satkonv_nilai = dtsatkonv[0].satkonv_nilai;
+                            //         $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.baranghnadet_harga) * parseFloat(dtsatkonv[0].satkonv_nilai)));
+                            //     }
+                            // });
+
+
+                            /* lintang */
+                            // var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
+                            var sat = JSON.parse(recorddata.satuankonv);
+                            var satkonv = [];
+                            var m_barangsatuan_nama = datasatuan.filter(p=>p.satuan_id==recorddata.m_barangsatuan_id);
+                            satkonv.push(m_barangsatuan_nama[0].satuan_nama);
+                            for (let index = 0; index < sat.length; index++) {
+                                const element = sat[index];
+                                satkonv.push(element.satuan_nama)
+                            }
+                            
+                            editor.jqxComboBox({
+                                source: satkonv,
+                                autoDropDownHeight : true
+                            });
+                            
+                            var index = satkonv.indexOf(recorddata.m_satuanpengiriman_nama);
+                            editor.jqxComboBox('selectIndex', index);
+                            
                             editor.on('select', function (event) {
                                 var datasatkonv = satKonv;
                                 if (event.args) {
                                     var val = event.args.item.value;
                                     var satuankonv = JSON.parse(recorddata.satuankonv);
-                                    var dtsatkonv = satuankonv.filter(p=>parseInt(p.value)==parseInt(val));
-                                    recorddata.satkonv_nilai = dtsatkonv[0].satkonv_nilai;
-                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.baranghnadet_harga) * parseFloat(dtsatkonv[0].satkonv_nilai)));
+                                    var dtsatkonv = satuankonv.filter(p=>p.satuan_nama==val);
+                                    if (dtsatkonv.length > 0) {
+                                        recorddata.satkonv_nilai = dtsatkonv[0].satkonv_nilai;
+                                    } else {
+                                        recorddata.satkonv_nilai = 1;
+                                    }
+                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.baranghnadet_harga) * parseFloat(recorddata.satkonv_nilai)));
                                 }
                             });
+
                         }, 
                     },
                     { text: 'Harga', datafield: 'pengirimandet_harga', cellsalign: 'right', editable : false},
@@ -302,6 +342,7 @@
 
             settotal();
         });
+
     });
 
     function settotal() {
@@ -313,8 +354,84 @@
             total = total + parseFloat(rec.pengirimandet_total);
         }
         total = total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-        console.log(total)
         $('#pengiriman_total').val(total);
+    }
+
+    function renderJadwal(datajadwaldet) {
+        var jadwalSource = {
+            datatype: "array",
+            localdata:  datajadwaldet,
+            datafields: [
+                { name: 'jadwal_id', type: 'int'},
+                { name: 'm_rekanan_id', type: 'int'},
+                { name: 'rekanan_nama', type: 'string'},
+                { name: 'm_barang_id', type: 'int'},
+                { name: 'm_satuan_id', type: 'int'},
+                { name: 'satuan_nama', type: 'string'},
+                { name: 'barang_nama', type: 'string'},
+                { name: 'baranghnadet_harga', type: 'double'},
+                { name: 'minggu', type: 'int'},
+                { name: 'hari', type: 'string'},
+                { name: 'jadwal_qty', type: 'int'},
+                { name: 'sudahkirim', type: 'float'},
+            ],
+            id: 'jadwal_id',
+        };
+        var dataAdapter = new $.jqx.dataAdapter(jadwalSource, {
+            downloadComplete: function (data, status, xhr) { },
+            loadComplete: function (data) {},
+            loadError: function (xhr, status, error) { }
+        });
+        // initialize jqxGrid
+        $("#jadwalGrid").jqxGrid({
+            width: '100%',
+            height: '100%',
+            source: dataAdapter,                
+            pageable: false,
+            sortable: true,
+            altrows: true,
+            enabletooltips: true,
+            filterable: true,
+            autoshowfiltericon: true,
+            columns: [
+                { text: 'Hari', datafield: 'hari', cellsalign: 'left', width : 50 },
+                { text: 'Rekanan', datafield: 'rekanan_nama', cellsalign: 'left', width : 120 },
+                { text: 'Minggu', datafield: 'minggu', cellsalign: 'center' , width : 50},
+                { text: 'Nama Barang', datafield: 'barang_nama', cellsalign: 'left' },
+                { text: 'Jml', datafield: 'jadwal_qty', cellsalign: 'right' , width : 80},
+                { text: 'Sudah Kirim', datafield: 'sudahkirim', cellsalign: 'right', width : 80 },
+            ]
+        });
+
+        $("#jadwalGrid").on('rowselect', function (event) {
+            $("#pengirimanGrid").jqxGrid('clear');
+            var record = event.args.row;
+            $("#m_rekanan_id").data('select2').trigger('select', {
+                data: {"id":record.m_rekanan_id, "text": record.rekanan_nama }
+            });
+            var qty = record.jadwal_qty - record.sudahkirim;
+            qty = qty <= 0 ? record.jadwal_qty : qty;
+            var datarow = {
+                pengirimandet_id : 0,
+                t_pengiriman_id : 0,
+                satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==record.m_barang_id)),
+                m_barang_id : record.barang_nama,
+                m_barangsatuan_id : record.m_satuan_id,
+                baranghnadet_harga : record.baranghnadet_harga,
+                pengirimandet_harga : record.baranghnadet_harga,
+                m_satuan_id : record.satuan_nama,
+                satkonv_nilai : 1,
+                pengirimandet_qtyold : 0,
+                pengirimandet_qty : qty,
+                pengirimandet_subtotal : qty * record.baranghnadet_harga,
+                pengirimandet_potongan : 0,
+                pengirimandet_total : qty * record.baranghnadet_harga,
+            };
+            
+            $("#pengirimanGrid").jqxGrid('addrow', null, datarow);
+            $("#ModalJadwal").modal('toggle');
+            settotal();
+        });
     }
 </script>
 <section class="content">
@@ -323,6 +440,7 @@
             <div class="card card-primary">
                 <div class="card-header primary">
                     <button type="button" class="btn btn-default btn-sm" onclick="window.location.href='<?php echo BASE_URL ?>/controllers/C_pengiriman_brg'">Kembali</button>
+                    <button type="button" class="btn btn-default btn-sm" onclick="lihatJadwal()">Lihat Jadwal</button>
                 </div>
                 <form id="formpengiriman">
                     <div class="card-body">
@@ -374,6 +492,17 @@
                 </form>
             </div>
         </div>
+        <div class="modal fade" id="ModalJadwal" tabindex="-1" role="dialog" aria-labelledby="ModalJadwalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div id="jadwalGrid" style="margin: 5px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script>
@@ -406,6 +535,12 @@
             event.preventDefault();
             var griddata = $('#pengirimanGrid').jqxGrid('getdatainformation');
             var rows = [];
+
+            if ($('#m_rekanan_id').val() < 1) {
+                swal("Info!", "Inputan belum lengkap", "error");
+                return false;
+            }
+
             for (var i = 0; i < griddata.rowscount; i++){
                 var rec = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', i);
                 m_barang_id = barang.filter(p=>p.label==rec.m_barang_id);
@@ -444,8 +579,9 @@
                     'hapusdetail' : hapusdetail
                 },
                 success : function (res) {
-                    window.open('<?php echo BASE_URL;?>/controllers/C_pengiriman_brg.php?action=exportpdf&id=' + $('#pengiriman_id').val());
-                    if (res == 200) {
+                    res = JSON.parse(res);
+                    if (res['code'] == 200) {
+                        window.open('<?php echo BASE_URL;?>/controllers/C_pengiriman_brg.php?action=exportpdf&id=' + res['id']);
                         resetForm();
                         swal("Info!", "Pengiriman Berhasil disimpan", "success");
                         $("#ModalSatuan").modal('toggle');
@@ -548,5 +684,16 @@
         $('#m_rekanan_id').trigger('change');
         $('#pengiriman_tgl').val(moment(now, 'YYYY-MM-DD').format('DD-MM-YYYY'));
         $("#pengirimanGrid").jqxGrid('clear');
+    }
+
+    function lihatJadwal() {
+        var pengiriman_tgl = $('#pengiriman_tgl').val();
+        var data = {
+            tanggal : moment(pengiriman_tgl, "DD-MM-YYYY").format("YYYY-MM-DD")
+        };
+        $.post("<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=getjadwal", data, function(result){
+            $('#ModalJadwal').modal('toggle');
+            renderJadwal(JSON.parse(result));
+        });
     }
 </script>

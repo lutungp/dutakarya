@@ -12,7 +12,7 @@ class M_jadwalkirim
         $this->config = $config;
     }
 
-    public function getJadwal($m_rekanan_id, $bulan, $tahun)
+    public function getJadwal($m_rekanan_id, $bulan, $tahun, $m_barang_id)
     {
         $sql = "SELECT
                     jadwal_id,
@@ -24,8 +24,10 @@ class M_jadwalkirim
                     minggu2,
                     minggu3,
                     minggu4,
-                    minggu5
-                FROM t_jadwal WHERE m_rekanan_id = $m_rekanan_id AND bulan = $bulan AND tahun = $tahun";
+                    minggu5,
+                    m_barang_id
+                FROM t_jadwal
+                WHERE m_rekanan_id = $m_rekanan_id AND bulan = $bulan AND tahun = $tahun AND m_barang_id = $m_barang_id";
         $qkirim = $this->conn2->query($sql);
         $rkirim = array();
         while ($val = $qkirim->fetch_array()) {
@@ -39,10 +41,24 @@ class M_jadwalkirim
                 'minggu2' => $val['minggu2'],
                 'minggu3' => $val['minggu3'],
                 'minggu4' => $val['minggu4'],
-                'minggu5' => $val['minggu5'],
+                'minggu5' => $val['minggu5']
             );
         }
 
         return $rkirim;
+    }
+
+    public function getBarang($search)
+    {
+        $sql = "SELECT m_barang.barang_id AS id, m_barang.barang_nama AS text FROM m_barang";
+        if ($search <> '') {
+            $sql .= " WHERE m_barang.barang_nama LIKE '%".$search."%' ";
+        }
+        $qbarang = $this->conn2->query($sql);
+        $barang = [];
+        while ($result = $qbarang->fetch_array(MYSQLI_ASSOC)) {
+            array_push($barang, $result);
+        }
+        return $barang;
     }
 }

@@ -4,87 +4,87 @@
     $data = json_decode($dataparse);
 ?>
 <script>
+    var datajadwaldet = [
+        {
+            jadwal_id : 0,
+            m_rekanan_id : 0,
+            bulan : 1,
+            hari : 1,
+            hari_nama : 'Senin',
+            minggu1 : '',
+            minggu2 : '',
+            minggu3 : '',
+            minggu4 : '',
+            minggu5 : '',
+        }, {
+            jadwal_id : 0,
+            m_rekanan_id : 0,
+            bulan : 2,
+            hari : 2,
+            hari_nama : 'Selasa',
+            minggu1 : '',
+            minggu2 : '',
+            minggu3 : '',
+            minggu4 : '',
+            minggu5 : '',
+        }, {
+            jadwal_id : 0,
+            m_rekanan_id : 0,
+            bulan : 3,
+            hari : 3,
+            hari_nama : 'Rabu',
+            minggu1 : '',
+            minggu2 : '',
+            minggu3 : '',
+            minggu4 : '',
+            minggu5 : '',
+        }, {
+            jadwal_id : 0,
+            m_rekanan_id : 0,
+            bulan : 4,
+            hari : 4,
+            hari_nama : 'Kamis',
+            minggu1 : '',
+            minggu2 : '',
+            minggu3 : '',
+            minggu4 : '',
+            minggu5 : '',
+        }, {
+            jadwal_id : 0,
+            m_rekanan_id : 0,
+            bulan : 5,
+            hari : 5,
+            hari_nama : 'Jumat',
+            minggu1 : '',
+            minggu2 : '',
+            minggu3 : '',
+            minggu4 : '',
+            minggu5 : '',
+        }, {
+            jadwal_id : 0,
+            m_rekanan_id : 0,
+            bulan : 6,
+            hari : 6,
+            hari_nama : 'Sabtu',
+            minggu1 : '',
+            minggu2 : '',
+            minggu3 : '',
+            minggu4 : '',
+            minggu5 : '',
+        }, {
+            jadwal_id : 0,
+            m_rekanan_id : 0,
+            bulan : 7,
+            hari : 7,
+            hari_nama : 'Minggu',
+            minggu1 : '',
+            minggu2 : '',
+            minggu3 : '',
+            minggu4 : '',
+            minggu5 : '',
+        }
+    ];
     $(document).ready(function () {
-        var datajadwaldet = [
-            {
-                jadwal_id : 0,
-                m_rekanan_id : 0,
-                bulan : 1,
-                hari : 1,
-                hari_nama : 'Senin',
-                minggu1 : '',
-                minggu2 : '',
-                minggu3 : '',
-                minggu4 : '',
-                minggu5 : '',
-            }, {
-                jadwal_id : 0,
-                m_rekanan_id : 0,
-                bulan : 2,
-                hari : 2,
-                hari_nama : 'Selasa',
-                minggu1 : '',
-                minggu2 : '',
-                minggu3 : '',
-                minggu4 : '',
-                minggu5 : '',
-            }, {
-                jadwal_id : 0,
-                m_rekanan_id : 0,
-                bulan : 3,
-                hari : 3,
-                hari_nama : 'Rabu',
-                minggu1 : '',
-                minggu2 : '',
-                minggu3 : '',
-                minggu4 : '',
-                minggu5 : '',
-            }, {
-                jadwal_id : 0,
-                m_rekanan_id : 0,
-                bulan : 4,
-                hari : 4,
-                hari_nama : 'Kamis',
-                minggu1 : '',
-                minggu2 : '',
-                minggu3 : '',
-                minggu4 : '',
-                minggu5 : '',
-            }, {
-                jadwal_id : 0,
-                m_rekanan_id : 0,
-                bulan : 5,
-                hari : 5,
-                hari_nama : 'Jumat',
-                minggu1 : '',
-                minggu2 : '',
-                minggu3 : '',
-                minggu4 : '',
-                minggu5 : '',
-            }, {
-                jadwal_id : 0,
-                m_rekanan_id : 0,
-                bulan : 6,
-                hari : 6,
-                hari_nama : 'Sabtu',
-                minggu1 : '',
-                minggu2 : '',
-                minggu3 : '',
-                minggu4 : '',
-                minggu5 : '',
-            }, {
-                jadwal_id : 0,
-                m_rekanan_id : 0,
-                bulan : 7,
-                hari : 7,
-                hari_nama : 'Minggu',
-                minggu1 : '',
-                minggu2 : '',
-                minggu3 : '',
-                minggu4 : '',
-                minggu5 : '',
-            }
-        ]
         gridrender(datajadwaldet);
     });
 
@@ -167,6 +167,12 @@
                                     <select id="m_rekanan_id" name="m_rekanan_id" style="width: 100%;" require></select>
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="m_barang_id">Barang</label>
+                                    <select id="m_barang_id" name="m_barang_id" style="width: 100%;" require></select>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div id="jadwalGrid" style="margin: 10px;"></div>
@@ -205,58 +211,30 @@
             }
         });
 
-        $('#m_rekanan_id').on('select2:select', function (e) {
-            var value = $(e.currentTarget).find("option:selected").val();
-            var data = {
-                m_rekanan_id : $('#m_rekanan_id').val(),
-                bulan : $('#bulan').val(),
-                tahun : $('#tahun').val(),
+        $("#m_barang_id").select2({
+            ajax: {
+                url: '<?php echo BASE_URL ?>/controllers/C_jadwalkirim.php?action=getbarang',
+                type: "get",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        searchTerm: params.term // search term
+                    };
+                },
+                processResults: function (response) {
+                    return {
+                        results: response
+                    };
+                },
+                cache: true
             }
-            $.post("<?php echo BASE_URL ?>/controllers/C_jadwalkirim.php?action=getjadwal", data, function(result){
-               var res = JSON.parse(result);
-               var datajadwal = [];
-               var hari = [
-                    {
-                        hari : 1,
-                        hari_nama : 'Senin'
-                    }, {
-                        hari : 2,
-                        hari_nama : 'Selasa'
-                    }, {
-                        hari : 3,
-                        hari_nama : 'Rabu'
-                    }, {
-                        hari : 4,
-                        hari_nama : 'Kamis'
-                    }, {
-                        hari : 5,
-                        hari_nama : 'Jumat'
-                    }, {
-                        hari : 6,
-                        hari_nama : 'Sabtu'
-                    }, {
-                        hari : 7,
-                        hari_nama : 'Minggu'
-                    },
-               ]
-               res.forEach(element => {
-                    hariint = hari.filter(p=>p.hari==parseInt(element.hari));
-                    datajadwal.push({
-                        jadwal_id : element.jadwal_id,
-                        m_rekanan_id : element.m_rekanan_id,
-                        bulan : element.bulan,
-                        hari : element.hari,
-                        hari_nama : hariint[0].hari_nama,
-                        minggu1 : element.minggu1,
-                        minggu2 : element.minggu2,
-                        minggu3 : element.minggu3,
-                        minggu4 : element.minggu4,
-                        minggu5 : element.minggu5,
-                    });
-               });
-
-               gridrender(datajadwal);
-            });
+        });
+        $('#m_barang_id').on('select2:select', function (e) {
+            getJadwal();
+        });
+        $('#m_rekanan_id').on('select2:select', function (e) {
+            getJadwal();
         });
 
         $('#formjadwal').submit(function (event) {
@@ -271,6 +249,7 @@
                     m_rekanan_id : $('#m_rekanan_id').val(),
                     bulan : $('#bulan').val(),
                     tahun : $('#tahun').val(),
+                    m_barang_id : $('#m_barang_id').val(),
                     hari : rec.hari,
                     hari_nama : rec.hari_nama,
                     minggu1 : rec.minggu1,
@@ -307,5 +286,63 @@
     function resetForm() {
         $("#m_rekanan_id").empty();
         $("#jadwalGrid").jqxGrid('clear');
+        gridrender(datajadwaldet);
+    }
+
+    function getJadwal() {
+        var data = {
+            m_rekanan_id : $('#m_rekanan_id').val(),
+            bulan : $('#bulan').val(),
+            tahun : $('#tahun').val(),
+            m_barang_id : $('#m_barang_id').val(),
+        }
+        $.post("<?php echo BASE_URL ?>/controllers/C_jadwalkirim.php?action=getjadwal", data, function(result){
+            var res = JSON.parse(result);
+            var datajadwal = [];
+            var hari = [
+                {
+                    hari : 1,
+                    hari_nama : 'Senin'
+                }, {
+                    hari : 2,
+                    hari_nama : 'Selasa'
+                }, {
+                    hari : 3,
+                    hari_nama : 'Rabu'
+                }, {
+                    hari : 4,
+                    hari_nama : 'Kamis'
+                }, {
+                    hari : 5,
+                    hari_nama : 'Jumat'
+                }, {
+                    hari : 6,
+                    hari_nama : 'Sabtu'
+                }, {
+                    hari : 7,
+                    hari_nama : 'Minggu'
+                },
+            ]
+            res.forEach(element => {
+                hariint = hari.filter(p=>p.hari==parseInt(element.hari));
+                datajadwal.push({
+                    jadwal_id : element.jadwal_id,
+                    m_rekanan_id : element.m_rekanan_id,
+                    bulan : element.bulan,
+                    hari : element.hari,
+                    hari_nama : hariint[0].hari_nama,
+                    minggu1 : element.minggu1,
+                    minggu2 : element.minggu2,
+                    minggu3 : element.minggu3,
+                    minggu4 : element.minggu4,
+                    minggu5 : element.minggu5,
+                });
+            });
+            if (res.length > 0) {
+                gridrender(datajadwal);
+            } else {
+                gridrender(datajadwaldet);
+            }
+        });
     }
 </script>

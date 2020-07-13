@@ -171,6 +171,7 @@ class M_pengiriman_brg
                     t_pengiriman_detail.t_pengiriman_id,
                     t_pengiriman_detail.m_barang_id,
                     m_barang.barang_nama,
+                    m_barang.m_satuan_id AS m_barangsatuan_id,
                     t_pengiriman_detail.m_satuan_id,
                     m_satuan.satuan_nama,
                     COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
@@ -201,6 +202,7 @@ class M_pengiriman_brg
                 't_pengiriman_id' => $val['t_pengiriman_id'],
                 'm_barang_id' => $val['m_barang_id'],
                 'barang_nama' => $val['barang_nama'],
+                'm_barangsatuan_id' => $val['m_barangsatuan_id'],
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satuan_nama' => $val['satuan_nama'],
                 'baranghnadet_harga' => $val['baranghnadet_harga'],
@@ -248,6 +250,101 @@ class M_pengiriman_brg
         }
 
         return $rpengiriman;
+    }
+
+    public function getJadwal($day, $week, $month, $year, $tanggal)
+    {
+        $sql = "SELECT
+                    t_jadwal.jadwal_id,
+	                t_jadwal.m_rekanan_id,
+                    t_jadwal.m_rekanan_id,
+                    m_rekanan.rekanan_nama,
+                    t_jadwal.m_barang_id,
+                    m_barang.barang_nama,
+                    m_barang.m_satuan_id,
+                    m_satuan.satuan_nama,
+                    baranghna.baranghnadet_harga,
+                    t_jadwal.hari,
+                    t_jadwal.bulan,
+                    t_jadwal.tahun,
+                    t_jadwal.minggu1,
+                    t_jadwal.minggu2,
+                    t_jadwal.minggu3,
+                    t_jadwal.minggu4,
+                    t_jadwal.minggu5,
+                    (kirim.satkonv_nilai * kirim.pengirimandet_qty) AS sudahkirim
+                FROM t_jadwal
+                INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_jadwal.m_rekanan_id
+                INNER JOIN m_barang ON m_barang.barang_id = t_jadwal.m_barang_id
+                INNER JOIN (
+                    SELECT * FROM (
+                        SELECT
+                            ROW_NUMBER() OVER ( PARTITION BY m_barang_id ORDER BY t_baranghna_detail.baranghnadet_tglawal DESC, t_baranghna_detail.baranghnadet_created_date DESC ) AS rnumber,
+                            m_barang_id,
+                            baranghnadet_harga,
+                            t_baranghna_detail.baranghnadet_tglawal 
+                        FROM
+                            t_baranghna_detail
+                            INNER JOIN t_baranghna ON t_baranghna.baranghna_id = t_baranghna_detail.t_baranghna_id 
+                        WHERE
+                            t_baranghna_detail.baranghnadet_aktif = 'Y' 
+                            AND t_baranghna_detail.baranghnadet_tglawal < '$tanggal'
+                            AND t_baranghna.baranghna_aktif = 'Y' 
+                        ) AS last 
+                    WHERE last.rnumber = 1
+                ) AS baranghna ON baranghna.m_barang_id = m_barang.barang_id
+                INNER JOIN m_satuan ON m_satuan.satuan_id = m_barang.m_satuan_id
+                LEFT JOIN (
+                    SELECT
+                        t_pengiriman.m_rekanan_id,
+                        t_pengiriman_detail.m_barang_id,
+                        COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
+                        SUM(t_pengiriman_detail.pengirimandet_qty) AS pengirimandet_qty
+                    FROM t_pengiriman_detail
+                    LEFT JOIN t_pengiriman ON t_pengiriman.pengiriman_id = t_pengiriman_detail.t_pengiriman_id
+                    LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_pengiriman_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_pengiriman_detail.m_barang_id
+                    WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y' AND t_pengiriman.pengiriman_tgl = '$tanggal'
+                    GROUP BY t_pengiriman.m_rekanan_id, t_pengiriman_detail.m_barang_id, m_satuan_konversi.satkonv_nilai
+                ) AS kirim ON kirim.m_barang_id = m_barang.barang_id AND kirim.m_rekanan_id = t_jadwal.m_rekanan_id
+                WHERE hari = $day AND bulan = $month AND tahun = $year";
+        
+        $qkirim = $this->conn2->query($sql);
+        $rkirim = array();
+        $hari = ['', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        while ($val = $qkirim->fetch_array()) {
+            $qty = 0;
+            if ($week == 1) {
+                $qty = $val['minggu1'];
+            }
+            if ($week == 2) {
+                $qty = $val['minggu2'];
+            }
+            if ($week == 3) {
+                $qty = $val['minggu3'];
+            }
+            if ($week == 4) {
+                $qty = $val['minggu4'];
+            }
+            if ($week == 5) {
+                $qty = $val['minggu5'];
+            }
+            $rkirim[] = array(
+                'jadwal_id' => $val['jadwal_id'],
+                'm_rekanan_id' => $val['m_rekanan_id'],
+                'rekanan_nama' => $val['rekanan_nama'],
+                'm_barang_id' => $val['m_barang_id'],
+                'barang_nama' => $val['barang_nama'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'satuan_nama' => $val['satuan_nama'],
+                'baranghnadet_harga' => $val['baranghnadet_harga'],
+                'minggu' => $week,
+                'hari' => $hari[$day],
+                'jadwal_qty' => $qty,
+                'sudahkirim' => $val['sudahkirim']
+            );
+        }
+
+        return $rkirim;
     }
 
 }

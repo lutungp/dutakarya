@@ -178,11 +178,14 @@ class C_pengiriman_brg
             }
         }
         
+        $return["code"] = "202";
+
         if ($pengiriman_id > 0) {
-            echo "200";
-        } else {
-            echo "202";
+            $return["code"] = "200";
+            $return["id"] = $pengiriman_id;
         }
+
+        echo json_encode($return);
     }
 
     public function nonaktifdetail($data, $pengiriman_no, $pengiriman_tgl)
@@ -370,6 +373,19 @@ class C_pengiriman_brg
         $mpdf->Output('pengiriman.pdf', 'I');
     }
 
+    public function getJadwal($tanggal)
+    {
+        $tanggalreal = $tanggal;
+        $tanggal = strtotime(date('Y-m-d', strtotime($tanggal)));
+        $firstOfMonth = strtotime(date('Y-m-01', $tanggal));
+        $week = intval(date("W", $tanggal)) - intval(date("W", $firstOfMonth));
+        $day = date('N', $tanggal);
+        $month = intval(date('m', $tanggal));
+        $year = intval(date('Y', $tanggal));
+        $data = $this->model->getJadwal($day, $week, $month, $year, $tanggalreal);
+
+        echo json_encode($data);
+    }
 }
 
 $pengiriman = new C_pengiriman_brg($conn, $conn2, $config);
@@ -393,6 +409,9 @@ switch ($action) {
         break;
     case 'exportpdf':
         $pengiriman->exportPdf($_GET);
+        break;
+    case 'getjadwal':
+        $pengiriman->getJadwal($_POST['tanggal']);
         break;
     default:
         $pengiriman->Pengiriman();
