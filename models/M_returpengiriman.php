@@ -142,7 +142,8 @@ class M_returpengiriman
                     t_retur.retur_tgl,
                     t_retur.m_rekanan_id,
                     m_rekanan.rekanan_nama,
-                    t_retur.retur_catatan
+                    t_retur.retur_catatan,
+                    t_pengiriman.t_penagihan_no
                 FROM t_retur
                 JOIN t_pengiriman ON t_pengiriman.pengiriman_id = t_retur.t_pengiriman_id
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_retur.m_rekanan_id
@@ -251,7 +252,7 @@ class M_returpengiriman
                 CONCAT('[ ', t_pengiriman.pengiriman_no, '] ', m_rekanan.rekanan_nama) AS text
             FROM t_pengiriman 
             LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
-            WHERE pengiriman_aktif = 'Y'";
+            WHERE pengiriman_aktif = 'Y' AND t_penagihan_no IS NULL";
         if ($search <> '') {
             $sql .= " AND t_pengiriman.pengiriman_nama LIKE '%".$search."%' ";
         }
