@@ -36,30 +36,32 @@
             if (datapenagihan.datapenagihan.penagihan_id < 1) {
                 $.post("<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=getpengiriman", data, function(result){
                     var res = JSON.parse(result);
-                    res.forEach(element => {
-                        var datarow = {
-                            penagihandet_id : element.penagihandet_id,
-                            t_penagihan_id : element.t_penagihan_id,
-                            m_rekanan_id : element.m_rekanan_id,
-                            t_pengiriman_id : element.pengiriman_id,
-                            pengiriman_no : element.pengiriman_no,
-                            pengiriman_tgl : element.pengiriman_tgl,
-                            t_pengirimandet_id : element.pengirimandet_id,
-                            m_barang_id : element.m_barang_id,
-                            barang_nama : element.barang_nama,
-                            m_barangsatuan_id : element.m_barangsatuan_id,
-                            m_barangsatuan_nama : element.m_barangsatuan_nama,
-                            m_satuan_id : element.m_satuan_id,
-                            satkonv_nilai : element.satkonv_nilai,
-                            penagihandet_qty : element.pengirimandet_qty,
-                            penagihandet_qtyreal : element.pengirimandet_qtyreal,
-                            penagihandet_subtotal : element.pengirimandet_subtotal,
-                            penagihandet_potongan : element.pengirimandet_potongan,
-                            penagihandet_total : element.pengirimandet_total,
-                            t_returdet_qty : element.t_returdet_qty,
-                        }
-                        $("#penagihanGrid").jqxGrid('addrow', null, datarow);
-                    });
+                    if (res.length > 0) {
+                        res.forEach(element => {
+                            var datarow = {
+                                penagihandet_id : element.penagihandet_id,
+                                t_penagihan_id : element.t_penagihan_id,
+                                m_rekanan_id : element.m_rekanan_id,
+                                t_pengiriman_id : element.pengiriman_id,
+                                pengiriman_no : element.pengiriman_no,
+                                pengiriman_tgl : element.pengiriman_tgl,
+                                t_pengirimandet_id : element.pengirimandet_id,
+                                m_barang_id : element.m_barang_id,
+                                barang_nama : element.barang_nama,
+                                m_barangsatuan_id : element.m_barangsatuan_id,
+                                m_barangsatuan_nama : element.m_barangsatuan_nama,
+                                m_satuan_id : element.m_satuan_id,
+                                satkonv_nilai : element.satkonv_nilai,
+                                penagihandet_qty : element.pengirimandet_qty,
+                                penagihandet_qtyreal : element.pengirimandet_qtyreal,
+                                penagihandet_subtotal : element.pengirimandet_subtotal,
+                                penagihandet_potongan : element.pengirimandet_potongan,
+                                penagihandet_total : element.pengirimandet_total,
+                                t_returdet_qty : element.t_returdet_qty,
+                            }
+                            $("#penagihanGrid").jqxGrid('addrow', null, datarow);
+                        });   
+                    }
                 });
             }
         });
@@ -78,7 +80,7 @@
             $("#penagihanGrid").jqxGrid('clear');
         }
 
-        var datapenagihandetail = datapenagihan.datapenagihandetail;
+        var datapenagihandetail = datapenagihan == null ? [] : datapenagihan.datapenagihandetail;
         var datapenagihandet = [];
         for (let index = 0; index < datapenagihandetail.length; index++) {
             const element = datapenagihandetail[index];

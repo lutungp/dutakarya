@@ -223,25 +223,71 @@ class C_penagihan
         $content .= '</div>';
         $content .= '<table class="pengiriman">';
         $content .= '<tr>';
-        $content .= '<td style="text-align:center; border:1px solid;">PRODUK</td>';
-        $content .= '<td style="text-align:center; border:1px solid;">HARGA</td>';
-        $content .= '<td style="text-align:center; border:1px solid;">DIKIRIM</td>';
-        $content .= '<td style="text-align:center; border:1px solid;">SATUAN</td>';
-        $content .= '<td style="text-align:center; border:1px solid;">KEMBALI</td>';
-        $content .= '<td style="text-align:center; border:1px solid;">DITERIMA</td>';
+        $content .= '<td style="text-align:center; border:1px solid;">TANGGAL</td>';
+        $content .= '<td style="text-align:center; border:1px solid;">NO.<br>PENGIRIMAN</td>';
+        $content .= '<td style="text-align:center; border:1px solid;">NAMA<br>BARANG</td>';
+        $content .= '<td style="text-align:center; border:1px solid;">JUMLAH</td>';
+        $content .= '<td style="text-align:center; border:1px solid;">HARGA SATUAN</td>';
         $content .= '<td style="text-align:center; border:1px solid;">TOTAL</td>';
+        $content .= '<td style="text-align:center; border:1px solid;">KETERANGAN</td>';
         $content .= '</tr>';
+        $total = 0;
+        foreach ($datapenagihandetail as $key => $val) {
+            $content .= '<tr>';
+            $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.date('d-m-Y', strtotime($val['pengiriman_tgl'])).'</td>';
+            $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 120px;">'.$val['pengiriman_no'].'</td>';
+            $content .= '<td style="text-align:left; border-left:1px solid; border-right:1px solid; padding: 5px; width: 220px;">'.$val['barang_nama'].'</td>';
+            $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 8%;">'.($val['penagihandet_qtyreal'] - $val['t_returdet_qty']).'</td>';
+            $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.number_format($val['pengirimandet_harga']).'</td>';
+            $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.number_format($val['penagihandet_total']).'</td>';
+            $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px;"></td>';
+            $content .= '</tr>';
+            $total = $total + $val['penagihandet_total'];
+        }
+        $content .= '<tr>';
+        $tanggalindo = tgl_indo($datapenagihan->penagihan_tgl);
+        $content .= '<td style="text-align:left; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 10px;" colspan="3" rowspan="2">
+                        Catatan :
+                        <br>
+                        <br>
+                        Pembayaran transfer mohon untuk dikirimkan ke No. Rekening 006 311 8998 Bank BCA KCU SCBD - EQUITY TOWER JL. JEND SUDIRMAN KAV. 52 - 53 A/N PT. DUTAKARYA YASHA
+                    </td>
+                    <td style="text-align:left; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 5px;" colspan="2">
+                        JUMLAH<br>
+                        PPN
+                    </td>
+                    <td style="text-align:right; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 5px;">
+                        '.number_format($total).'<br>0
+                    </td>
+                    <td style="text-align:center; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 5px; vertical-align: top;" rowspan="3">
+                    <p>' . $tanggalindo . '</p>
+                    </td>';
+        $content .= '</tr>';
+        $content .= '<tr>
+                        <td style="border-top:1px solid;border-right:1px solid;" colspan="2">TOTAL PEMBAYARAN</td>
+                        <td style="border-top:1px solid;border-right:1px solid;text-align:right;">
+                        '.number_format($total).'
+                        </td>
+                    </tr>';
 
+        $terbilang = terbilang($total);
+        $content .= '<tr>
+                        <td style="border-top:1px solid;border-right:1px solid;padding: 10px;" colspan="6">
+                        <p>TERBILANG : </p>
+                        <br>
+                        <p><font style="font-size: 14px;"><b>'.ucfirst($terbilang).'</b></font></p>
+                        </td>
+                    </tr>';
         $content .= '</table>';
         
-        $content .= '<div style="padding-left: 10px;padding-right: 10px; padding-top: 50px">';
-        $content .= '<table class="assign">';
-        $content .= '<tr>';
-        $content .= '<td style="text-align: center;">( DIBUAT OLEH )<br><br><br><br><br><br>.............................</td>';
-        $content .= '<td style="text-align: center;">( DIKIRIM OLEH )<br><br><br><br><br><br>.............................</td>';
-        $content .= '<td style="text-align: center;">( DITERIMA OLEH )<br><br><br><br><br><br>.............................</td>';
-        $content .= '</tr>';
-        $content .= '</table>';
+        // $content .= '<div style="padding-left: 10px;padding-right: 10px; padding-top: 50px">';
+        // $content .= '<table class="pengiriman">';
+        // $content .= '<tr>';
+        // $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px;" colspan="3">
+        //                 Catatan :
+        //             </td>';
+        // $content .= '</tr>';
+        // $content .= '</table>';
         $content .= '</div>';
 
         $content .= '</body>';

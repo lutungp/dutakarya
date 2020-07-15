@@ -102,7 +102,9 @@ class M_penagihan
                     penagihan_no,
                     penagihan_tgl,
                     m_rekanan_id,
-                    m_rekanan.rekanan_nama
+                    m_rekanan.rekanan_kode,
+                    m_rekanan.rekanan_nama,
+                    m_rekanan.rekanan_alamat
                 FROM t_penagihan
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_penagihan.m_rekanan_id
                 WHERE penagihan_aktif = 'Y' 
@@ -128,6 +130,7 @@ class M_penagihan
                     satuanutama.satuan_nama AS m_barangsatuan_nama,
                     t_pengiriman_detail.m_satuan_id,
                     COALESCE ( m_satuan_konversi.satkonv_nilai, 1 ) AS satkonv_nilai,
+                    t_pengiriman_detail.pengirimandet_harga,
                     t_pengiriman_detail.pengirimandet_qty,
                     t_penagihan_detail.penagihandet_subtotal,
                     t_penagihan_detail.penagihandet_potongan,
@@ -163,6 +166,7 @@ class M_penagihan
                 'm_barangsatuan_nama' => $val['m_barangsatuan_nama'],
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satkonv_nilai' => $val['satkonv_nilai'],
+                'pengirimandet_harga' => $val['pengirimandet_harga'],
                 'penagihandet_qty' => $val['pengirimandet_qty'],
                 'penagihandet_qtyreal' => $val['pengirimandet_qty'] * $val['satkonv_nilai'],
                 'penagihandet_subtotal' => $val['penagihandet_subtotal'],

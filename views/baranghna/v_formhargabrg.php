@@ -70,16 +70,9 @@
                     { name: 'baranghnadet_harga', type: 'float'}
                 ],
                 addrow: function (rowid, rowdata, position, commit) {
-                    // synchronize with the server - send insert command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
                     commit(true);
                 },
                 deleterow: function (rowid, commit) {
-                    // synchronize with the server - send delete command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
                     commit(true);
                 }
             };
@@ -165,6 +158,15 @@
                                     <label for="baranghna_no">No. Transaksi HNA</label>
                                     <input type="hidden" id="baranghna_id" name="baranghna_id">
                                     <input type="text" class="form-control" id="baranghna_no" name="baranghna_no" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="baranghna_tglawal">Tanggal Berlaku</label>
+                                    <input type="text" class="form-control baranghna_tglawal" id="baranghna_tglawal" name="baranghna_tglawal"
+                                    data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask 
+                                    onchange="renderGrid()"
+                                    require>
                                 </div>
                             </div>
                             <div class="col-md-4">
