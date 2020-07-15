@@ -170,13 +170,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="baranghna_tglawal">Tanggal Berlaku</label>
-                                    <input type="text" class="form-control baranghna_tglawal" id="baranghna_tglawal" name="baranghna_tglawal"
-                                    data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask 
-                                    onchange="renderGrid()"
-                                    require>
-                                </div>
+                                
                             </div>
                         </div>
                         <div class="row">

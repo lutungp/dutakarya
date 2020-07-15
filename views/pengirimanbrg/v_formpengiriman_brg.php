@@ -597,13 +597,12 @@
                         window.open('<?php echo BASE_URL;?>/controllers/C_pengiriman_brg.php?action=exportpdf&id=' + res['id']);
                         resetForm();
                         swal("Info!", "Pengiriman Berhasil disimpan", "success");
-                        $("#ModalSatuan").modal('toggle');
                     } else {
                         swal("Info!", "Pengiriman Gagal disimpan", "error");
                     }
                 }
             });
-        })
+        });
 
         datapengiriman = JSON.parse('<?php echo $dataparse ?>');
         if(datapengiriman!==null) {
@@ -679,7 +678,6 @@
                         if (res == 200) {
                             resetForm();
                             swal("Info!", "Pengiriman Berhasil dibatalkan", "success");
-                            $("#ModalSatuan").modal('toggle');
                         } else {
                             swal("Info!", "Pengiriman Gagal dibatalkan", "error");
                         }
