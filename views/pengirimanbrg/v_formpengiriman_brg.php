@@ -608,7 +608,11 @@
             $("#m_rekanan_id").data('select2').trigger('select', {
                 data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
             });
-            $('#batal').removeAttr('disabled')
+            $('#batal').removeAttr('disabled');
+            console.log(datapengiriman)
+            if (dat.t_penagihan_no !== '') {
+                swal("Info!", "No. pengiriman " + dat.pengiriman_no + ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no, "warning");
+            }
         }
 
         $('#batal').on('click', function () {
