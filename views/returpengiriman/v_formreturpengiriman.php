@@ -75,8 +75,6 @@
                 };
                 datareturdet.push(datdet);
             }
-
-            console.log(datareturdet)
             
             var returGridSource = {
                 datatype: "array",

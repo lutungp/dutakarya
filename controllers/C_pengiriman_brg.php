@@ -46,7 +46,6 @@ class C_pengiriman_brg
             $result['datapengiriman'] = $this->model->getPengirimanData($pengiriman_id);
             $result['datapengirimandetail'] = $this->model->getPengirimanDataDetail($pengiriman_id);
         }
-
         templateAdmin($this->conn2, '../views/pengirimanbrg/v_formpengiriman_brg.php', json_encode($result), 'TRANSAKSI', 'PENGIRIMAN BARANG');
     }
 

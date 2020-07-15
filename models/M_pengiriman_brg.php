@@ -154,7 +154,8 @@ class M_pengiriman_brg
                     m_rekanan_id,
                     m_rekanan.rekanan_kode,
                     m_rekanan.rekanan_nama,
-                    m_rekanan.rekanan_alamat
+                    m_rekanan.rekanan_alamat,
+                    t_pengiriman.t_penagihan_no
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 WHERE pengiriman_aktif = 'Y' 

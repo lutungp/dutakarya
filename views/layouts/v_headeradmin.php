@@ -117,6 +117,11 @@
         line-height: 15px;
     }
 
+    label {
+        display: inline-block;
+        margin-bottom: 2px;
+    }
+
   </style>
   <script>
     function formatMoney(number, decPlaces, decSep, thouSep) {

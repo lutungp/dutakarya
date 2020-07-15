@@ -451,6 +451,13 @@
                                     <input type="hidden" id="pengiriman_id" name="pengiriman_id">
                                     <input type="text" class="form-control" id="pengiriman_no" name="pengiriman_no" readonly>
                                 </div>
+                                <?php if ($data->datapengiriman->t_penagihan_no <> '') {?>
+                                    <div class="form-group">
+                                        <label for="penagihan_no">No. Penagihan</label>
+                                        <input type="hidden" id="penagihan_id" name="penagihan_id">
+                                        <input type="text" class="form-control" id="penagihan_no" name="penagihan_no" value="<?php echo $data->datapengiriman->t_penagihan_no ?>" readonly>
+                                    </div>
+                                <?php } ?>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -481,10 +488,10 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <?php if ($delete <> '' ) { ?>
+                        <?php if ($delete <> '' &&  $data->datapengiriman->t_penagihan_no == '') { ?>
                         <button type="button" id="batal" class="btn btn-danger btn-sm" disabled>Batal</button>
                         <?php } ?>
-                        <?php if (($create <> '' && isset($data->pengiriman_id) == 0) || ($update <> '' && $data->pengiriman_id > 0)) { ?>
+                        <?php if ((($create <> '' && isset($data->pengiriman_id) == 0) || ($update <> '' && $data->pengiriman_id > 0) && $data->datapengiriman->t_penagihan_no == '')) { ?>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
                         <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button>
