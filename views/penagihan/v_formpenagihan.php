@@ -5,7 +5,80 @@
 ?>
 <script>
     $(document).ready(function(){
-        var datapenagihandetail = [];
+        $("#m_rekanan_id").select2({
+            ajax: {
+                url: '<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=getrekanan',
+                type: "get",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        searchTerm: params.term // search term
+                    };
+                },
+                processResults: function (response) {
+                    return {
+                        results: response
+                    };
+                },
+                cache: true
+            }
+        });
+        var datapenagihan = JSON.parse('<?php echo $dataparse ?>');
+        $('#m_rekanan_id').on('select2:select', function (e) {
+            $("#penagihanGrid").jqxGrid('clear');
+            var value = $(e.currentTarget).find("option:selected").val();
+            var data = {
+                m_rekanan_id : value,
+                penagihan_tgl : moment($('#penagihan_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD')
+            };
+
+            if (datapenagihan.datapenagihan.penagihan_id < 1) {
+                $.post("<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=getpengiriman", data, function(result){
+                    var res = JSON.parse(result);
+                    res.forEach(element => {
+                        var datarow = {
+                            penagihandet_id : element.penagihandet_id,
+                            t_penagihan_id : element.t_penagihan_id,
+                            m_rekanan_id : element.m_rekanan_id,
+                            t_pengiriman_id : element.pengiriman_id,
+                            pengiriman_no : element.pengiriman_no,
+                            pengiriman_tgl : element.pengiriman_tgl,
+                            t_pengirimandet_id : element.pengirimandet_id,
+                            m_barang_id : element.m_barang_id,
+                            barang_nama : element.barang_nama,
+                            m_barangsatuan_id : element.m_barangsatuan_id,
+                            m_barangsatuan_nama : element.m_barangsatuan_nama,
+                            m_satuan_id : element.m_satuan_id,
+                            satkonv_nilai : element.satkonv_nilai,
+                            penagihandet_qty : element.pengirimandet_qty,
+                            penagihandet_qtyreal : element.pengirimandet_qtyreal,
+                            penagihandet_subtotal : element.pengirimandet_subtotal,
+                            penagihandet_potongan : element.pengirimandet_potongan,
+                            penagihandet_total : element.pengirimandet_total,
+                            t_returdet_qty : element.t_returdet_qty,
+                        }
+                        $("#penagihanGrid").jqxGrid('addrow', null, datarow);
+                    });
+                });
+            }
+        });
+
+        
+        if(datapenagihan!==null) {
+            var dat = datapenagihan.datapenagihan;
+            $('#penagihan_id').val(dat.penagihan_id);
+            $('#penagihan_no').val(dat.penagihan_no);
+            $('#penagihan_tgl').val(moment(dat.penagihan_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $("#m_rekanan_id").data('select2').trigger('select', {
+                data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
+            });
+            $("#m_rekanan_id").prop("disabled", true);
+            $('#batal').removeAttr('disabled');
+            $("#penagihanGrid").jqxGrid('clear');
+        }
+
+        var datapenagihandetail = datapenagihan.datapenagihandetail;
         var datapenagihandet = [];
         for (let index = 0; index < datapenagihandetail.length; index++) {
             const element = datapenagihandetail[index];
@@ -14,8 +87,8 @@
                 t_penagihan_id : element.t_penagihan_id,
                 m_rekanan_id : element.m_rekanan_id,
                 t_pengiriman_id : element.t_pengiriman_id,
-                t_pengiriman_no : element.t_pengiriman_no,
-                t_pengiriman_tgl : element.t_pengiriman_tgl,
+                pengiriman_no : element.pengiriman_no,
+                pengiriman_tgl : element.pengiriman_tgl,
                 t_pengirimandet_id : element.t_pengirimandet_id,
                 m_barang_id : element.m_barang_id,
                 barang_nama : element.barang_nama,
@@ -32,7 +105,6 @@
             };
             datapenagihandet.push(datdet);
         }
-        
         var penagihanGridSource = {
             datatype: "array",
             localdata:  datapenagihandet,
@@ -42,8 +114,8 @@
                 { name: 't_penagihan_id', type: 'int'},
                 { name: 'm_rekanan_id', type: 'int'},
                 { name: 't_pengiriman_id', type: 'int'},
-                { name: 't_pengiriman_no', type: 'string'},
-                { name: 't_pengiriman_tgl', type: 'date'},
+                { name: 'pengiriman_no', type: 'string'},
+                { name: 'pengiriman_tgl', type: 'date'},
                 { name: 't_pengirimandet_id', type: 'int'},
                 { name: 'm_barang_id', type: 'int'},
                 { name: 'barang_nama', type: 'string'},
@@ -95,12 +167,12 @@
             },
             columns: [
                 { 
-                    text: 'No. Pengiriman', datafield: 't_pengiriman_no', displayfield: 't_pengiriman_no', editable : false, width : 250,
+                    text: 'No. Pengiriman', datafield: 'pengiriman_no', displayfield: 'pengiriman_no', editable : false, width : 250,
                     cellsrenderer : function (row, column, value) {
                         var recorddata = $('#penagihanGrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
-                        html += recorddata.t_pengiriman_no + "</br>";
-                        html += moment(recorddata.t_pengiriman_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');
+                        html += recorddata.pengiriman_no + "</br>";
+                        html += moment(recorddata.pengiriman_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');
                         html += "</div>";
                         return html;
                     },
@@ -211,7 +283,7 @@
                         <?php if (($create <> '' && isset($data->penagihan_id) == 0) || ($update <> '' && $data->penagihan_id > 0)) { ?>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
-                        <button type="submit" class="btn btn-default btn-sm float-right" style="margin-right: 5px;">Cetak</button>
+                        <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button>
                     </div>
                 </form>
             </div>
@@ -223,60 +295,6 @@
         $('[data-mask]').inputmask();
         var now = new Date();
         $('#penagihan_tgl').val(moment(now).format('DD-MM-YYYY'));
-        $("#m_rekanan_id").select2({
-            ajax: {
-                url: '<?php echo BASE_URL ?>/controllers/C_penerimaan_brg.php?action=getrekanan',
-                type: "get",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        searchTerm: params.term // search term
-                    };
-                },
-                processResults: function (response) {
-                    return {
-                        results: response
-                    };
-                },
-                cache: true
-            }
-        });
-
-        $('#m_rekanan_id').on('select2:select', function (e) {
-            var value = $(e.currentTarget).find("option:selected").val();
-            var data = {
-                m_rekanan_id : value,
-                penagihan_tgl : moment($('#penagihan_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD')
-            };
-            $.post("<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=getpengiriman", data, function(result){
-                var res = JSON.parse(result);
-                res.forEach(element => {
-                    var datarow = {
-                        penagihandet_id : element.penagihandet_id,
-                        t_penagihan_id : element.t_penagihan_id,
-                        m_rekanan_id : element.m_rekanan_id,
-                        t_pengiriman_id : element.pengiriman_id,
-                        t_pengiriman_no : element.pengiriman_no,
-                        t_pengiriman_tgl : element.pengiriman_tgl,
-                        t_pengirimandet_id : element.pengirimandet_id,
-                        m_barang_id : element.m_barang_id,
-                        barang_nama : element.barang_nama,
-                        m_barangsatuan_id : element.m_barangsatuan_id,
-                        m_barangsatuan_nama : element.m_barangsatuan_nama,
-                        m_satuan_id : element.m_satuan_id,
-                        satkonv_nilai : element.satkonv_nilai,
-                        penagihandet_qty : element.pengirimandet_qty,
-                        penagihandet_qtyreal : element.pengirimandet_qtyreal,
-                        penagihandet_subtotal : element.pengirimandet_subtotal,
-                        penagihandet_potongan : element.pengirimandet_potongan,
-                        penagihandet_total : element.pengirimandet_total,
-                        t_returdet_qty : element.t_returdet_qty,
-                    }
-                    $("#penagihanGrid").jqxGrid('addrow', null, datarow);
-                });
-            });
-        });
 
         $('#formpenagihan').submit(function (event) {
             event.preventDefault();
@@ -294,8 +312,8 @@
                     t_penagihan_id : rec.t_penagihan_id,
                     m_rekanan_id : rec.m_rekanan_id,
                     t_pengiriman_id : rec.t_pengiriman_id,
-                    t_pengiriman_no : rec.t_pengiriman_no,
-                    t_pengiriman_tgl : rec.t_pengiriman_tgl,
+                    pengiriman_no : rec.pengiriman_no,
+                    pengiriman_tgl : rec.pengiriman_tgl,
                     t_pengirimandet_id : rec.t_pengirimandet_id,
                     m_barang_id : rec.m_barang_id,
                     barang_nama : rec.barang_nama,
@@ -334,10 +352,21 @@
                     }
                 }
             });
-        })
+        });
+    
     });
 
     function resetForm() {
-        
+        var now = new Date();
+        $('#penagihan_id').val(0);
+        $('#penagihan_no').val('');
+        $('#penagihan_tgl').val(moment(now).format('DD-MM-YYYY'));
+        $("#m_rekanan_id").empty();
+        $("#penagihanGrid").jqxGrid('clear');
+    }
+
+    function cetak() {
+        var penagihan_id = $('#penagihan_id').val();
+        window.open('<?php echo BASE_URL;?>/controllers/C_penagihan.php?action=exportpdf&id=' + penagihan_id);
     }
 </script>

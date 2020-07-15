@@ -32,9 +32,16 @@ class C_penagihan
         echo json_encode($data);
     }
 
-    public function formTransaksi()
+    public function formTransaksi($data)
     {
         $result = NULL;
+        if (isset($data['id']) > 0) {
+            $penagihan_id = $data['id'];
+            $result['penagihan_id'] = $penagihan_id;
+            $result['datapenagihan'] = $this->model->getPenagihanData($penagihan_id);
+            $result['datapenagihandetail'] = $this->model->getPenagihanDataDetail($penagihan_id);
+        }
+        
         templateAdmin($this->conn2, '../views/penagihan/v_formpenagihan.php', json_encode($result), 'KEUANGAN', 'PENAGIHAN');
     }
 
@@ -53,7 +60,7 @@ class C_penagihan
         $penagihan_no = $data['penagihan_no'];
         $penagihan_tgl = $data['penagihan_tgl'];
         $m_rekanan_id = $data['m_rekanan_id'];
-
+        $action = false;
         if ($penagihan_id > 0) {
             $fieldSave = ['penagihan_tgl', 'm_rekanan_id', 'penagihan_updated_by', 'penagihan_updated_date', 'penagihan_revised'];
             $dataSave = [$penagihan_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penagihan_revised+1'];
@@ -67,14 +74,14 @@ class C_penagihan
                 }
             }
             $where = "WHERE penagihan_id = " . $data['penagihan_id'];
-            query_update($this->conn2, 't_penagihan', $field, $where);
+            $action = query_update($this->conn2, 't_penagihan', $field, $where);
         } else {
             $penagihan_no = getPenomoran($this->conn2, 'TG', 't_penagihan', 'penagihan_id', 'penagihan_no', $penagihan_tgl);
             $fieldSave = ['penagihan_no', 'penagihan_tgl', 'm_rekanan_id', 'penagihan_created_by', 'penagihan_created_date'];
             $dataSave = [$penagihan_no, $penagihan_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
             $penagihan_id = query_create($this->conn2, 't_penagihan', $fieldSave, $dataSave);
         }
-        $action = false;
+        
         if (isset($data['rows'])) {
             $pengiriman_idArr = [];
             foreach ($data['rows'] as $key => $val) {
@@ -143,7 +150,7 @@ class C_penagihan
 
     public function exportpdf($data)
     {
-        # code...
+        
     }
 }
 
@@ -155,7 +162,7 @@ switch ($action) {
         $penagihan->submit($_POST);
         break;
     case 'formtransaksi':
-        $penagihan->formTransaksi();
+        $penagihan->formTransaksi($_GET);
         break;
     case 'getpengiriman':
         $penagihan->getPengiriman($_POST);

@@ -608,6 +608,7 @@
             $("#m_rekanan_id").data('select2').trigger('select', {
                 data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
             });
+            $("#m_rekanan_id").prop("disabled", true);
             $('#batal').removeAttr('disabled');
             console.log(datapengiriman)
             if (dat.t_penagihan_no !== '') {
