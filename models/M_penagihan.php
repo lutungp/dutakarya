@@ -20,7 +20,8 @@ class M_penagihan
                     penagihan_no,
                     penagihan_tgl,
                     m_rekanan_id,
-                    m_rekanan.rekanan_nama
+                    m_rekanan.rekanan_nama,
+                    m_rekanan.rekanan_alamat
                 FROM t_penagihan
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_penagihan.m_rekanan_id
                 WHERE penagihan_aktif = 'Y'";
