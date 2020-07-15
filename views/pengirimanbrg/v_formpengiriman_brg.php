@@ -30,7 +30,7 @@
             row["satuankonv"] = '';
             row["m_barang_id"] = '';
             row["m_barangsatuan_id"] = 0,
-            row["baranghnadet_harga"] = 0;
+            row["hargakontrak"] = 0;
             row['pengirimandet_harga'] = 0;
             row["m_satuan_id"] = '';
             row["satkonv_nilai"] = 1;
@@ -90,7 +90,7 @@
                     m_barang_id : element.m_barang_id,
                     m_barangsatuan_id : element.m_barangsatuan_id,
                     m_satuan_id : element.m_satuan_id,
-                    baranghnadet_harga : element.baranghnadet_harga,
+                    hargakontrak : element.hargakontrak,
                     satkonv_nilai : element.satkonv_nilai,
                     pengirimandet_harga : element.pengirimandet_harga,
                     pengirimandet_qtyold : element.pengirimandet_qty,
@@ -111,7 +111,7 @@
                     { name: 'satuankonv'},
                     { name: 'm_barang_id', value: 'm_barang_id', values: { source: barangAdapter.records, value: 'value', name: 'label' } },
                     { name: 'm_barangsatuan_id', type: 'int'},
-                    { name: 'baranghnadet_harga', type: 'float'},
+                    { name: 'hargakontrak', type: 'float'},
                     { name: 'pengirimandet_harga', type: 'float'},
                     { name: 'm_satuan_id', value: 'm_satuan_id', values: { source: satuanAdapter.records, value: 'value', name: 'label' } },
                     { name: 'satkonv_nilai'},
@@ -200,13 +200,12 @@
                                     var pengiriman_tgl = $('#pengiriman_tgl').val();
                                     var data = {
                                         barang_id : val,
-                                        baranghna_tglawal : moment(pengiriman_tgl, "DD-MM-YYYY").format("YYYY-MM-DD")
+                                        tanggal : moment(pengiriman_tgl, "DD-MM-YYYY").format("YYYY-MM-DD"),
+                                        m_rekanan_id : $("#m_rekanan_id").val()
                                     }
                                     $("#pengirimanGrid").jqxGrid('setcellvalue', row, "m_satuan_id", brg[0].satuan_nama);
-                                    $.post("<?php echo BASE_URL ?>/controllers/C_hargabrg.php?action=getlasthna", data, function(result){
-                                        var lasthna = JSON.parse(result);
-                                        recorddata.baranghnadet_harga = lasthna.baranghnadet_harga;
-                                        $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", lasthna.baranghnadet_harga);
+                                    $.post("<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=gethargakontrak", data, function(result){
+                                        $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", result);
                                     });
                                 }
                             });
@@ -262,7 +261,7 @@
                             //         var satuankonv = JSON.parse(recorddata.satuankonv);
                             //         var dtsatkonv = satuankonv.filter(p=>parseInt(p.value)==parseInt(val));
                             //         recorddata.satkonv_nilai = dtsatkonv[0].satkonv_nilai;
-                            //         $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.baranghnadet_harga) * parseFloat(dtsatkonv[0].satkonv_nilai)));
+                            //         $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.hargakontrak) * parseFloat(dtsatkonv[0].satkonv_nilai)));
                             //     }
                             // });
 
@@ -297,7 +296,7 @@
                                     } else {
                                         recorddata.satkonv_nilai = 1;
                                     }
-                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.baranghnadet_harga) * parseFloat(recorddata.satkonv_nilai)));
+                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.hargakontrak) * parseFloat(recorddata.satkonv_nilai)));
                                 }
                             });
 
@@ -311,7 +310,7 @@
                                 var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
                                 var val = event.target.value||0;
                                 $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_subtotal", (parseFloat(recorddata.pengirimandet_harga) * parseFloat(val)));
-                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(recorddata.pengirimandet_subtotal) - parseFloat(val)));
+                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(recorddata.pengirimandet_subtotal) - recorddata.pengirimandet_potongan));
                                 settotal();
                             });
                         }
@@ -369,7 +368,7 @@
                 { name: 'm_satuan_id', type: 'int'},
                 { name: 'satuan_nama', type: 'string'},
                 { name: 'barang_nama', type: 'string'},
-                { name: 'baranghnadet_harga', type: 'double'},
+                { name: 'hargakontrak', type: 'double'},
                 { name: 'minggu', type: 'int'},
                 { name: 'hari', type: 'string'},
                 { name: 'jadwal_qty', type: 'int'},
@@ -417,15 +416,15 @@
                 satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==record.m_barang_id)),
                 m_barang_id : record.barang_nama,
                 m_barangsatuan_id : record.m_satuan_id,
-                baranghnadet_harga : record.baranghnadet_harga,
-                pengirimandet_harga : record.baranghnadet_harga,
+                hargakontrak : record.hargakontrak,
+                pengirimandet_harga : record.hargakontrak,
                 m_satuan_id : record.satuan_nama,
                 satkonv_nilai : 1,
                 pengirimandet_qtyold : 0,
                 pengirimandet_qty : qty,
-                pengirimandet_subtotal : qty * record.baranghnadet_harga,
+                pengirimandet_subtotal : qty * record.hargakontrak,
                 pengirimandet_potongan : 0,
-                pengirimandet_total : qty * record.baranghnadet_harga,
+                pengirimandet_total : qty * record.hargakontrak,
             };
             
             $("#pengirimanGrid").jqxGrid('addrow', null, datarow);
@@ -570,7 +569,7 @@
                     'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
                     'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
                     'satkonv_nilai' : parseFloat(satkonv_nilai),
-                    'baranghnadet_harga' : parseFloat(rec.baranghnadet_harga),
+                    'hargakontrak' : parseFloat(rec.hargakontrak),
                     'pengirimandet_harga' : parseFloat(rec.pengirimandet_harga),
                     'pengirimandet_qty' : rec.pengirimandet_qty,
                     'pengirimandet_qtyold' : rec.pengirimandet_qtyold,
@@ -640,7 +639,7 @@
                     'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
                     'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
                     'satkonv_nilai' : parseFloat(satkonv_nilai),
-                    'baranghnadet_harga' : parseFloat(rec.baranghnadet_harga),
+                    'hargakontrak' : parseFloat(rec.hargakontrak),
                     'pengirimandet_harga' : parseFloat(rec.pengirimandet_harga),
                     'pengirimandet_qty' : rec.pengirimandet_qty,
                     'pengirimandet_qtyold' : rec.pengirimandet_qtyold,

@@ -264,7 +264,7 @@ class M_pengiriman_brg
                     m_barang.barang_nama,
                     m_barang.m_satuan_id,
                     m_satuan.satuan_nama,
-                    baranghna.baranghnadet_harga,
+                    kontrak.hargakontrak,
                     t_jadwal.hari,
                     t_jadwal.bulan,
                     t_jadwal.tahun,
@@ -280,20 +280,15 @@ class M_pengiriman_brg
                 INNER JOIN (
                     SELECT * FROM (
                         SELECT
-                            ROW_NUMBER() OVER ( PARTITION BY m_barang_id ORDER BY t_baranghna_detail.baranghnadet_tglawal DESC, t_baranghna_detail.baranghnadet_created_date DESC ) AS rnumber,
-                            m_barang_id,
-                            baranghnadet_harga,
-                            t_baranghna_detail.baranghnadet_tglawal 
+                            ROW_NUMBER() OVER ( PARTITION BY t_hargakontrak_detail.m_barang_id, m_rekanan_id ORDER BY hargakontrakdet_tgl DESC, hargakontrakdet_id DESC ) AS rnumber,
+                            m_rekanan_id, m_barang_id,
+                            hargakontrakdet_harga AS hargakontrak
                         FROM
-                            t_baranghna_detail
-                            INNER JOIN t_baranghna ON t_baranghna.baranghna_id = t_baranghna_detail.t_baranghna_id 
-                        WHERE
-                            t_baranghna_detail.baranghnadet_aktif = 'Y' 
-                            AND t_baranghna_detail.baranghnadet_tglawal < '$tanggal'
-                            AND t_baranghna.baranghna_aktif = 'Y' 
-                        ) AS last 
-                    WHERE last.rnumber = 1
-                ) AS baranghna ON baranghna.m_barang_id = m_barang.barang_id
+                            t_hargakontrak_detail 
+                        WHERE hargakontrakdet_tgl <= '$tanggal'
+                        ) AS kontrak 
+                    WHERE kontrak.rnumber <= 1
+                ) AS kontrak ON kontrak.m_barang_id = m_barang.barang_id AND kontrak.m_rekanan_id = t_jadwal.m_rekanan_id
                 INNER JOIN m_satuan ON m_satuan.satuan_id = m_barang.m_satuan_id
                 LEFT JOIN (
                     SELECT
@@ -337,7 +332,7 @@ class M_pengiriman_brg
                 'barang_nama' => $val['barang_nama'],
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satuan_nama' => $val['satuan_nama'],
-                'baranghnadet_harga' => $val['baranghnadet_harga'],
+                'hargakontrak' => $val['hargakontrak'],
                 'minggu' => $week,
                 'hari' => $hari[$day],
                 'jadwal_qty' => $qty,
@@ -346,6 +341,27 @@ class M_pengiriman_brg
         }
 
         return $rkirim;
+    }
+
+    public function getHargaKontrak($barang_id, $tanggal, $m_rekanan_id)
+    {
+        $sql = "SELECT * FROM (
+                    SELECT
+                        ROW_NUMBER() OVER ( PARTITION BY t_hargakontrak_detail.m_barang_id ORDER BY hargakontrakdet_tgl DESC, hargakontrakdet_id DESC ) AS rnumber,
+                        hargakontrakdet_harga 
+                    FROM
+                        t_hargakontrak_detail 
+                    WHERE
+                        m_barang_id = $barang_id AND hargakontrakdet_tgl <= '$tanggal' AND m_rekanan_id = $m_rekanan_id
+                    ) AS kontrak 
+                WHERE kontrak.rnumber <= 1";
+        $qbarang = $this->conn2->query($sql);
+        $hargakontrakdet_harga = 0;
+        if ($qbarang) {
+            $rbarang = $qbarang->fetch_object();
+            $hargakontrakdet_harga = isset($rbarang->hargakontrakdet_harga) ? $rbarang->hargakontrakdet_harga : 0;
+        }
+        return $hargakontrakdet_harga;
     }
 
 }

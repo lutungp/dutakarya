@@ -385,6 +385,16 @@ class C_pengiriman_brg
 
         echo json_encode($data);
     }
+
+    public function getHargaKontrak($data)
+    {
+        $barang_id = $data['barang_id'];
+        $tanggal = $data['tanggal'];
+        $m_rekanan_id = $data['m_rekanan_id'];
+        $data = $this->model->getHargaKontrak($barang_id, $tanggal, $m_rekanan_id);
+
+        echo $data;
+    }
 }
 
 $pengiriman = new C_pengiriman_brg($conn, $conn2, $config);
@@ -411,6 +421,9 @@ switch ($action) {
         break;
     case 'getjadwal':
         $pengiriman->getJadwal($_POST['tanggal']);
+        break;
+    case 'gethargakontrak':
+        $pengiriman->getHargaKontrak($_POST);
         break;
     default:
         $pengiriman->Pengiriman();
