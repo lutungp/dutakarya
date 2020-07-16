@@ -169,7 +169,7 @@ class C_penagihan
                         cellspacing : 0;
                         cellpadding : 0;
                         font-family:Helvetica,serif;
-                        font-size:11px;
+                        font-size:12px;
                         color:rgb(0,0,0);
                         font-weight:normal;
                         font-style:normal;
@@ -185,8 +185,8 @@ class C_penagihan
         $content .= '<body>';
         $content .= '<table width="100%">';
         $content .= '<tr>';
-        $content .= '<td style="width: 30%;">PT. DUTA KARYA<br>JL. DEWI SARTIKA 312 CAWANG JAKARTA<br>TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;CS 08111189888<br>NPWP&nbsp;&nbsp;&nbsp;&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
-        $content .= '<td style="vertical-align:top;text-align:center;width: 40%;">FAKTUR PENJUALAN/KUITANSI</td>';
+        $content .= '<td style="width: 30%;font-size:14px;">PT. DUTAKARYA YASHA<br>JL. DEWI SARTIKA 312 CAWANG JAKARTA<br>TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;CS 08111189888<br>NPWP&nbsp;&nbsp;&nbsp;&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
+        $content .= '<td style="vertical-align:top;text-align:center;width: 40%;font-size:14px;">FAKTUR PENJUALAN/KUITANSI</td>';
         $content .= '<td style="vertical-align:top;text-align:left;width: 10%;">';
         $content .= 'Nomor';
         $content .= '<br>Tanggal';
@@ -292,9 +292,9 @@ class C_penagihan
 
         $content .= '</body>';
         $content .= '</html>';
-        $mpdf->AddPage("L","","","","","5","5","5","5","","","","","","","","","","","","A5");
+        $mpdf->AddPage("P","","","","","2","2","2","2","","","","","","","","","","","","A4");
         $mpdf->WriteHTML($content);
-        $mpdf->Output('pengiriman.pdf');
+        $mpdf->Output();
     }
 }
 

@@ -264,7 +264,7 @@ class C_pengiriman_brg
                         cellspacing : 0;
                         cellpadding : 0;
                         font-family:Helvetica,serif;
-                        font-size:11px;
+                        font-size:12px;
                         color:rgb(0,0,0);
                         font-weight:normal;
                         font-style:normal;
@@ -280,8 +280,8 @@ class C_pengiriman_brg
         $content .= '<body>';
         $content .= '<table width="100%">';
         $content .= '<tr>';
-        $content .= '<td style="width:50%;">PT. DUTA KARYA<br>JL. DEWI SARTIKA 312 CAWANG JAKARTA<br>TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;CS 08111189888<br>NPWP&nbsp;&nbsp;&nbsp;&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
-        $content .= '<td style="vertical-align:top;text-align:center;width:50%;">DELIVERY ORDER</td>';
+        $content .= '<td style="width:50%;font-size:14px;">PT. DUTAKARYA YASHA<br>JL. DEWI SARTIKA 312 CAWANG JAKARTA<br>TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;CS 08111189888<br>NPWP&nbsp;&nbsp;&nbsp;&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
+        $content .= '<td style="vertical-align:top;text-align:center;width:50%;font-size:14px;">DELIVERY ORDER</td>';
         $content .= '</tr>';
         $content .= '</table>';
         $content .= '<hr>';
@@ -367,9 +367,9 @@ class C_pengiriman_brg
 
         $content .= '</body>';
         $content .= '</html>';
-        $mpdf->AddPage("L","","","","","5","5","5","5","","","","","","","","","","","","B5");
+        $mpdf->AddPage("P","","","","","5","5","5","5","","","","","","","","","","","","A4");
         $mpdf->WriteHTML($content);
-        $mpdf->Output('pengiriman.pdf', 'I');
+        $mpdf->Output();
     }
 
     public function getJadwal($tanggal)
