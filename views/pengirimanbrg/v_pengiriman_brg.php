@@ -17,6 +17,8 @@
                 { name: 'm_rekanan_id', type: 'int' },
                 { name: 'rekanan_nama', type: 'string' },
                 { name: 'pengiriman_aktif', type: 'string' },
+                { name: 'user_nama', type: 'string' },
+                { name: 'pengiriman_created_date', type: 'date' },
             ],
             id: 'pengiriman_id',
             url: url,
@@ -67,9 +69,11 @@
             },
             autoshowfiltericon: true,
             columns: [
-                { text: 'No. Transaksi', datafield: 'pengiriman_no', width : 200, cellsalign: 'center'},
-                { text: 'Rekanan', datafield: 'rekanan_nama'},
+                { text: 'No. Transaksi', datafield: 'pengiriman_no', width : 180, cellsalign: 'center'},
+                { text: 'Rekanan', datafield: 'rekanan_nama', width : 400},
                 { text: 'Tanggal', datafield: 'pengiriman_tgl', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 200},
+                { text: 'Dibuat Oleh', datafield: 'user_nama', cellsalign: 'center', width : 180},
+                { text: 'Dibuat Tanggal', datafield: 'pengiriman_created_date', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 180},
                 <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {

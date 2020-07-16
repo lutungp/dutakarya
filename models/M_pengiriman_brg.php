@@ -20,9 +20,12 @@ class M_pengiriman_brg
                     pengiriman_no,
                     pengiriman_tgl,
                     m_rekanan_id,
-                    m_rekanan.rekanan_nama
+                    m_rekanan.rekanan_nama,
+                    m_user.user_nama,
+                    t_pengiriman.pengiriman_created_date
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
+                LEFT JOIN m_user ON m_user.user_id = t_pengiriman.pengiriman_created_by
                 WHERE pengiriman_aktif = 'Y'";
         $qpengiriman = $this->conn2->query($sql);
         $result = array();
@@ -33,6 +36,8 @@ class M_pengiriman_brg
                 'pengiriman_tgl' => $val['pengiriman_tgl'],
                 'm_rekanan_id' => $val['m_rekanan_id'],
                 'rekanan_nama' => $val['rekanan_nama'],
+                'user_nama' => $val['user_nama'],
+                'pengiriman_created_date' => $val['pengiriman_created_date']
             );
         }
 

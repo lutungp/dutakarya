@@ -248,7 +248,7 @@ class C_pengiriman_brg
     public function exportPdf($data)
     {
         require_once "../vendor/autoload.php";
-        $mpdf = new \Mpdf\Mpdf();
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 148.5]]);
         $pengiriman_id = $data['id'];
         $datapengiriman = $this->model->getPengirimanData($pengiriman_id);
         $datapengirimandetail = $this->model->getPengirimanDataDetail($pengiriman_id);
