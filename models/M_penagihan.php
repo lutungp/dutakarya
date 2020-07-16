@@ -65,7 +65,7 @@ class M_penagihan
                 JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
                 JOIN m_satuan satuanutama ON satuanutama.satuan_id = m_barang.m_satuan_id
                 WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y' AND t_pengiriman.pengiriman_tgl <= '$penagihan_tgl'
-                AND t_pengiriman.m_rekanan_id = $m_rekanan_id";
+                AND t_pengiriman.m_rekanan_id = $m_rekanan_id AND (t_penagihan_no IS NULL OR t_penagihan_no = '')";
         $qkirim = $this->conn2->query($sql);
         $rkirim = array();
         while ($val = $qkirim->fetch_array()) {
