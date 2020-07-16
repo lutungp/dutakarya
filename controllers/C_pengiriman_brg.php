@@ -367,7 +367,7 @@ class C_pengiriman_brg
 
         $content .= '</body>';
         $content .= '</html>';
-        $mpdf->AddPage("P","","","","","5","5","5","5","","","","","","","","","","","","A4");
+        $mpdf->AddPage("P","","","","","5","5","5","5","","","","","","","","","","","");
         $mpdf->WriteHTML($content);
         $mpdf->Output();
     }

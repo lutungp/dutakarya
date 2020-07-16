@@ -151,7 +151,7 @@ class C_penagihan
     public function exportpdf($data)
     {
         require_once "../vendor/autoload.php";
-        $mpdf = new \Mpdf\Mpdf();
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 148.5]]);
         $penagihan_id = $data['id'];
         $datapenagihan = $this->model->getPenagihanData($penagihan_id);
         $datapenagihandetail = $this->model->getPenagihanDataDetail($penagihan_id);
@@ -292,7 +292,7 @@ class C_penagihan
 
         $content .= '</body>';
         $content .= '</html>';
-        $mpdf->AddPage("P","","","","","2","2","2","2","","","","","","","","","","","","A4");
+        $mpdf->AddPage("P","","","","","5","5","5","5","","","","","","","","","","","");
         $mpdf->WriteHTML($content);
         $mpdf->Output();
     }
