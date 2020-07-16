@@ -154,10 +154,11 @@ switch ($action) {
         break;
     
     case 'createbarang':
+        $dataSatKonv = isset($_POST['dataSatKonv']) ? $_POST['dataSatKonv'] : []
         if($_POST['dataForm']["barang_id"] == 0) {
-            $barang->createBarang($_POST['dataForm'], $_POST['dataSatKonv']);
+            $barang->createBarang($_POST['dataForm'], $dataSatKonv);
         } else {
-            $barang->updateBarang($_POST['dataForm'], $_POST['dataSatKonv']);
+            $barang->updateBarang($_POST['dataForm'], $dataSatKonv);
         }    
         break;
     
