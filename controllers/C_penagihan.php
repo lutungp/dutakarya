@@ -292,9 +292,9 @@ class C_penagihan
 
         $content .= '</body>';
         $content .= '</html>';
-        $mpdf->AddPage("L","","","","","5","5","5","5","","","","","","","","","","","","B5");
+        $mpdf->AddPage("L","","","","","5","5","5","5","","","","","","","","","","","","A5");
         $mpdf->WriteHTML($content);
-        $mpdf->Output('pengiriman.pdf', 'I');
+        $mpdf->Output('pengiriman.pdf');
     }
 }
 
