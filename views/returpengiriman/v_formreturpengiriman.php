@@ -459,7 +459,8 @@
             $('#batal').removeAttr('disabled')
             $("#t_pengiriman_id").prop("disabled", true);
             if (dat.t_penagihan_no !== '') {
-                swal("Info!", "No. pengiriman " + dat.pengiriman_no + ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no, "warning");
+                var penagihanstr = dat.t_penagihan_no == null || dat.t_penagihan_no == '' ? '' : ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no;
+                swal("Info!", "No. pengiriman " + dat.pengiriman_no + penagihanstr, "warning");
             }
         }
 

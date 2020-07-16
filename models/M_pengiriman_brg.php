@@ -165,8 +165,20 @@ class M_pengiriman_brg
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 WHERE pengiriman_aktif = 'Y' 
                 AND pengiriman_id = $pengiriman_id ";
+                
         $qpengiriman = $this->conn2->query($sql);
-        $rpengiriman = $qpengiriman->fetch_object();
+        $row = $qpengiriman->fetch_object();
+
+        $rpengiriman = new stdClass();
+        $rpengiriman->pengiriman_id = $row->pengiriman_id;
+        $rpengiriman->pengiriman_no = $row->pengiriman_no;
+        $rpengiriman->pengiriman_tgl = $row->pengiriman_tgl;
+        $rpengiriman->m_rekanan_id = $row->m_rekanan_id;
+        $rpengiriman->rekanan_kode = $row->rekanan_kode;
+        $rpengiriman->rekanan_nama = $row->rekanan_nama;
+        $rpengiriman->rekanan_alamat = str_replace("<br />", "\\n", $row->rekanan_alamat);
+        $rpengiriman->t_penagihan_no = $row->t_penagihan_no;
+
         return $rpengiriman;
     }
 

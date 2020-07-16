@@ -46,6 +46,7 @@ class C_pengiriman_brg
             $result['datapengiriman'] = $this->model->getPengirimanData($pengiriman_id);
             $result['datapengirimandetail'] = $this->model->getPengirimanDataDetail($pengiriman_id);
         }
+        
         templateAdmin($this->conn2, '../views/pengirimanbrg/v_formpengiriman_brg.php', json_encode($result), 'TRANSAKSI', 'PENGIRIMAN BARANG');
     }
 
@@ -298,7 +299,8 @@ class C_pengiriman_brg
         $content .= ':<br>';
         $content .= ': ' . $datapengiriman->rekanan_kode . '<br>';
         $content .= ': ' . $datapengiriman->rekanan_nama . '<br>';
-        $content .= ': ' . $datapengiriman->rekanan_alamat . '<br>';
+        $rekanan_alamat = str_replace('\n', '<br />', $datapengiriman->rekanan_alamat);
+        $content .= ': ' .  $rekanan_alamat . '<br>';
         $content .= '</td>';
         $content .= '<td style="vertical-align:top;">';
         $content .= 'NO. DO<br>';

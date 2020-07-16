@@ -17,7 +17,9 @@
     var satKonv = [];
     var hapusdetail = [];
     $(document).ready(function(){
-        datapengiriman = JSON.parse('<?php echo $dataparse ?>');
+        datapengiriman = '<?php echo $dataparse ?>';
+        var datapengiriman = datapengiriman.replace(/\\n/g, "\\n").replace(/\\'/g, "\\'").replace(/\\"/g, '\\"').replace(/\\&/g, "\\&").replace(/\\r/g, "\\r").replace(/\\t/g, "\\t").replace(/\\b/g, "\\b").replace(/\\f/g, "\\f");
+        datapengiriman = JSON.parse(datapengiriman.replace(/[\u0000-\u0019]+/g,""));
         var datapengirimandetail = [];
         if(datapengiriman!==null) {
             datapengirimandetail = datapengiriman.datapengirimandetail;
@@ -81,7 +83,6 @@
             });
             // prepare the data
             var datapengirimandet = [];
-            
             for (let index = 0; index < datapengirimandetail.length; index++) {
                 const element = datapengirimandetail[index];
                 let datdet = {
@@ -236,7 +237,6 @@
                         // },
                         initeditor: function (row, value, editor) {
                             var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
-                            // console.log(recorddata)
                             // var satuanSource = {
                             //         datatype: "array",
                             //         datafields: [
@@ -603,7 +603,9 @@
             });
         });
 
-        datapengiriman = JSON.parse('<?php echo $dataparse ?>');
+        datapengiriman = '<?php echo $dataparse ?>';
+        var datapengiriman = datapengiriman.replace(/\\n/g, "\\n").replace(/\\'/g, "\\'").replace(/\\"/g, '\\"').replace(/\\&/g, "\\&").replace(/\\r/g, "\\r").replace(/\\t/g, "\\t").replace(/\\b/g, "\\b").replace(/\\f/g, "\\f");
+        datapengiriman = JSON.parse(datapengiriman.replace(/[\u0000-\u0019]+/g,""));
         if(datapengiriman!==null) {
             var dat = datapengiriman.datapengiriman;
             $('#pengiriman_id').val(dat.pengiriman_id);
@@ -614,9 +616,9 @@
             });
             $("#m_rekanan_id").prop("disabled", true);
             $('#batal').removeAttr('disabled');
-            console.log(datapengiriman)
             if (dat.t_penagihan_no !== '') {
-                swal("Info!", "No. pengiriman " + dat.pengiriman_no + ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no, "warning");
+                var penagihanstr = dat.t_penagihan_no == null || dat.t_penagihan_no == '' ? '' : ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no;
+                swal("Info!", "No. pengiriman " + dat.pengiriman_no + penagihanstr, "warning");
             }
         }
 

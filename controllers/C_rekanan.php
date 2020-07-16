@@ -25,25 +25,8 @@ class C_supplier
 
     public function createRekanan($data)
     {
-        $fieldSave = [ 
-            "rekanan_nama",
-            "rekanan_kode",
-            "rekanan_telp",
-            "rekanan_email",
-            "rekanan_alamat",
-            "rekanan_created_by", 
-            "rekanan_created_date", 
-            "rekanan_revised"];
-        $dataSave = [
-            $data["rekanan_nama"], 
-            $data["rekanan_kode"],
-            $data["rekanan_telp"],
-            $data["rekanan_email"],
-            $data["rekanan_alamat"],
-            $_SESSION["USER_ID"], 
-            date("Y-m-d H:i:s"), 
-            0
-        ];
+        $fieldSave = ["rekanan_nama", "rekanan_kode", "rekanan_telp", "rekanan_email", "rekanan_alamat", "rekanan_created_by",  "rekanan_created_date", "rekanan_revised"];
+        $dataSave = [$data["rekanan_nama"],  $data["rekanan_kode"], $data["rekanan_telp"], $data["rekanan_email"], nl2br($data["rekanan_alamat"]), $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 0];
         
         $action = query_create($this->conn2, 'm_rekanan', $fieldSave, $dataSave);
         if ($action > 0) {
@@ -55,25 +38,8 @@ class C_supplier
 
     public function updateRekanan($data)
     {
-        $fieldSave = [
-            "rekanan_nama", 
-            "rekanan_kode",
-            "rekanan_telp",
-            "rekanan_email",
-            "rekanan_alamat",
-            "rekanan_created_by", 
-            "rekanan_created_date", 
-            "rekanan_revised"
-        ];
-        $dataSave = [
-            $data["rekanan_nama"], 
-            $data["rekanan_kode"],
-            $data["rekanan_telp"],
-            $data["rekanan_email"],
-            $data["rekanan_alamat"],
-            $_SESSION["USER_ID"], 
-            date("Y-m-d H:i:s"), 
-            "rekanan_revised+1"];
+        $fieldSave = ["rekanan_nama",  "rekanan_kode", "rekanan_telp", "rekanan_email", "rekanan_alamat", "rekanan_created_by",  "rekanan_created_date", "rekanan_revised"];
+        $dataSave = [$data["rekanan_nama"], $data["rekanan_kode"], $data["rekanan_telp"], $data["rekanan_email"], nl2br($data["rekanan_alamat"]), $_SESSION["USER_ID"], date("Y-m-d H:i:s"), "rekanan_revised+1"];
         $field = "";
         foreach ($fieldSave as $key => $value) {
             $regex = (integer)$key < count($fieldSave)-1 ? "," : "";

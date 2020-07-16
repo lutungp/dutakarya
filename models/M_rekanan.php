@@ -29,7 +29,14 @@ class M_rekanan
         $qrekanan = $this->conn2->query($sql);
         $rekanan = [];
         while ($result = $qrekanan->fetch_array(MYSQLI_ASSOC)) {
-            array_push($rekanan, $result);
+            $rekanan[] = array(
+                "rekanan_id" => $result['rekanan_id'],
+                "rekanan_kode" => $result['rekanan_kode'],
+                "rekanan_nama" => $result['rekanan_nama'],
+                "rekanan_telp" => $result['rekanan_telp'],
+                "rekanan_email" => $result['rekanan_email'],
+                "rekanan_alamat" => str_replace("<br />", "\n", $result['rekanan_alamat']),
+            );
         }
         return $rekanan;
     }
