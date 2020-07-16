@@ -151,9 +151,9 @@ class C_penagihan
     public function exportpdf($data)
     {
         require_once "../vendor/autoload.php";
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 148.5]]);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [220, 148.5]]);
         $penagihan_id = $data['id'];
-        $datapenagihan = $this->model->getPenagihanData($penagihan_id);
+        $datapenagihan = $this->model->getPenagihanData2($penagihan_id);
         $datapenagihandetail = $this->model->getPenagihanDataDetail($penagihan_id);
         
         $content = '<html>';
@@ -185,8 +185,8 @@ class C_penagihan
         $content .= '<body>';
         $content .= '<table width="100%">';
         $content .= '<tr>';
-        $content .= '<td style="width: 30%;font-size:14px;">PT. DUTAKARYA YASHA<br>JL. DEWI SARTIKA 312 CAWANG JAKARTA<br>TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;CS 08111189888<br>NPWP&nbsp;&nbsp;&nbsp;&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
-        $content .= '<td style="vertical-align:top;text-align:center;width: 40%;font-size:14px;">FAKTUR PENJUALAN/KUITANSI</td>';
+        $content .= '<td style="width: 30%;font-size:13px;">PT. DUTAKARYA YASHA<br>JL. DEWI SARTIKA 312 CAWANG JAKARTA TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;<br>CS&nbsp;:&nbsp;08111189888<br>NPWP&nbsp;:&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
+        $content .= '<td style="vertical-align:top;text-align:center;width: 40%;font-size:13px;">FAKTUR PENJUALAN/KUITANSI</td>';
         $content .= '<td style="vertical-align:top;text-align:left;width: 10%;">';
         $content .= 'Nomor';
         $content .= '<br>Tanggal';
@@ -216,7 +216,8 @@ class C_penagihan
         $content .= '<td style="vertical-align:top;">';
         $content .= ': ' . $datapenagihan->rekanan_kode . '<br>';
         $content .= ': ' . $datapenagihan->rekanan_nama . '<br>';
-        $content .= ': ' . $datapenagihan->rekanan_alamat . '<br>';
+        $rekanan_alamat = str_replace('\n', '<br />', $datapengiriman->rekanan_alamat);
+        $content .= ': ' . $rekanan_alamat . '<br>';
         $content .= '</td>';
         $content .= '</tr>';
         $content .= '</table>';

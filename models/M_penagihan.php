@@ -102,6 +102,31 @@ class M_penagihan
                     penagihan_no,
                     penagihan_tgl,
                     m_rekanan_id,
+                    m_rekanan.rekanan_nama
+                FROM t_penagihan
+                LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_penagihan.m_rekanan_id
+                WHERE penagihan_aktif = 'Y' 
+                AND penagihan_id = $penagihan_id ";
+        $qpenagihan = $this->conn2->query($sql);
+        $row = $qpenagihan->fetch_object();
+
+        $rpenagihan = new stdClass();
+        $rpenagihan->penagihan_id = $row->penagihan_id;
+        $rpenagihan->penagihan_no = $row->penagihan_no;
+        $rpenagihan->penagihan_tgl = $row->penagihan_tgl;
+        $rpenagihan->m_rekanan_id = $row->m_rekanan_id;
+        $rpenagihan->rekanan_nama = $row->rekanan_nama;
+
+        return $rpenagihan;
+    }
+
+    public function getPenagihanData2($penagihan_id)
+    {
+        $sql = " SELECT 
+                    penagihan_id,
+                    penagihan_no,
+                    penagihan_tgl,
+                    m_rekanan_id,
                     m_rekanan.rekanan_kode,
                     m_rekanan.rekanan_nama,
                     m_rekanan.rekanan_alamat
@@ -110,7 +135,18 @@ class M_penagihan
                 WHERE penagihan_aktif = 'Y' 
                 AND penagihan_id = $penagihan_id ";
         $qpenagihan = $this->conn2->query($sql);
-        $rpenagihan = $qpenagihan->fetch_object();
+        $row = $qpenagihan->fetch_object();
+
+        $rpenagihan = new stdClass();
+        $rpenagihan->pengiriman_id = $row->pengiriman_id;
+        $rpenagihan->penagihan_id = $row->penagihan_id;
+        $rpenagihan->penagihan_no = $row->penagihan_no;
+        $rpenagihan->penagihan_tgl = $row->penagihan_tgl;
+        $rpenagihan->m_rekanan_id = $row->m_rekanan_id;
+        $rpenagihan->rekanan_kode = $row->rekanan_kode;
+        $rpenagihan->rekanan_nama = $row->rekanan_nama;
+        $rpenagihan->rekanan_alamat = str_replace("<br />", "\\n", $row->rekanan_alamat);
+
         return $rpenagihan;
     }
 

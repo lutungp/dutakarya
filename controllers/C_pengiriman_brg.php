@@ -249,7 +249,7 @@ class C_pengiriman_brg
     public function exportPdf($data)
     {
         require_once "../vendor/autoload.php";
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 148.5]]);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [220, 148.5]]);
         $pengiriman_id = $data['id'];
         $datapengiriman = $this->model->getPengirimanData($pengiriman_id);
         $datapengirimandetail = $this->model->getPengirimanDataDetail($pengiriman_id);
@@ -281,8 +281,8 @@ class C_pengiriman_brg
         $content .= '<body>';
         $content .= '<table width="100%">';
         $content .= '<tr>';
-        $content .= '<td style="width:50%;font-size:14px;">PT. DUTAKARYA YASHA<br>JL. DEWI SARTIKA 312 CAWANG JAKARTA<br>TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;CS 08111189888<br>NPWP&nbsp;&nbsp;&nbsp;&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
-        $content .= '<td style="vertical-align:top;text-align:center;width:50%;font-size:14px;">DELIVERY ORDER</td>';
+        $content .= '<td style="width:50%;font-size:13px;">PT. DUTAKARYA YASHA<br>JL. DEWI SARTIKA 312 CAWANG<br> JAKARTA TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;<br>CS&nbsp;:&nbsp;08111189888<br>NPWP&nbsp;:&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
+        $content .= '<td style="vertical-align:top;text-align:center;width:50%;font-size:13px;">DELIVERY ORDER</td>';
         $content .= '</tr>';
         $content .= '</table>';
         $content .= '<hr>';
