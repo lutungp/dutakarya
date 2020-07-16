@@ -32,8 +32,8 @@
                 m_rekanan_id : value,
                 penagihan_tgl : moment($('#penagihan_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD')
             };
-
-            if (datapenagihan.datapenagihan.penagihan_id < 1) {
+            var penagihan_id = datapenagihan == null ? 0 : datapenagihan.datapenagihan.penagihan_id;
+            if (penagihan_id < 1) {
                 $.post("<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=getpengiriman", data, function(result){
                     var res = JSON.parse(result);
                     if (res.length > 0) {
