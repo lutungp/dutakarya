@@ -340,20 +340,23 @@ class M_pengiriman_brg
             if ($week == 5) {
                 $qty = $val['minggu5'];
             }
-            $rkirim[] = array(
-                'jadwal_id' => $val['jadwal_id'],
-                'm_rekanan_id' => $val['m_rekanan_id'],
-                'rekanan_nama' => $val['rekanan_nama'],
-                'm_barang_id' => $val['m_barang_id'],
-                'barang_nama' => $val['barang_nama'],
-                'm_satuan_id' => $val['m_satuan_id'],
-                'satuan_nama' => $val['satuan_nama'],
-                'hargakontrak' => $val['hargakontrak'],
-                'minggu' => $week,
-                'hari' => $hari[$day],
-                'jadwal_qty' => $qty,
-                'sudahkirim' => $val['sudahkirim']
-            );
+
+            if ($qty>0) {
+                $rkirim[] = array(
+                    'jadwal_id' => $val['jadwal_id'],
+                    'm_rekanan_id' => $val['m_rekanan_id'],
+                    'rekanan_nama' => $val['rekanan_nama'],
+                    'm_barang_id' => $val['m_barang_id'],
+                    'barang_nama' => $val['barang_nama'],
+                    'm_satuan_id' => $val['m_satuan_id'],
+                    'satuan_nama' => $val['satuan_nama'],
+                    'hargakontrak' => $val['hargakontrak'],
+                    'minggu' => $week,
+                    'hari' => $hari[$day],
+                    'jadwal_qty' => $qty,
+                    'sudahkirim' => $val['sudahkirim']
+                );
+            }
         }
 
         return $rkirim;
