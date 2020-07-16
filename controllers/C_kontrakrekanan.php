@@ -39,7 +39,7 @@ class C_kontrakrekanan
         $hargakontrak_no = $data['hargakontrak_no'];
         $hargakontrak_tgl = $data['hargakontrak_tgl'];
         $m_rekanan_id = $data['m_rekanan_id'];
-
+        
         if ($hargakontrak_id > 0) {
             $fieldSave = ['hargakontrak_tgl', 'm_rekanan_id', 'hargakontrak_updated_by', 'hargakontrak_updated_date', 'hargakontrak_revised'];
             $dataSave = [$hargakontrak_tgl, $m_rekanan_id, $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'hargakontrak_revised+1'];
@@ -56,8 +56,8 @@ class C_kontrakrekanan
             query_update($this->conn2, 't_hargakontrak', $field, $where);
         } else {
             $hargakontrak_no = getPenomoran($this->conn2, 'KT', 't_hargakontrak', 'hargakontrak_id', 'hargakontrak_no', $hargakontrak_tgl);
-            $fieldSave = ['hargakontrak_no', 'hargakontrak_tgl', 'hargakontrak_created_by', 'hargakontrak_created_date'];
-            $dataSave = [$hargakontrak_no, $hargakontrak_tgl, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+            $fieldSave = ['hargakontrak_no', 'm_rekanan_id' , 'hargakontrak_tgl', 'hargakontrak_created_by', 'hargakontrak_created_date'];
+            $dataSave = [$hargakontrak_no, $m_rekanan_id, $hargakontrak_tgl, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
             $hargakontrak_id = query_create($this->conn2, 't_hargakontrak', $fieldSave, $dataSave);
         }
 
