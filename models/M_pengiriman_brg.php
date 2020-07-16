@@ -303,7 +303,6 @@ class M_pengiriman_brg
                     GROUP BY t_pengiriman.m_rekanan_id, t_pengiriman_detail.m_barang_id, m_satuan_konversi.satkonv_nilai
                 ) AS kirim ON kirim.m_barang_id = m_barang.barang_id AND kirim.m_rekanan_id = t_jadwal.m_rekanan_id
                 WHERE hari = $day AND bulan = $month AND tahun = $year";
-        
         $qkirim = $this->conn2->query($sql);
         $rkirim = array();
         $hari = ['', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
