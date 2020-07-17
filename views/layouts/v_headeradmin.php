@@ -74,7 +74,7 @@
       <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <style>
     html,body {
-      font-size: 14px;
+      font-size: 13px;
     }
     .content-wrapper>.content {
       padding: 0 1.5rem;
