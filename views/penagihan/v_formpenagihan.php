@@ -54,11 +54,14 @@
                                 satkonv_nilai : element.satkonv_nilai,
                                 penagihandet_qty : element.pengirimandet_qty,
                                 penagihandet_qtyreal : element.pengirimandet_qtyreal,
+                                penagihandet_harga : element.pengirimandet_harga,
                                 penagihandet_subtotal : element.pengirimandet_subtotal,
+                                penagihandet_ppn : element.pengirimandet_ppn,
                                 penagihandet_potongan : element.pengirimandet_potongan,
                                 penagihandet_total : element.pengirimandet_total,
                                 t_returdet_qty : element.t_returdet_qty,
-                            }
+                            };
+                            console.log(datarow)
                             $("#penagihanGrid").jqxGrid('addrow', null, datarow);
                         });   
                     }
@@ -101,6 +104,7 @@
                 penagihandet_qty : element.penagihandet_qty,
                 penagihandet_qtyreal : element.penagihandet_qtyreal,
                 penagihandet_subtotal : element.penagihandet_subtotal,
+                penagihandet_ppn : element.penagihandet_ppn,
                 penagihandet_potongan : element.penagihandet_potongan,
                 penagihandet_total : element.penagihandet_total,
                 t_returdet_qty : element.t_returdet_qty,
@@ -128,6 +132,7 @@
                 { name: 'penagihandet_qty', type: 'float'},
                 { name: 'penagihandet_qtyreal', type: 'float'},
                 { name: 'penagihandet_subtotal', type: 'float'},
+                { name: 'penagihandet_ppn', type: 'float'},
                 { name: 'penagihandet_potongan', type: 'float'},
                 { name: 'penagihandet_total', type: 'float'},
                 { name: 't_returdet_qty', type: 'float'},
@@ -194,6 +199,27 @@
                     },
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '/>";
+                        return renderstring;
+                    }
+                },
+                { 
+                    text: 'Harga', datafield: 'penagihandet_harga', cellsalign: 'right', editable : false, width : 100,
+                    aggregatesrenderer: function (aggregates, column, element) {
+                        var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '/>";
+                        return renderstring;
+                    }
+                },
+                { text: 'PPN', datafield: 'penagihandet_ppn', displayfield: 'penagihandet_ppn', editable : false, cellsalign : 'right',
+                    aggregates: ['sum'],
+                    aggregatesrenderer: function (aggregates, column, element) {
+                        var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
+                        var subtotal = 0;
+                        $.each(aggregates, function (key, value) {
+                            subtotal = parseFloat(subtotal) + parseFloat(value);
+                            // var name = key == 'sum' ? 'Sum' : 'Avg';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                        });
+                        renderstring += "</div>";
                         return renderstring;
                     }
                 },
@@ -323,9 +349,11 @@
                     m_barangsatuan_nama : rec.m_barangsatuan_nama,
                     m_satuan_id : rec.m_satuan_id,
                     satkonv_nilai : parseFloat(rec.satkonv_nilai),
+                    penagihandet_harga : parseFloat(rec.penagihandet_harga),
                     penagihandet_qty : parseFloat(rec.penagihandet_qty),
                     penagihandet_qtyreal : parseFloat(rec.penagihandet_qtyreal),
                     penagihandet_subtotal : parseFloat(rec.penagihandet_subtotal),
+                    penagihandet_ppn : parseFloat(rec.penagihandet_ppn),
                     penagihandet_potongan : parseFloat(rec.penagihandet_potongan),
                     penagihandet_total : parseFloat(rec.penagihandet_total),
                     t_returdet_qty : parseFloat(rec.t_returdet_qty),
@@ -353,6 +381,53 @@
                         swal("Info!", "Penagihan Gagal disimpan", "error");
                     }
                 }
+            });
+        });
+
+        $('#batal').on('click', function () {
+
+            var griddata = $('#penagihanGrid').jqxGrid('getdatainformation');
+            if(griddata.rowscount == 0) {
+                swal("Info!", "Pembatalan Gagal disimpan, detail penagihan masih kosong, refresh halaman terlebih dahulu", "warning");
+                return false;
+            }
+            
+            var rows = [];
+            for (var i = 0; i < griddata.rowscount; i++){
+                var rec = $('#penagihanGrid').jqxGrid('getrenderedrowdata', i);
+                rows.push(rec.t_pengiriman_id); 
+            }
+
+            swal({
+                title: "Batalkan penagihan " + $('#penagihan_no').val(),
+                text: "Alasan dihapus :",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+            }, function (inputValue) {
+                if (inputValue === false) return false;
+                if (inputValue === "") {
+                    swal.showInputError("Tuliskan alasan anda !");
+                    return false
+                }
+                $.ajax({
+                    url: "<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=batal",
+                    type: "post",
+                    datatype : 'json',
+                    data: {
+                        penagihan_id : $('#penagihan_id').val(),
+                        pengiriman_idArr : rows,
+                        alasan : inputValue
+                    },
+                    success : function (res) {
+                        if (res == 200) {
+                            resetForm();
+                            swal("Info!", "Penagihan Berhasil dibatalkan", "success");
+                        } else {
+                            swal("Info!", "Penagihan Gagal dibatalkan", "error");
+                        }
+                    }
+                });
             });
         });
     

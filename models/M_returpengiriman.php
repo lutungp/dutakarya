@@ -143,7 +143,7 @@ class M_returpengiriman
                     t_retur.m_rekanan_id,
                     m_rekanan.rekanan_nama,
                     t_retur.retur_catatan,
-                    t_pengiriman.t_penagihan_no
+                    COALESCE(t_pengiriman.t_penagihan_no, '') AS t_penagihan_no
                 FROM t_retur
                 JOIN t_pengiriman ON t_pengiriman.pengiriman_id = t_retur.t_pengiriman_id
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_retur.m_rekanan_id

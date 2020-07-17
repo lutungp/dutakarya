@@ -24,7 +24,7 @@ class M_penagihan
                     m_rekanan.rekanan_alamat
                 FROM t_penagihan
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_penagihan.m_rekanan_id
-                WHERE penagihan_aktif = 'Y'";
+                WHERE penagihan_aktif = 'Y' ORDER BY t_penagihan.penagihan_created_date DESC ";
         $qpenagihan = $this->conn2->query($sql);
         $result = array();
         while ($val = $qpenagihan->fetch_array()) {
@@ -55,7 +55,9 @@ class M_penagihan
                     t_pengiriman_detail.m_satuan_id,
                     COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
                     t_pengiriman_detail.pengirimandet_qty,
+                    t_pengiriman_detail.pengirimandet_harga,
                     t_pengiriman_detail.pengirimandet_subtotal,
+                    t_pengiriman_detail.pengirimandet_ppn,
                     t_pengiriman_detail.pengirimandet_potongan,
                     t_pengiriman_detail.pengirimandet_total,
                     t_pengiriman_detail.t_returdet_qty
@@ -65,7 +67,7 @@ class M_penagihan
                 JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
                 JOIN m_satuan satuanutama ON satuanutama.satuan_id = m_barang.m_satuan_id
                 WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y' AND t_pengiriman.pengiriman_tgl <= '$penagihan_tgl'
-                AND t_pengiriman.m_rekanan_id = $m_rekanan_id AND (t_penagihan_no IS NULL OR t_penagihan_no = '')";
+                AND t_pengiriman.m_rekanan_id = $m_rekanan_id AND (t_penagihan_no IS NULL OR t_penagihan_no = '') ORDER BY t_pengiriman.pengiriman_created_date ASC";
         $qkirim = $this->conn2->query($sql);
         $rkirim = array();
         while ($val = $qkirim->fetch_array()) {
@@ -84,8 +86,10 @@ class M_penagihan
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satkonv_nilai' => $val['satkonv_nilai'],
                 'pengirimandet_qty' => $val['pengirimandet_qty'],
+                'pengirimandet_harga' => $val['pengirimandet_harga'],
                 'pengirimandet_qtyreal' => $val['pengirimandet_qty'] * $val['satkonv_nilai'],
                 'pengirimandet_subtotal' => $val['pengirimandet_subtotal'],
+                'pengirimandet_ppn' => $val['pengirimandet_ppn'],
                 'pengirimandet_potongan' => $val['pengirimandet_potongan'],
                 'pengirimandet_total' => $val['pengirimandet_total'],
                 't_returdet_qty' => $val['t_returdet_qty']
@@ -169,6 +173,7 @@ class M_penagihan
                     t_pengiriman_detail.pengirimandet_harga,
                     t_pengiriman_detail.pengirimandet_qty,
                     t_penagihan_detail.penagihandet_subtotal,
+                    t_penagihan_detail.penagihandet_ppn,
                     t_penagihan_detail.penagihandet_potongan,
                     t_penagihan_detail.penagihandet_total,
                     t_pengiriman_detail.t_returdet_qty 
@@ -206,6 +211,7 @@ class M_penagihan
                 'penagihandet_qty' => $val['pengirimandet_qty'],
                 'penagihandet_qtyreal' => $val['pengirimandet_qty'] * $val['satkonv_nilai'],
                 'penagihandet_subtotal' => $val['penagihandet_subtotal'],
+                'penagihandet_ppn' => $val['penagihandet_ppn'],
                 'penagihandet_potongan' => $val['penagihandet_potongan'],
                 'penagihandet_total' => $val['penagihandet_total'],
                 't_returdet_qty' => $val['t_returdet_qty']

@@ -95,7 +95,7 @@ class M_kontrakrekanan
             'm_barangsatuan_id' => $val['m_barangsatuan_id'],
             'm_satuan_id' => $val['m_satuan_id'],
             'satkonv_nilai' => $val['satkonv_nilai'],
-            'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'],
+            'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'] == 'Y' ? true : false,
             'hargakontrakdet_harga' => $val['hargakontrakdet_harga'],
         );
         }

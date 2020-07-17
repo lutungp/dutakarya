@@ -69,6 +69,7 @@ class C_kontrakrekanan
             foreach ($data['rows'] as $key => $val) {
                 $hargakontrakdet_id = $val['hargakontrakdet_id'];
                 $hargakontrakdet_ppn = $val['hargakontrakdet_ppn'] == 'true' ? 'Y' : 'N';
+                
                 if ($hargakontrakdet_id > 0) {
                     $fieldSave = ['t_hargakontrak_id', 'm_rekanan_id', 'm_barang_id', 'm_satuan_id', 'hargakontrakdet_tgl', 'hargakontrakdet_harga', 'hargakontrakdet_ppn', 'hargakontrakdet_updated_by', 'hargakontrakdet_updated_date', 'hargakontrakdet_revised'];
                     $dataSave = [$hargakontrak_id, $m_rekanan_id, $val['m_barang_id'], $val['m_satuan_id'], $hargakontrak_tgl, $val['hargakontrakdet_harga'], $hargakontrakdet_ppn,  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'hargakontrakdet_revised+1'];

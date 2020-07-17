@@ -24,7 +24,7 @@ class M_penerimaan_brg
                     penerimaan_catatan
                 FROM t_penerimaan
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_penerimaan.m_rekanan_id
-                WHERE penerimaan_aktif = 'Y'";
+                WHERE penerimaan_aktif = 'Y' ORDER BY t_penerimaan.penerimaan_created_date DESC ";
         $qpenerimaan = $this->conn2->query($sql);
         $result = array();
         while ($val = $qpenerimaan->fetch_array()) {

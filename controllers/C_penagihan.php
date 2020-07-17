@@ -87,8 +87,8 @@ class C_penagihan
             foreach ($data['rows'] as $key => $val) {
                 $penagihandet_id = $val['penagihandet_id'];
                 if ($penagihandet_id > 0) {
-                    $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_subtotal', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_updated_by', 'penagihandet_updated_date', 'penagihandet_revised'];
-                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_subtotal'], $val['penagihandet_potongan'], $val['penagihandet_total'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penagihandet_revised+1'];
+                    $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_harga', 'penagihandet_subtotal', 'penagihandet_ppn', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_updated_by', 'penagihandet_updated_date', 'penagihandet_revised'];
+                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_harga'], $val['penagihandet_subtotal'], $val['penagihandet_ppn'], $val['penagihandet_potongan'], $val['penagihandet_total'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penagihandet_revised+1'];
                     $field = "";
                     foreach ($fieldSave as $key => $value) {
                         $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -101,8 +101,8 @@ class C_penagihan
                     $where = "WHERE penagihandet_id = " . $val['penagihandet_id'];
                     query_update($this->conn2, 't_penagihan_detail', $field, $where);
                 } else {
-                    $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_subtotal', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_created_by', 'penagihandet_created_date'];
-                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_subtotal'], $val['penagihandet_potongan'], $val['penagihandet_total'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                    $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_harga', 'penagihandet_subtotal', 'penagihandet_ppn', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_created_by', 'penagihandet_created_date'];
+                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_harga'], $val['penagihandet_subtotal'], $val['penagihandet_ppn'], $val['penagihandet_potongan'], $val['penagihandet_total'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     $action = query_create($this->conn2, 't_penagihan_detail', $fieldSave, $dataSave);
                 }
 
@@ -146,6 +146,45 @@ class C_penagihan
         $pengiriman_id = implode(',', $pengiriman_idArr);
         $where = "WHERE pengiriman_id IN (" . $pengiriman_id . ")";
         query_update($this->conn2, 't_pengiriman', $field, $where);
+    }
+
+    public function batal($data)
+    {
+        $fieldSave = ['penagihan_aktif', 'penagihan_void_by', 'penagihan_void_date', 'penagihan_void_alasan'];
+        $dataSave = ['N', $_SESSION['USER_ID'], date("Y-m-d H:i:s"), $data['alasan']];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+
+        $where = "WHERE penagihan_id = " . $data['penagihan_id'];
+        $action = query_update($this->conn2, 't_penagihan', $field, $where);
+        
+        $fieldSave = ['t_penagihan_id', 't_penagihan_no'];
+        $dataSave = [NULL, NULL];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+        $pengiriman_idArr = implode(',', $data['pengiriman_idArr']);
+        $where = "WHERE pengiriman_id IN (" . $pengiriman_idArr . ")";
+        query_update($this->conn2, 't_pengiriman', $field, $where);
+
+        if ($action > 0) {
+            echo 200;
+        } else {
+            echo 202;
+        }
     }
 
     public function exportpdf($data)
@@ -233,6 +272,7 @@ class C_penagihan
         $content .= '<td style="text-align:center; border:1px solid;">KETERANGAN</td>';
         $content .= '</tr>';
         $total = 0;
+        $ppn = 0;
         foreach ($datapenagihandetail as $key => $val) {
             $content .= '<tr>';
             $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.date('d-m-Y', strtotime($val['pengiriman_tgl'])).'</td>';
@@ -240,10 +280,11 @@ class C_penagihan
             $content .= '<td style="text-align:left; border-left:1px solid; border-right:1px solid; padding: 5px; width: 220px;">'.$val['barang_nama'].'</td>';
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 8%;">'.($val['penagihandet_qtyreal'] - $val['t_returdet_qty']).'</td>';
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.number_format($val['pengirimandet_harga']).'</td>';
-            $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.number_format($val['penagihandet_total']).'</td>';
+            $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.number_format($val['pengirimandet_harga']*($val['penagihandet_qtyreal'] - $val['t_returdet_qty'])).'</td>';
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px;"></td>';
             $content .= '</tr>';
-            $total = $total + $val['penagihandet_total'];
+            $total = $total + ($val['pengirimandet_harga']*($val['penagihandet_qtyreal'] - $val['t_returdet_qty']));
+            $ppn = $ppn + $val['penagihandet_ppn'];
         }
         $content .= '<tr>';
         $tanggalindo = tgl_indo($datapenagihan->penagihan_tgl);
@@ -258,7 +299,7 @@ class C_penagihan
                         PPN
                     </td>
                     <td style="text-align:right; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 5px;">
-                        '.number_format($total).'<br>0
+                        '.number_format($total).'<br>'.number_format($ppn).'
                     </td>
                     <td style="text-align:center; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 5px; vertical-align: top;" rowspan="3">
                     <p>' . $tanggalindo . '</p>
@@ -267,7 +308,7 @@ class C_penagihan
         $content .= '<tr>
                         <td style="border-top:1px solid;border-right:1px solid;" colspan="2">TOTAL PEMBAYARAN</td>
                         <td style="border-top:1px solid;border-right:1px solid;text-align:right;">
-                        '.number_format($total).'
+                        '.number_format($total+$ppn).'
                         </td>
                     </tr>';
 
@@ -317,6 +358,9 @@ switch ($action) {
         break;
     case 'exportpdf':
         $penagihan->exportpdf($_GET);
+        break;
+    case 'batal':
+        $penagihan->batal($_POST);
         break;
     default:
         templateAdmin($conn2, '../views/penagihan/v_penagihan.php', NULL, 'KEUANGAN', 'PENAGIHAN');

@@ -274,7 +274,7 @@
                         <?php if (($create <> '' && isset($data->penerimaan_id) == 0) || ($update <> '' && $data->penerimaan_id > 0)) { ?>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
-                        <button type="submit" class="btn btn-default btn-sm float-right" style="margin-right: 5px;">Cetak</button>
+                        <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;">Cetak</button>
                     </div>
                 </form>
             </div>
@@ -325,16 +325,24 @@
                 satkonv_nilai = 1;
                 if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
                 
-                rows.push({
-                    'penerimaandet_id' : rec.penerimaandet_id,
-                    't_penerimaan_id' : $('#penerimaan_id').val(),
-                    'm_barang_id' : parseInt(m_barang_id[0].value||0),
-                    'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
-                    'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
-                    'satkonv_nilai' : parseFloat(satkonv_nilai),
-                    'penerimaandet_qty' : rec.penerimaandet_qty,
-                    'penerimaandet_qtyold' : rec.penerimaandet_qtyold,
-                }); 
+                if (m_barang_id.length > 0 && rec.penerimaandet_qty > 0 && m_satuan_id.length > 0) {
+                    rows.push({
+                        'penerimaandet_id' : rec.penerimaandet_id,
+                        't_penerimaan_id' : $('#penerimaan_id').val(),
+                        'm_barang_id' : parseInt(m_barang_id[0].value||0),
+                        'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
+                        'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
+                        'satkonv_nilai' : parseFloat(satkonv_nilai),
+                        'penerimaandet_qty' : rec.penerimaandet_qty,
+                        'penerimaandet_qtyold' : rec.penerimaandet_qtyold,
+                    });    
+                } else if (rec.penerimaandet_qty == 0 && m_satuan_id.length > 0) {
+                    swal("Info!", "Penerimaan Gagal disimpan, terdapat isian dengan qty kosong ", "error");
+                    return false;
+                } else if (m_satuan_id.length < 1) {
+                    swal("Info!", "Penerimaan Gagal disimpan, terdapat isian dengan satuan kosong ", "error");
+                    return false;
+                }
             }
             
             $.ajax({

@@ -98,9 +98,9 @@ class C_pengiriman_brg
             foreach ($data['rows'] as $key => $val) {
                 $pengirimandet_id = $val['pengirimandet_id'];
                 if ($pengirimandet_id > 0) {
-                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
+                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_ppn', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
                                   'pengirimandet_updated_by', 'pengirimandet_updated_date', 'pengirimandet_revised'];
-                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_harga'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
+                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_ppn'], $val['pengirimandet_harga'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
                                     $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengirimandet_revised+1'];
                     $field = "";
                     foreach ($fieldSave as $key => $value) {
@@ -114,9 +114,9 @@ class C_pengiriman_brg
                     $where = "WHERE pengirimandet_id = " . $val['pengirimandet_id'];
                     query_update($this->conn2, 't_pengiriman_detail', $field, $where);
                 } else {
-                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
+                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_ppn', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
                                     'pengirimandet_created_by', 'pengirimandet_created_date'];
-                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_harga'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
+                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_harga'], $val['pengirimandet_ppn'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
                                 $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     $pengirimandet_id = query_create($this->conn2, 't_pengiriman_detail', $fieldSave, $dataSave);
                 }
@@ -227,7 +227,7 @@ class C_pengiriman_brg
                 'barangtrans_awal' => $barangtrans_awal,
                 'barangtrans_masuk' => $barangtrans_masuk,
                 'barangtrans_keluar' => 0,
-                'barangtrans_akhir' => $barangtrans_awal + $barangtrans_keluar,
+                'barangtrans_akhir' => $barangtrans_awal + $barangtrans_masuk,
                 'barangtrans_status' => 'MASUK'
             );
             if (strtotime($pengiriman_tgl) < strtotime(date('Y-m-d'))) {
@@ -395,7 +395,35 @@ class C_pengiriman_brg
         $m_rekanan_id = $data['m_rekanan_id'];
         $data = $this->model->getHargaKontrak($barang_id, $tanggal, $m_rekanan_id);
 
-        echo $data;
+        echo json_encode($data);
+    }
+
+    public function batal($data)
+    {
+        $fieldSave = ['pengiriman_aktif', 'pengiriman_void_by', 'pengiriman_void_date', 'pengiriman_void_alasan'];
+        $dataSave = ['N', $_SESSION["USER_ID"], date("Y-m-d H:i:s"), $data['alasan']];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+        $where = "WHERE pengiriman_id = " . $data['pengiriman_id'];
+        $action = query_update($this->conn2, 't_pengiriman', $field, $where);
+        /* nonaktif detail terlebih dahulu */
+        if (isset($data['rows'])) {
+            $this->nonaktifdetail($data['rows'], $data['pengiriman_no'], $data['pengiriman_tgl']);
+        }
+
+        if ($action > 0) {
+            echo 200;
+        } else {
+            echo 202;
+        }
+        
     }
 }
 
@@ -426,6 +454,9 @@ switch ($action) {
         break;
     case 'gethargakontrak':
         $pengiriman->getHargaKontrak($_POST);
+        break;
+    case 'batal':
+        $pengiriman->batal($_POST);
         break;
     default:
         $pengiriman->Pengiriman();

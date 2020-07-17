@@ -26,7 +26,7 @@ class M_pengiriman_brg
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 LEFT JOIN m_user ON m_user.user_id = t_pengiriman.pengiriman_created_by
-                WHERE pengiriman_aktif = 'Y'";
+                WHERE pengiriman_aktif = 'Y' ORDER BY t_pengiriman.pengiriman_created_date DESC";
         $qpengiriman = $this->conn2->query($sql);
         $result = array();
         while ($val = $qpengiriman->fetch_array()) {
@@ -160,7 +160,7 @@ class M_pengiriman_brg
                     m_rekanan.rekanan_kode,
                     m_rekanan.rekanan_nama,
                     m_rekanan.rekanan_alamat,
-                    t_pengiriman.t_penagihan_no
+                    COALESCE(t_pengiriman.t_penagihan_no, '') AS t_penagihan_no
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 WHERE pengiriman_aktif = 'Y' 
@@ -193,13 +193,15 @@ class M_pengiriman_brg
                     t_pengiriman_detail.m_satuan_id,
                     m_satuan.satuan_nama,
                     COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
-                    (t_pengiriman_detail.pengirimandet_harga/COALESCE(m_satuan_konversi.satkonv_nilai, 1)) AS baranghnadet_harga,
+                    (t_pengiriman_detail.pengirimandet_harga/COALESCE(m_satuan_konversi.satkonv_nilai, 1)) AS hargaet_harga,
                     t_pengiriman_detail.pengirimandet_harga,
+                    t_pengiriman_detail.pengirimandet_ppn,
                     t_pengiriman_detail.pengirimandet_qty,
                     t_pengiriman_detail.pengirimandet_subtotal,
                     t_pengiriman_detail.pengirimandet_subtotal,
                     t_pengiriman_detail.pengirimandet_potongan,
-                    t_pengiriman_detail.pengirimandet_total
+                    t_pengiriman_detail.pengirimandet_total,
+                    t_returdet_qty
                 FROM t_pengiriman_detail
                 JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
                 JOIN m_satuan ON m_satuan.satuan_id = t_pengiriman_detail.m_satuan_id
@@ -223,13 +225,15 @@ class M_pengiriman_brg
                 'm_barangsatuan_id' => $val['m_barangsatuan_id'],
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satuan_nama' => $val['satuan_nama'],
-                'baranghnadet_harga' => $val['baranghnadet_harga'],
+                'hargaet_harga' => $val['hargaet_harga'],
                 'pengirimandet_harga' => $val['pengirimandet_harga'],
+                'pengirimandet_ppn' => $val['pengirimandet_ppn'],
                 'satkonv_nilai' => $val['satkonv_nilai'],
                 'pengirimandet_qty' => $val['pengirimandet_qty'],
                 'pengirimandet_subtotal' => $val['pengirimandet_subtotal'],
                 'pengirimandet_potongan' => $val['pengirimandet_potongan'],
-                'pengirimandet_total' => $val['pengirimandet_total']
+                'pengirimandet_total' => $val['pengirimandet_total'],
+                't_returdet_qty' => $val['t_returdet_qty']
             );
         }
 
@@ -244,13 +248,17 @@ class M_pengiriman_brg
                     t_pengiriman_detail.m_barang_id,
                     m_barang.m_satuan_id AS satuanutama,
                     t_pengiriman_detail.m_satuan_id,
-                    m_satuan_konversi.satkonv_nilai,
-                    t_pengiriman_detail.pengirimandet_qty 
+                    COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
+                    t_pengiriman_detail.pengirimandet_qty,
+                    t_pengiriman_detail.t_returdet_qty
                 FROM t_pengiriman_detail 
                 LEFT JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
-                LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_pengiriman_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_pengiriman_detail.m_barang_id ";
-        if ($pengirimandet_id <> '') {
+                LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_pengiriman_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_pengiriman_detail.m_barang_id 
+                WHERE t_pengiriman_detail.pengirimandet_aktif = 'Y' ";
+        if ($pengirimandet_id == '') {
             $sql .= "AND t_pengiriman_id IN (" . $pengirimandet_id . ") ";
+        } else {
+            $sql .= "AND pengirimandet_id IN (" . $pengirimandet_id . ") ";
         }
         
         $qpengiriman = $this->conn2->query($sql);
@@ -263,7 +271,8 @@ class M_pengiriman_brg
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satuanutama' => $val['satuanutama'],
                 'pengirimandet_qty' => $val['pengirimandet_qty'],
-                'satkonv_nilai' => $val['satkonv_nilai']
+                'satkonv_nilai' => $val['satkonv_nilai'],
+                't_returdet_qty' => $val['t_returdet_qty']
             );
         }
 
@@ -282,6 +291,7 @@ class M_pengiriman_brg
                     m_barang.m_satuan_id,
                     m_satuan.satuan_nama,
                     kontrak.hargakontrak,
+                    kontrak.hargakontrakdet_ppn,
                     t_jadwal.hari,
                     t_jadwal.bulan,
                     t_jadwal.tahun,
@@ -299,7 +309,8 @@ class M_pengiriman_brg
                         SELECT
                             ROW_NUMBER() OVER ( PARTITION BY t_hargakontrak_detail.m_barang_id, m_rekanan_id ORDER BY hargakontrakdet_tgl DESC, hargakontrakdet_id DESC ) AS rnumber,
                             m_rekanan_id, m_barang_id,
-                            hargakontrakdet_harga AS hargakontrak
+                            hargakontrakdet_harga AS hargakontrak,
+                            hargakontrakdet_ppn
                         FROM
                             t_hargakontrak_detail 
                         WHERE hargakontrakdet_tgl <= '$tanggal'
@@ -320,6 +331,7 @@ class M_pengiriman_brg
                     GROUP BY t_pengiriman.m_rekanan_id, t_pengiriman_detail.m_barang_id, m_satuan_konversi.satkonv_nilai
                 ) AS kirim ON kirim.m_barang_id = m_barang.barang_id AND kirim.m_rekanan_id = t_jadwal.m_rekanan_id
                 WHERE hari = $day AND bulan = $month AND tahun = $year";
+                
         $qkirim = $this->conn2->query($sql);
         $rkirim = array();
         $hari = ['', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
@@ -351,6 +363,7 @@ class M_pengiriman_brg
                     'm_satuan_id' => $val['m_satuan_id'],
                     'satuan_nama' => $val['satuan_nama'],
                     'hargakontrak' => $val['hargakontrak'],
+                    'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'],
                     'minggu' => $week,
                     'hari' => $hari[$day],
                     'jadwal_qty' => $qty,
@@ -367,7 +380,8 @@ class M_pengiriman_brg
         $sql = "SELECT * FROM (
                     SELECT
                         ROW_NUMBER() OVER ( PARTITION BY t_hargakontrak_detail.m_barang_id ORDER BY hargakontrakdet_tgl DESC, hargakontrakdet_id DESC ) AS rnumber,
-                        hargakontrakdet_harga 
+                        hargakontrakdet_harga,
+                        hargakontrakdet_ppn
                     FROM
                         t_hargakontrak_detail 
                     WHERE
@@ -375,12 +389,14 @@ class M_pengiriman_brg
                     ) AS kontrak 
                 WHERE kontrak.rnumber <= 1";
         $qbarang = $this->conn2->query($sql);
-        $hargakontrakdet_harga = 0;
+        $result['hargakontrakdet_harga'] = 0;
+        $result['hargakontrakdet_ppn'] = 'N';
         if ($qbarang) {
             $rbarang = $qbarang->fetch_object();
-            $hargakontrakdet_harga = isset($rbarang->hargakontrakdet_harga) ? $rbarang->hargakontrakdet_harga : 0;
+            $result['hargakontrakdet_harga'] = isset($rbarang->hargakontrakdet_harga) ? $rbarang->hargakontrakdet_harga : 0;
+            $result['hargakontrakdet_ppn'] = isset($rbarang->hargakontrakdet_ppn) ? $rbarang->hargakontrakdet_ppn : 'N';
         }
-        return $hargakontrakdet_harga;
+        return $result;
     }
 
 }

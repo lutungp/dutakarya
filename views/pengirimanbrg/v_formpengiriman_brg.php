@@ -34,6 +34,8 @@
             row["m_barangsatuan_id"] = 0,
             row["hargakontrak"] = 0;
             row['pengirimandet_harga'] = 0;
+            row['hargakontrakdet_ppn'] = 'N';
+            row['pengirimandet_ppn'] = 0;
             row["m_satuan_id"] = '';
             row["satkonv_nilai"] = 1;
             row["pengirimandet_qtyold"] = 0;
@@ -41,6 +43,7 @@
             row['pengirimandet_subtotal'] = 0;
             row['pengirimandet_potongan'] = 0;
             row['pengirimandet_total'] = 0;
+            row['t_returdet_qty'] = 0;
             return row;
         }
 
@@ -83,6 +86,7 @@
             });
             // prepare the data
             var datapengirimandet = [];
+            var retur = 0;
             for (let index = 0; index < datapengirimandetail.length; index++) {
                 const element = datapengirimandetail[index];
                 let datdet = {
@@ -94,14 +98,25 @@
                     hargakontrak : element.hargakontrak,
                     satkonv_nilai : element.satkonv_nilai,
                     pengirimandet_harga : element.pengirimandet_harga,
+                    hargakontrakdet_ppn : element.hargakontrakdet_ppn,
+                    pengirimandet_ppn : element.pengirimandet_ppn,
                     pengirimandet_qtyold : element.pengirimandet_qty,
                     pengirimandet_qty : element.pengirimandet_qty,
                     pengirimandet_subtotal : element.pengirimandet_subtotal,
                     pengirimandet_potongan : element.pengirimandet_potongan,
                     pengirimandet_total : element.pengirimandet_total,
-                    satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==element.m_barang_id))
+                    satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==element.m_barang_id)),
+                    t_returdet_qty : element.t_returdet_qty
                 };
+
+                retur = retur + parseFloat(element.t_returdet_qty);
                 datapengirimandet.push(datdet);
+            }
+
+            if (retur > 0) {
+                swal("Info!", "Transaksi sudah terdapat retur, tidak dapat diedit dan batal", "error");
+                $("#simpan").prop("disabled", true);
+                $("#batal").prop("disabled", true);
             }
             var pengirimanGridSource = {
                 datatype: "array",
@@ -114,6 +129,8 @@
                     { name: 'm_barangsatuan_id', type: 'int'},
                     { name: 'hargakontrak', type: 'float'},
                     { name: 'pengirimandet_harga', type: 'float'},
+                    { name: 'hargakontrakdet_ppn', type: 'string'},
+                    { name: 'pengirimandet_ppn', type: 'float'},
                     { name: 'm_satuan_id', value: 'm_satuan_id', values: { source: satuanAdapter.records, value: 'value', name: 'label' } },
                     { name: 'satkonv_nilai'},
                     { name: 'pengirimandet_qtyold', type: 'float'},
@@ -121,6 +138,7 @@
                     { name: 'pengirimandet_subtotal', type: 'float'},
                     { name: 'pengirimandet_potongan', type: 'float'},
                     { name: 'pengirimandet_total', type: 'float'},
+                    { name: 't_returdet_qty', type: 'float'}
                 ],
                 addrow: function (rowid, rowdata, position, commit) {
                     // synchronize with the server - send insert command
@@ -206,7 +224,12 @@
                                     }
                                     $("#pengirimanGrid").jqxGrid('setcellvalue', row, "m_satuan_id", brg[0].satuan_nama);
                                     $.post("<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=gethargakontrak", data, function(result){
-                                        $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", result);
+                                        let res = JSON.parse(result);
+                                        $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", res.hargakontrakdet_harga);
+                                        recorddata.hargakontrakdet_ppn = res.hargakontrakdet_ppn;
+                                        recorddata.hargakontrak = res.hargakontrakdet_harga;
+                                        let pengirimandet_ppn = res.hargakontrakdet_ppn == 'Y' ? res.hargakontrakdet_harga*10/100 : 0;
+                                        $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_ppn", pengirimandet_ppn);
                                     });
                                 }
                             });
@@ -215,56 +238,8 @@
                     },
                     {
                         text: 'Satuan', datafield: 'm_satuan_id', displayfield: 'm_satuan_id', columntype: 'combobox',
-                        // createeditor: function (row, value, editor) {
-                        //     var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
-                            
-                        //     var satuanSource = {
-                        //             datatype: "array",
-                        //             datafields: [
-                        //                 { name: 'label', type: 'string' },
-                        //                 { name: 'value', type: 'int' }
-                        //             ],
-                        //             localdata: JSON.parse(recorddata.satuankonv)
-                        //     };
-                        //     satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
-                        //         autoBind: true
-                        //     });
-                        //     editor.jqxDropDownList({
-                        //         source: satuanAdapter,
-                        //         displayMember: 'label',
-                        //         valueMember: 'value'
-                        //     });
-                        // },
                         initeditor: function (row, value, editor) {
                             var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
-                            // var satuanSource = {
-                            //         datatype: "array",
-                            //         datafields: [
-                            //             { name: 'label', type: 'string' },
-                            //             { name: 'value', type: 'int' }
-                            //         ],
-                            //         localdata: JSON.parse(recorddata.satuankonv)
-                            // };
-                            // satuanAdapter = new $.jqx.dataAdapter(satuanSource, {
-                            //     autoBind: true
-                            // });
-                            // editor.jqxDropDownList({
-                            //     source: satuanAdapter,
-                            //     displayMember: 'label',
-                            //     valueMember: 'value'
-                            // });
-
-                            // editor.on('select', function (event) {
-                            //     var datasatkonv = satKonv;
-                            //     if (event.args) {
-                            //         var val = event.args.item.value;
-                            //         var satuankonv = JSON.parse(recorddata.satuankonv);
-                            //         var dtsatkonv = satuankonv.filter(p=>parseInt(p.value)==parseInt(val));
-                            //         recorddata.satkonv_nilai = dtsatkonv[0].satkonv_nilai;
-                            //         $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.hargakontrak) * parseFloat(dtsatkonv[0].satkonv_nilai)));
-                            //     }
-                            // });
-
 
                             /* lintang */
                             // var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
@@ -296,25 +271,34 @@
                                     } else {
                                         recorddata.satkonv_nilai = 1;
                                     }
-                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.hargakontrak) * parseFloat(recorddata.satkonv_nilai)));
+                                    var ppn = recorddata.hargakontrakdet_ppn == 'Y' ? (recorddata.hargakontrak * 10/100) : 0;
+                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_qty", 1);
+                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_ppn", parseFloat(ppn*val));
+                                    $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_harga", (parseFloat(recorddata.hargakontrak*val) + parseFloat(ppn*val)));
+                                    settotal();
                                 }
                             });
 
                         }, 
                     },
-                    { text: 'Harga', datafield: 'pengirimandet_harga', cellsalign: 'right', editable : false},
+                    { text: 'Harga', datafield: 'pengirimandet_harga', cellsalign: 'right', editable : false, width : 100 },
                     { text: 'Qty', datafield: 'pengirimandet_qty', cellsalign: 'right', columntype: 'numberinput',
                         createeditor: function (row, value, editor) {
                             editor.jqxNumberInput({ decimalDigits: 0 });
                             editor.on('keyup', function (event) {
                                 var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
                                 var val = event.target.value||0;
-                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_subtotal", (parseFloat(recorddata.pengirimandet_harga) * parseFloat(val)));
-                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(recorddata.pengirimandet_subtotal) - recorddata.pengirimandet_potongan));
+                                var ppn = recorddata.hargakontrakdet_ppn == 'Y' ? (recorddata.hargakontrak * 10/100) : 0;
+                                var pengirimandet_subtotal = val * recorddata.hargakontrak * recorddata.satkonv_nilai;
+                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_ppn", (pengirimandet_subtotal*10/100));
+                                pengirimandet_subtotal = pengirimandet_subtotal + parseFloat(pengirimandet_subtotal*10/100)
+                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_subtotal", pengirimandet_subtotal);
+                                $("#pengirimanGrid").jqxGrid('setcellvalue', row, "pengirimandet_total", (parseFloat(pengirimandet_subtotal) - recorddata.pengirimandet_potongan));
                                 settotal();
                             });
                         }
                     },
+                    { text: 'PPN', datafield: 'pengirimandet_ppn', cellsalign: 'right', editable : false, width : 100 },
                     { text: 'Subtotal', datafield: 'pengirimandet_subtotal', cellsalign: 'right', editable : false },
                     { text: 'Potongan', datafield: 'pengirimandet_potongan', cellsalign: 'right', columntype: 'numberinput', rendered: tooltiprenderer,
                         createeditor: function (row, value, editor) {
@@ -369,6 +353,7 @@
                 { name: 'satuan_nama', type: 'string'},
                 { name: 'barang_nama', type: 'string'},
                 { name: 'hargakontrak', type: 'double'},
+                { name: 'hargakontrakdet_ppn', type: 'string'},
                 { name: 'minggu', type: 'int'},
                 { name: 'hari', type: 'string'},
                 { name: 'jadwal_qty', type: 'int'},
@@ -417,6 +402,8 @@
                 m_barang_id : record.barang_nama,
                 m_barangsatuan_id : record.m_satuan_id,
                 hargakontrak : record.hargakontrak,
+                hargakontrakdet_ppn : record.hargakontrakdet_ppn,
+                pengirimandet_ppn : record.hargakontrak * record.hargakontrakdet_ppn / 100,
                 pengirimandet_harga : record.hargakontrak,
                 m_satuan_id : record.satuan_nama,
                 satkonv_nilai : 1,
@@ -425,6 +412,7 @@
                 pengirimandet_subtotal : qty * record.hargakontrak,
                 pengirimandet_potongan : 0,
                 pengirimandet_total : qty * record.hargakontrak,
+                t_returdet_qty : 0
             };
             
             $("#pengirimanGrid").jqxGrid('addrow', null, datarow);
@@ -497,7 +485,7 @@
                         <?php } ?>
                         <?php 
                         if ((($create <> '' && isset($data->pengiriman_id) == 0) || ($update <> '' && $data->pengiriman_id > 0) && $t_penagihan_no == '')) { ?>
-                        <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
+                        <button type="submit" id="simpan" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
                         <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button>
                     </div>
@@ -562,21 +550,31 @@
                 satkonv_nilai = 1;
                 if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
                 
-                rows.push({
-                    'pengirimandet_id' : rec.pengirimandet_id,
-                    't_pengiriman_id' : $('#pengiriman_id').val(),
-                    'm_barang_id' : parseInt(m_barang_id[0].value||0),
-                    'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
-                    'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
-                    'satkonv_nilai' : parseFloat(satkonv_nilai),
-                    'hargakontrak' : parseFloat(rec.hargakontrak),
-                    'pengirimandet_harga' : parseFloat(rec.pengirimandet_harga),
-                    'pengirimandet_qty' : rec.pengirimandet_qty,
-                    'pengirimandet_qtyold' : rec.pengirimandet_qtyold,
-                    'pengirimandet_subtotal' : parseFloat(rec.pengirimandet_subtotal),
-                    'pengirimandet_potongan' : parseFloat(rec.pengirimandet_potongan),
-                    'pengirimandet_total' : parseFloat(rec.pengirimandet_total),
-                }); 
+                if (m_barang_id.length > 0 && rec.pengirimandet_qty > 0 && m_satuan_id.length > 0) {
+                    rows.push({
+                        'pengirimandet_id' : rec.pengirimandet_id,
+                        't_pengiriman_id' : $('#pengiriman_id').val(),
+                        'm_barang_id' : parseInt(m_barang_id[0].value||0),
+                        'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
+                        'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
+                        'satkonv_nilai' : parseFloat(satkonv_nilai),
+                        'hargakontrak' : parseFloat(rec.hargakontrak),
+                        'pengirimandet_harga' : parseFloat(rec.pengirimandet_harga),
+                        'pengirimandet_ppn' : parseFloat(rec.pengirimandet_ppn),
+                        'pengirimandet_qty' : rec.pengirimandet_qty,
+                        'pengirimandet_qtyold' : rec.pengirimandet_qtyold,
+                        'pengirimandet_subtotal' : parseFloat(rec.pengirimandet_subtotal),
+                        'pengirimandet_potongan' : parseFloat(rec.pengirimandet_potongan),
+                        'pengirimandet_total' : parseFloat(rec.pengirimandet_total),
+                    });
+                } else if (rec.pengirimandet_qty == 0 && m_satuan_id.length > 0) {
+                    swal("Info!", "Pengiriman Gagal disimpan, terdapat isian dengan qty kosong ", "error");
+                    return false;
+                } else if (m_satuan_id.length < 1) {
+                    swal("Info!", "Pengiriman Gagal disimpan, terdapat isian dengan satuan kosong ", "error");
+                    return false;
+                }
+                
             }
             $.ajax({
                 url: "<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=submit",
@@ -634,21 +632,7 @@
                 satkonv_nilai = 1;
                 if(dtsatkonv.length > 0) { satkonv_nilai = dtsatkonv[0].satkonv_nilai}
                 
-                rows.push({
-                    'pengirimandet_id' : rec.pengirimandet_id,
-                    't_pengiriman_id' : $('#pengiriman_id').val(),
-                    'm_barang_id' : parseInt(m_barang_id[0].value||0),
-                    'm_barangsatuan_id' : parseInt(m_barang_id[0].satuan_id||0),
-                    'm_satuan_id' : parseInt(m_satuan_id[0].value||0),
-                    'satkonv_nilai' : parseFloat(satkonv_nilai),
-                    'hargakontrak' : parseFloat(rec.hargakontrak),
-                    'pengirimandet_harga' : parseFloat(rec.pengirimandet_harga),
-                    'pengirimandet_qty' : rec.pengirimandet_qty,
-                    'pengirimandet_qtyold' : rec.pengirimandet_qtyold,
-                    'pengirimandet_subtotal' : parseFloat(rec.pengirimandet_subtotal),
-                    'pengirimandet_potongan' : parseFloat(rec.pengirimandet_potongan),
-                    'pengirimandet_total' : parseFloat(rec.pengirimandet_total),
-                });
+                rows.push({'pengirimandet_id' : rec.pengirimandet_id});
             }
 
             swal({

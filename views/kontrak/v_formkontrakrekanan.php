@@ -80,7 +80,7 @@
                     { name: 'm_barangsatuan_id', type: 'int'},
                     { name: 'm_satuan_id'},
                     { name: 'satkonv_nilai'},
-                    { name: 'hargakontrakdet_ppn', type: 'float'},
+                    { name: 'hargakontrakdet_ppn', type: 'boolean'},
                     { name: 'hargakontrakdet_harga', type: 'float'},
                 ],
                 addrow: function (rowid, rowdata, position, commit) {
