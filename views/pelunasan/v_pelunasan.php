@@ -12,7 +12,6 @@
             datafields: [
                 { name: 'pelunasan_id', type: 'int' },
                 { name: 'pelunasan_no', type: 'string' },
-                { name: 't_penagihan_no', type: 'string' },
                 { name: 'pelunasan_tgl', type: 'date' },
                 { name: 'm_rekanan_id', type: 'int' },
                 { name: 'rekanan_nama', type: 'string' },
@@ -58,7 +57,6 @@
             autoshowfiltericon: true,
             columns: [
                 { text: 'No. Pelunasan', datafield: 'pelunasan_no', width : 180, cellsalign: 'center'},
-                { text: 'No. Penagihan', datafield: 't_penagihan_no', width : 180, cellsalign: 'center'},
                 { text: 'Rekanan', datafield: 'rekanan_nama'},
                 { text: 'Dibuat Oleh', datafield: 'user_nama', width : 150},
                 { text: 'Dibuat Tanggal', datafield: 'pelunasan_created_date', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 150},

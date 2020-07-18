@@ -25,14 +25,13 @@ class M_pelunasan
                     m_user.user_nama 
                 FROM
                     t_pelunasan
-                    INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_pelunasan.t_penagihan_id
-                    INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_penagihan.m_rekanan_id
+                    INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_pelunasan.m_rekanan_id
                     INNER JOIN m_user ON m_user.user_id = t_pelunasan.pelunasan_created_by 
                 WHERE t_pelunasan.pelunasan_aktif = 'Y' ";
 
-        $qpenagihan = $this->conn2->query($sql);
+        $qpelunasan = $this->conn2->query($sql);
         $result = array();
-        while ($val = $qpenagihan->fetch_array()) {
+        while ($val = $qpelunasan->fetch_array()) {
             $result[] = array(
                 'pelunasan_id' => $val['pelunasan_id'],
                 'pelunasan_no' => $val['pelunasan_no'],
@@ -74,6 +73,63 @@ class M_pelunasan
                     'penagihandet_total' => $val['penagihandet_total']-$val['t_pelunasandet_bayar'],
                 );
             }
+        }
+
+        return $result;
+    }
+
+    public function getDataPelunasan($pelunasan_id)
+    {
+        $sql = "SELECT
+                    t_pelunasan.pelunasan_id,
+                    t_pelunasan.pelunasan_no,
+                    t_pelunasan.pelunasan_tgl,
+                    t_pelunasan.m_rekanan_id,
+                    m_rekanan.rekanan_nama,
+                    t_pelunasan.pelunasan_created_date,
+                    m_user.user_nama 
+                FROM
+                    t_pelunasan
+                    INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_pelunasan.m_rekanan_id
+                    INNER JOIN m_user ON m_user.user_id = t_pelunasan.pelunasan_created_by 
+                WHERE t_pelunasan.pelunasan_id = $pelunasan_id ";
+
+        $qpelunasan = $this->conn2->query($sql);
+        $rpelunasan = $qpelunasan->fetch_object();
+
+        return $rpelunasan;
+    }
+
+    public function getDataPelunasanDetail($pelunasan_id)
+    {
+        $sql = "SELECT 
+                    t_pelunasan_detail.pelunasandet_id,
+                    t_pelunasan_detail.t_pelunasan_id,
+                    t_pelunasan_detail.t_penagihan_id,
+                    t_penagihan.penagihan_no,
+                    t_penagihan.penagihan_tgl,
+                    t_pelunasan_detail.pelunasandet_tagihan,
+                    t_pelunasan_detail.pelunasandet_bayar,
+                    t_penagihan.m_rekanan_id
+                FROM t_pelunasan_detail
+                INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_pelunasan_detail.t_penagihan_id
+                WHERE t_pelunasan_detail.pelunasandet_aktif = 'Y'";
+        
+        $qpelunasan = $this->conn2->query($sql);
+        $result = array();
+        while ($val = $qpelunasan->fetch_array()) {
+            $result[] = array(
+                'pelunasandet_id' => $val['pelunasandet_id'],
+                't_pelunasan_id' => $val['t_pelunasan_id'],
+                't_penagihan_id' => $val['t_penagihan_id'],
+                'penagihan_noa' => $val['penagihan_no'],
+                'penagihan_no' => $val['penagihan_no'],
+                'penagihan_tgl' => $val['penagihan_tgl'],
+                'pelunasandet_tagihan' => $val['pelunasandet_tagihan'],
+                'penagihandet_total' => $val['pelunasandet_tagihan'],
+                'pelunasandet_bayarold' => $val['pelunasandet_bayar'],
+                'pelunasandet_bayar' => $val['pelunasandet_bayar'],
+            );
         }
 
         return $result;

@@ -34,8 +34,15 @@ class C_pelunasan
     }
 
     public function formTransaksi($data)
-    {
-        templateAdmin($this->conn2, '../views/pelunasan/v_formpelunasan.php', json_encode(NULL), 'KEUANGAN', 'PELUNASAN');
+    {    
+        $result = NULL;
+        $pelunasan_id = isset($data['id']) ? $data['id'] : 0;
+        if ($pelunasan_id > 0) {
+            $result['datapelunasan'] = $this->model->getDataPelunasan($pelunasan_id);
+            $result['datapelunasandetail'] = $this->model->getDataPelunasanDetail($pelunasan_id);
+        }
+        
+        templateAdmin($this->conn2, '../views/pelunasan/v_formpelunasan.php', json_encode($result), 'KEUANGAN', 'PELUNASAN');
     }
 
     public function getPenagihan($data)
@@ -103,7 +110,7 @@ class C_pelunasan
                 /* update penagihan status penagihan */
                 $penagihanArr[] = array(
                     't_penagihan_id' => $val['t_penagihan_id'],
-                    'operator' => '+',
+                    'operator' => $val['pelunasandet_bayarold'] < $val['pelunasandet_bayar'] ? '+' : '-',
                     'pelunasandet_bayar' => $val['pelunasandet_bayar']
                 );
             }
@@ -134,6 +141,59 @@ class C_pelunasan
             query_update($this->conn2, 't_penagihan', $field, $where);
         }
     }
+
+    public function batal($data)
+    {
+        $pelunasan_id = $data['pelunasan_id'];
+        $fieldSave = ['pelunasan_aktif', 'pelunasan_void_by', 'pelunasan_void_date', 'pelunasan_void_alasan'];
+        $dataSave = ['N', $_SESSION["USER_ID"], date("Y-m-d H:i:s"), $data['alasan']];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+        $where = "WHERE pelunasan_id = " . $pelunasan_id;
+        $action = query_update($this->conn2, 't_pelunasan', $field, $where);
+
+        $fieldSave = ['pelunasandet_aktif'];
+        $dataSave = ['N'];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+        $where = "WHERE t_pelunasan_id = " . $pelunasan_id;
+        $action = query_update($this->conn2, 't_pelunasan_detail', $field, $where);
+
+        $fieldSave = ['t_pelunasandet_bayar'];
+        foreach ($data['rows'] as $key => $valpenagihan) {
+            $dataSave = ['t_pelunasandet_bayar-'.$valpenagihan['pelunasandet_bayar']];
+            $field = '';
+            foreach ($fieldSave as $key => $value) {
+                $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+            $where = "WHERE penagihan_id = " . $valpenagihan['t_penagihan_id'];
+            query_update($this->conn2, 't_penagihan', $field, $where);
+        }
+
+        if ($action) {
+            $result['code'] = 200;
+            // $result['id'] = $pelunasan_id;
+        } else {
+            $result['code'] = 202;
+        }
+
+        echo json_encode($result);
+    }
     
 }
 
@@ -152,6 +212,9 @@ switch ($action) {
         break;
     case 'submit':
         $pelunasan->submit($_POST);
+        break;
+    case 'batal':
+        $pelunasan->batal($_POST);
         break;
     default:
         templateAdmin($conn2, '../views/pelunasan/v_pelunasan.php', NULL, 'KEUANGAN', 'PELUNASAN');

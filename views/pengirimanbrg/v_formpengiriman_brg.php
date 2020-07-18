@@ -336,7 +336,7 @@
             var rec = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', i);
             total = total + parseFloat(rec.pengirimandet_total);
         }
-        total = total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        total = total.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
         $('#pengiriman_total').val(total);
     }
 

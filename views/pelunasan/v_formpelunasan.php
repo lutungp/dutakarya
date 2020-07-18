@@ -49,6 +49,7 @@
                                 m_rekanan_id : element.m_rekanan_id,
                                 pelunasandet_tagihan : element.penagihandet_total,
                                 penagihandet_total : element.penagihandet_total,
+                                pelunasandet_bayarold : 0,
                                 pelunasandet_bayar : 0,
                             };
                             $("#pelunasanGrid").jqxGrid('addrow', null, datarow);
@@ -61,14 +62,18 @@
         });
         
         if(datapelunasan!==null) {
-            
+            let dat = datapelunasan.datapelunasan;
+            $('#pelunasan_id').val(dat.pelunasan_id);
+            $('#pelunasan_no').val(dat.pelunasan_no);
+            $('#pelunasan_tgl').val(dat.pelunasan_tgl);
+            $("#m_rekanan_id").data('select2').trigger('select', {
+                data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
+            });
+            $("#m_rekanan_id").prop("disabled", true);
+            $('#batal').prop("disabled", false);
         }
 
-        var datapelunasandetail = datapelunasan == null ? [] : datapelunasan.datapelunasandetail;
-        var datapelunasandet = [];
-        for (let index = 0; index < datapelunasandetail.length; index++) {
-
-        }
+        var datapelunasandet = datapelunasan == null ? [] : datapelunasan.datapelunasandetail;
 
         var pelunasanGridSource = {
             datatype: "array",
@@ -82,6 +87,7 @@
                 { name: 'penagihan_tgl', type: 'date'},
                 { name: 'pelunasandet_tagihan', type: 'double'},
                 { name: 'penagihandet_total', type: 'double'},
+                { name: 'pelunasandet_bayarold', type: 'double'},
                 { name: 'pelunasandet_bayar', type: 'double'},
             ],
         };
@@ -111,12 +117,14 @@
                         if (eventkey.keyCode == 86 && eventkey.ctrlKey == true) {
                             let recorddata = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', event.args.rowindex);
                             $("#pelunasanGrid").jqxGrid('setcellvalue', event.args.rowindex, "penagihandet_total", recorddata.pelunasandet_tagihan);
+                            return true;
                         }
                     }
                     if (columnheader == 'No. Penagihan') {
                         if (eventkey.keyCode == 86 && eventkey.ctrlKey == true) {
                             let recorddata = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', event.args.rowindex);
                             $("#pelunasanGrid").jqxGrid('setcellvalue', event.args.rowindex, "penagihan_no", recorddata.penagihan_noa);
+                            return true;
                         }
                     }
                 });
@@ -138,8 +146,8 @@
                     }
                 },
                 { 
-                    text: 'Tagihan', datafield: 'penagihandet_total', displayfield: 'penagihandet_total', editable : false, cellsalign : 'right',
-                    cellsformat: 'F',
+                    text: 'Tagihan', datafield: 'penagihandet_total', displayfield: 'penagihandet_total', editable : false, cellsalign : 'right', columntype: 'numberinput',
+                    // cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
@@ -147,15 +155,15 @@
                         $.each(aggregates, function (key, value) {
                             subtotal = parseFloat(subtotal) + parseFloat(value);
                             // var name = key == 'sum' ? 'Sum' : 'Avg';
-                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + subtotal.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</b></div>';
                         });
                         renderstring += "</div>";
                         return renderstring;
                     }
                 },
                 { 
-                    text: 'Pembayaran', datafield: 'pelunasandet_bayar', editable : true, cellsalign : 'right', columntype: 'numberinput',
-                    cellsformat: 'F',
+                    text: 'Pembayaran', datafield: 'pelunasandet_bayar', displayfield: 'pelunasandet_bayar', editable : true, cellsalign : 'right', columntype: 'numberinput',
+                    // cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
@@ -163,7 +171,7 @@
                         $.each(aggregates, function (key, value) {
                             subtotal = parseFloat(subtotal) + parseFloat(value);
                             // var name = key == 'sum' ? 'Sum' : 'Avg';
-                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + subtotal.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</b></div>';
                         });
                         renderstring += "</div>";
                         return renderstring;
@@ -172,16 +180,6 @@
             ]
         });
     });
-
-    function setLunasAll() {
-        var griddata = $('#pelunasanGrid').jqxGrid('getdatainformation');
-        for (var i = 0; i < griddata.rowscount; i++){
-            var rec = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', i);
-            // rec.pelunasandetcheck = true;
-            // rec.pelunasandet_bayar = rec.penagihandet_total;
-            // $("#pelunasanGrid").jqxGrid('setcellvalue', i, "pelunasandet_bayar", rec.penagihandet_total);
-        }
-    }
 </script>
 
 <section class="content">
@@ -253,7 +251,7 @@
             for (var i = 0; i < griddata.rowscount; i++){
                 var rec = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', i);
                 
-                if (rec.pelunasandet_bayar > 0) {
+                if (rec.pelunasandet_bayar != rec.pelunasandet_bayarold) {
                     rows.push({
                         pelunasandet_id : rec.pelunasandet_id,
                         t_pelunasan_id : rec.t_pelunasan_id,
@@ -263,6 +261,7 @@
                         penagihan_tgl : rec.penagihan_tgl,
                         pelunasandet_tagihan : rec.pelunasandet_tagihan,
                         penagihandet_total : rec.penagihandet_total,
+                        pelunasandet_bayarold : rec.pelunasandet_bayarold,
                         pelunasandet_bayar : rec.pelunasandet_bayar,
                     });
                     totalbayar = totalbayar + parseFloat(rec.pelunasandet_bayar);
@@ -297,10 +296,62 @@
                 }
             });
         });
+
+        $('#batal').on('click', function () {
+            var rows = [];
+            var griddata = $('#pelunasanGrid').jqxGrid('getdatainformation');
+            if(griddata.rowscount == 0) {
+                swal("Info!", "Pembatalan Gagal disimpan, detail penagihan masih kosong, refresh halaman terlebih dahulu", "warning");
+                return false;
+            }
+            for (var i = 0; i < griddata.rowscount; i++){
+                var rec = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', i);
+                rows.push({
+                    t_penagihan_id : rec.t_penagihan_id,
+                    pelunasandet_bayar : rec.pelunasandet_bayar
+                }); 
+            }
+            swal({
+                title: "Batalkan pelunasan " + $('#pelunasan_no').val(),
+                text: "Alasan dihapus :",
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+            }, function (inputValue) {
+                if (inputValue === false) return false;
+                if (inputValue === "") {
+                    swal.showInputError("Tuliskan alasan anda !");
+                    return false
+                }
+                $.ajax({
+                    url: "<?php echo BASE_URL ?>/controllers/C_pelunasan.php?action=batal",
+                    type: "post",
+                    datatype : 'json',
+                    data: {
+                        pelunasan_id : $('#pelunasan_id').val(),
+                        rows : rows,
+                        alasan : inputValue
+                    },
+                    success : function (res) {
+                        res = JSON.parse(res);
+                        if (res['code'] == 200) {
+                            resetForm();
+                            swal("Info!", "Pelunasan Berhasil dibatalkan", "success");
+                        } else {
+                            swal("Info!", "Pelunasan Gagal dibatalkan", "error");
+                        }
+                    }
+                });
+            });
+        });
     });
 
     function resetForm() {
-        
+        var now = new Date();
+        $('#pelunasan_id').val(0)
+        $('#pelunasan_tgl').val(moment(now).format('DD-MM-YYYY'));
+        $('#m_rekanan_id').empty()
+        $("#pelunasanGrid").jqxGrid('clear');
     }
 
     function cetak() {
