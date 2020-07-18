@@ -27,7 +27,37 @@
         });
 
         $('#m_rekanan_id').on('select2:select', function (e) {
-
+            $("#pelunasanGrid").jqxGrid('clear');
+            var value = $(e.currentTarget).find("option:selected").val();
+            var data = {
+                m_rekanan_id : value,
+                pelunasan_tgl : moment($('#pelunasan_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD')
+            };
+            var pelunasan_id = datapelunasan == null ? 0 : datapelunasan.datapelunasan.pelunasan_id;
+            if (pelunasan_id < 1) {
+                $.post("<?php echo BASE_URL ?>/controllers/C_pelunasan.php?action=getpenagihan", data, function(result){
+                    var res = JSON.parse(result);
+                    if (res.length > 0) {
+                        res.forEach(element => {
+                            var datarow = {
+                                pelunasandet_id : 0,
+                                t_pelunasan_id : 0,
+                                t_penagihan_id : element.penagihan_id,
+                                penagihan_noa : element.penagihan_no,
+                                penagihan_no : element.penagihan_no,
+                                penagihan_tgl : element.penagihan_tgl,
+                                m_rekanan_id : element.m_rekanan_id,
+                                pelunasandet_tagihan : element.penagihandet_total,
+                                penagihandet_total : element.penagihandet_total,
+                                pelunasandet_bayar : 0,
+                            };
+                            $("#pelunasanGrid").jqxGrid('addrow', null, datarow);
+                        });
+                        $("#pelunasanGrid").jqxGrid('selectcell', 0, 'penagihan_no');
+                        $("#pelunasanGrid").jqxGrid('focus');
+                    }
+                });
+            }
         });
         
         if(datapelunasan!==null) {
@@ -47,17 +77,19 @@
                 { name: 'pelunasandet_id', type: 'int'},
                 { name: 't_pelunasan_id', type: 'int'},
                 { name: 't_penagihan_id', type: 'int'},
+                { name: 'penagihan_noa', type: 'string'},
                 { name: 'penagihan_no', type: 'string'},
                 { name: 'penagihan_tgl', type: 'date'},
-                { name: 't_penagihandet_id', type: 'int'},
-                { name: 'm_barang_id', type: 'int'},
-                { name: 'barang_nama', type: 'string'},
-                { name: 't_penagihandet_total', type: 'double'},
-                { name: 'pelunasandet_bayar', type: 'double'}
+                { name: 'pelunasandet_tagihan', type: 'double'},
+                { name: 'penagihandet_total', type: 'double'},
+                { name: 'pelunasandet_bayar', type: 'double'},
             ],
         };
 
         var pelunasanAdapter = new $.jqx.dataAdapter(pelunasanGridSource);
+        var tooltiprenderer = function (element) {
+            $(element).jqxTooltip({position: 'mouse', content: 'Tekan tombol F9 pada keyboard disaat focus pada column pembayaran' });
+        }
         $("#pelunasanGrid").jqxGrid({
             width: "100%",
             // height: "100%",
@@ -70,23 +102,22 @@
             showaggregates: true,
             source: pelunasanAdapter,
             editable: true,
-            showtoolbar: true,
+            editmode: 'selectedcell',
             selectionmode: 'singlecell',
-            rendertoolbar: function (toolbar) {
-                var me = this;
-                var container = $("<div style='margin: 5px;'></div>");
-                toolbar.append(container)
-                container.append('<input style="margin-left: 5px;" id="deleterowbutton" type="button" value="Hapus" />');
-                $("#deleterowbutton").jqxButton();
-                $("#deleterowbutton").on('click', function () {
-                    var selectedrowindex = $("#pelunasanGrid").jqxGrid('getselectedrowindex');
-                    var rowscount = $("#pelunasanGrid").jqxGrid('getdatainformation').rowscount;
-                    if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
-                        var rechapus = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', selectedrowindex);
-                        hapusdetail.push({penagihandet_id : rechapus.penagihandet_id});
-
-                        var id = $("#pelunasanGrid").jqxGrid('getrowid', selectedrowindex);
-                        var commit = $("#pelunasanGrid").jqxGrid('deleterow', id);
+            handlekeyboardnavigation: function (eventkey) {
+                $("#pelunasanGrid").on('cellselect', function (event) {
+                    var columnheader = $("#pelunasanGrid").jqxGrid('getcolumn', event.args.datafield).text;
+                    if (columnheader == 'Tagihan') {
+                        if (eventkey.keyCode == 86 && eventkey.ctrlKey == true) {
+                            let recorddata = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', event.args.rowindex);
+                            $("#pelunasanGrid").jqxGrid('setcellvalue', event.args.rowindex, "penagihandet_total", recorddata.pelunasandet_tagihan);
+                        }
+                    }
+                    if (columnheader == 'No. Penagihan') {
+                        if (eventkey.keyCode == 86 && eventkey.ctrlKey == true) {
+                            let recorddata = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', event.args.rowindex);
+                            $("#pelunasanGrid").jqxGrid('setcellvalue', event.args.rowindex, "penagihan_no", recorddata.penagihan_noa);
+                        }
                     }
                 });
             },
@@ -107,7 +138,8 @@
                     }
                 },
                 { 
-                    text: 'Tagihan', datafield: 't_penagihandet_total', displayfield: 't_penagihandet_total', editable : false, cellsalign : 'right',
+                    text: 'Tagihan', datafield: 'penagihandet_total', displayfield: 'penagihandet_total', editable : false, cellsalign : 'right',
+                    cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
@@ -122,7 +154,8 @@
                     }
                 },
                 { 
-                    text: 'Pembayaran', datafield: 'pelunasandet_bayar', displayfield: 'pelunasandet_bayar', editable : false, cellsalign : 'right', editable : true,
+                    text: 'Pembayaran', datafield: 'pelunasandet_bayar', editable : true, cellsalign : 'right', columntype: 'numberinput',
+                    cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
@@ -139,6 +172,16 @@
             ]
         });
     });
+
+    function setLunasAll() {
+        var griddata = $('#pelunasanGrid').jqxGrid('getdatainformation');
+        for (var i = 0; i < griddata.rowscount; i++){
+            var rec = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', i);
+            // rec.pelunasandetcheck = true;
+            // rec.pelunasandet_bayar = rec.penagihandet_total;
+            // $("#pelunasanGrid").jqxGrid('setcellvalue', i, "pelunasandet_bayar", rec.penagihandet_total);
+        }
+    }
 </script>
 
 <section class="content">
@@ -195,7 +238,70 @@
         $('[data-mask]').inputmask();
         var now = new Date();
         $('#pelunasan_tgl').val(moment(now).format('DD-MM-YYYY'));
+
+        $('#formpelunasan').submit(function (event) {
+            event.preventDefault();
+            var griddata = $('#pelunasanGrid').jqxGrid('getdatainformation');
+            var rows = [];
+
+            if ($('#m_rekanan_id').val() < 1) {
+                swal("Info!", "Inputan belum lengkap", "error");
+                return false;
+            }
+
+            var totalbayar = 0;
+            for (var i = 0; i < griddata.rowscount; i++){
+                var rec = $('#pelunasanGrid').jqxGrid('getrenderedrowdata', i);
+                
+                if (rec.pelunasandet_bayar > 0) {
+                    rows.push({
+                        pelunasandet_id : rec.pelunasandet_id,
+                        t_pelunasan_id : rec.t_pelunasan_id,
+                        t_penagihan_id : rec.t_penagihan_id,
+                        penagihan_noa : rec.penagihan_noa,
+                        penagihan_no : rec.penagihan_no,
+                        penagihan_tgl : rec.penagihan_tgl,
+                        pelunasandet_tagihan : rec.pelunasandet_tagihan,
+                        penagihandet_total : rec.penagihandet_total,
+                        pelunasandet_bayar : rec.pelunasandet_bayar,
+                    });
+                    totalbayar = totalbayar + parseFloat(rec.pelunasandet_bayar);
+                }
+            }
+
+            if (totalbayar == 0) {
+                swal("Info!", "Pembayaran belum diisi sama", "error");
+                return false;
+            }
+
+            $.ajax({
+                url: "<?php echo BASE_URL ?>/controllers/C_pelunasan.php?action=submit",
+                type: "post",
+                datatype : 'json',
+                data: {
+                    pelunasan_id : $('#pelunasan_id').val(),
+                    pelunasan_no : $('#pelunasan_no').val(),
+                    pelunasan_tgl : moment($('#pelunasan_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                    m_rekanan_id : $('#m_rekanan_id').val(),
+                    rows : rows,
+                },
+                success : function (res) {
+                    res = JSON.parse(res);
+                    if (res['code'] == 200) {
+                        // window.open('<?php // echo BASE_URL;?>/controllers/C_pelunasan.php?action=exportpdf&id=' + res['id']);
+                        resetForm();
+                        swal("Info!", "Pelunasan Berhasil disimpan", "success");
+                    } else {
+                        swal("Info!", "Pelunasan Gagal disimpan", "error");
+                    }
+                }
+            });
+        });
     });
+
+    function resetForm() {
+        
+    }
 
     function cetak() {
 

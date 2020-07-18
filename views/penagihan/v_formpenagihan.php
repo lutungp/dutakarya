@@ -203,13 +203,13 @@
                     }
                 },
                 { 
-                    text: 'Harga', datafield: 'penagihandet_harga', cellsalign: 'right', editable : false, width : 100,
+                    text: 'Harga', datafield: 'penagihandet_harga', cellsalign: 'right', editable : false, width : 100, cellsformat: 'F',
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '/>";
                         return renderstring;
                     }
                 },
-                { text: 'PPN', datafield: 'penagihandet_ppn', displayfield: 'penagihandet_ppn', editable : false, cellsalign : 'right',
+                { text: 'PPN', datafield: 'penagihandet_ppn', displayfield: 'penagihandet_ppn', editable : false, cellsalign : 'right', cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
@@ -223,7 +223,7 @@
                         return renderstring;
                     }
                 },
-                { text: 'Subtotal', datafield: 'penagihandet_subtotal', displayfield: 'penagihandet_subtotal', editable : false, cellsalign : 'right',
+                { text: 'Subtotal', datafield: 'penagihandet_subtotal', displayfield: 'penagihandet_subtotal', editable : false, cellsalign : 'right', cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
@@ -237,7 +237,7 @@
                         return renderstring;
                     }
                 },
-                { text: 'Potongan', datafield: 'penagihandet_potongan', displayfield: 'penagihandet_potongan', editable : false, cellsalign : 'right',
+                { text: 'Potongan', datafield: 'penagihandet_potongan', displayfield: 'penagihandet_potongan', editable : false, cellsalign : 'right', cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
@@ -251,7 +251,7 @@
                         return renderstring;
                     }
                 },
-                { text: 'Total', datafield: 'penagihandet_total', displayfield: 'penagihandet_total', editable : false, cellsalign : 'right',
+                { text: 'Total', datafield: 'penagihandet_total', displayfield: 'penagihandet_total', editable : false, cellsalign : 'right', cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";

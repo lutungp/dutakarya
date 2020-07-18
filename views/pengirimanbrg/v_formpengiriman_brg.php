@@ -299,14 +299,14 @@
                         }
                     },
                     { text: 'PPN', datafield: 'pengirimandet_ppn', cellsalign: 'right', editable : false, width : 100 },
-                    { text: 'Subtotal', datafield: 'pengirimandet_subtotal', cellsalign: 'right', editable : false },
-                    { text: 'Potongan', datafield: 'pengirimandet_potongan', cellsalign: 'right', columntype: 'numberinput', rendered: tooltiprenderer,
+                    { text: 'Subtotal', datafield: 'pengirimandet_subtotal', cellsalign: 'right', editable : false, cellsformat: 'F',},
+                    { text: 'Potongan', datafield: 'pengirimandet_potongan', cellsalign: 'right', columntype: 'numberinput', rendered: tooltiprenderer, cellsformat: 'F',
                         createeditor: function (row, value, editor) {
                             editor.jqxNumberInput({ decimalDigits: 0 });
                             editor.on('keyup', function (event) {
                                 var recorddata = $('#pengirimanGrid').jqxGrid('getrenderedrowdata', row);
                                 var val = event.target.value||0;
-                                if (event.keyCode == '120') {
+                                if (event.keyCode == 120) {
                                     /* jika tekan tombol F9 */
                                     if (parseFloat(val)<=100) {
                                         editor.val(val/100*parseFloat(recorddata.pengirimandet_subtotal))
@@ -319,7 +319,7 @@
                             });
                         } 
                     },
-                    { text: 'Subtotal', datafield: 'pengirimandet_total', cellsalign: 'right', editable : false },
+                    { text: 'Subtotal', datafield: 'pengirimandet_total', cellsalign: 'right', editable : false, cellsformat: 'F' },
                 ]
             });
 
