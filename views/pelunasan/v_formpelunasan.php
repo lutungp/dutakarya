@@ -287,7 +287,7 @@
                 success : function (res) {
                     res = JSON.parse(res);
                     if (res['code'] == 200) {
-                        // window.open('<?php // echo BASE_URL;?>/controllers/C_pelunasan.php?action=exportpdf&id=' + res['id']);
+                        window.open('<?php echo BASE_URL;?>/controllers/C_pelunasan.php?action=exportpdf&id=' + res['id']);
                         resetForm();
                         swal("Info!", "Pelunasan Berhasil disimpan", "success");
                     } else {
@@ -355,6 +355,6 @@
     }
 
     function cetak() {
-
+        window.open('<?php echo BASE_URL;?>/controllers/C_pelunasan.php?action=exportpdf&id=' + $('#pelunasan_id').val());
     }
 </script>

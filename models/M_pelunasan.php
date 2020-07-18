@@ -27,7 +27,7 @@ class M_pelunasan
                     t_pelunasan
                     INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_pelunasan.m_rekanan_id
                     INNER JOIN m_user ON m_user.user_id = t_pelunasan.pelunasan_created_by 
-                WHERE t_pelunasan.pelunasan_aktif = 'Y' ";
+                WHERE t_pelunasan.pelunasan_aktif = 'Y' ORDER BY t_pelunasan.pelunasan_created_date DESC";
 
         $qpelunasan = $this->conn2->query($sql);
         $result = array();
@@ -93,7 +93,31 @@ class M_pelunasan
                     INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_pelunasan.m_rekanan_id
                     INNER JOIN m_user ON m_user.user_id = t_pelunasan.pelunasan_created_by 
                 WHERE t_pelunasan.pelunasan_id = $pelunasan_id ";
+        
+        $qpelunasan = $this->conn2->query($sql);
+        $rpelunasan = $qpelunasan->fetch_object();
 
+        return $rpelunasan;
+    }
+
+    public function getDataPelunasan2($pelunasan_id)
+    {
+        $sql = "SELECT
+                    t_pelunasan.pelunasan_id,
+                    t_pelunasan.pelunasan_no,
+                    t_pelunasan.pelunasan_tgl,
+                    t_pelunasan.m_rekanan_id,
+                    m_rekanan.rekanan_kode,
+                    m_rekanan.rekanan_nama,
+                    m_rekanan.rekanan_alamat,
+                    t_pelunasan.pelunasan_created_date,
+                    m_user.user_nama 
+                FROM
+                    t_pelunasan
+                    INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_pelunasan.m_rekanan_id
+                    INNER JOIN m_user ON m_user.user_id = t_pelunasan.pelunasan_created_by 
+                WHERE t_pelunasan.pelunasan_id = $pelunasan_id ";
+        
         $qpelunasan = $this->conn2->query($sql);
         $rpelunasan = $qpelunasan->fetch_object();
 
@@ -113,7 +137,7 @@ class M_pelunasan
                     t_penagihan.m_rekanan_id
                 FROM t_pelunasan_detail
                 INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_pelunasan_detail.t_penagihan_id
-                WHERE t_pelunasan_detail.pelunasandet_aktif = 'Y'";
+                WHERE t_pelunasan_detail.pelunasandet_aktif = 'Y' AND t_pelunasan_detail.t_pelunasan_id = $pelunasan_id ";
         
         $qpelunasan = $this->conn2->query($sql);
         $result = array();

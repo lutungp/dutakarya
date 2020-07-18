@@ -195,6 +195,139 @@ class C_pelunasan
         echo json_encode($result);
     }
     
+    public function exportpdf($data)
+    {
+        require_once "../vendor/autoload.php";
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [220, 148.5]]);
+        $pelunasan_id = $data['id'];
+        $datapelunasan = $this->model->getDataPelunasan2($pelunasan_id);
+        $datapelunasandetail = $this->model->getDataPelunasanDetail($pelunasan_id);
+
+        $content = '<html>';
+        $content .= '<header>';
+        $content .= '<title>DUTA KARYA';
+        $content .= '</title>';
+        $content .= '<style>';
+        $content .= 'html, body {font-size: 12px; font-family : Helvetica;} 
+                    .pengiriman {
+                        margin-top : 10px; 
+                        border : 1px solid;
+                        width: 100%;
+                        cellspacing : 0;
+                        cellpadding : 0;
+                        font-family:Helvetica,serif;
+                        font-size:12px;
+                        color:rgb(0,0,0);
+                        font-weight:normal;
+                        font-style:normal;
+                        text-decoration: none;
+                        border-collapse: collapse;
+                    }
+                    .assign {
+                        width : 100%;
+                    }
+                    ';
+        $content .= '</style>';
+        $content .= '</header>';
+        $content .= '<body>';
+        $content .= '<table width="100%">';
+        $content .= '<tr>';
+        $content .= '<td style="width: 30%;font-size:13px;">PT. DUTAKARYA YASHA<br>JL. DEWI SARTIKA 312 CAWANG JAKARTA TIMUR 13650<br>TELP. (021) 22801922&nbsp;&nbsp;&nbsp;&nbsp;<br>CS&nbsp;:&nbsp;08111189888<br>NPWP&nbsp;:&nbsp;0 3 0 2 2 4 3 8 5 9 0 0 8 0 0</td>';
+        $content .= '<td style="vertical-align:top;text-align:center;width: 40%;font-size:13px;">KUITANSI PEMBAYARAN</td>';
+        $content .= '<td style="vertical-align:top;text-align:left;width: 10%;">';
+        $content .= 'Nomor';
+        $content .= '<br>Tanggal';
+        $content .= '<br>Halaman';
+        $content .= '</td>';
+        $content .= '<td style="vertical-align:top;text-align:left;width: 2%;">';
+        $content .= ':';
+        $content .= '<br>:';
+        $content .= '<br>:';
+        $content .= '</td>';
+        $content .= '<td style="vertical-align:top;text-align:right;width: 18%;">';
+        $content .= $datapelunasan->pelunasan_no;
+        $content .= '<br>' . date('d-m-Y', strtotime($datapelunasan->pelunasan_tgl));
+        $content .= '<br>1';
+        $content .= '</td>';
+        $content .= '</tr>';
+        $content .= '</table>';
+        $content .= '<hr>';
+        $content .= '<div style="padding-left:50px;padding-right:50px;">';
+        $content .= '<table width="50%">';
+        $content .= '<tr>';
+        $content .= '<td style="vertical-align:top;">';
+        $content .= 'NO. PELANGGAN<br>';
+        $content .= 'NAMA. PELANGGAN<br>';
+        $content .= 'ALAMAT<br>';
+        $content .= '</td>';
+        $content .= '<td style="vertical-align:top;">';
+        $content .= ': ' . $datapelunasan->rekanan_kode . '<br>';
+        $content .= ': ' . $datapelunasan->rekanan_nama . '<br>';
+        $rekanan_alamat = str_replace('\n', '<br />', $datapelunasan->rekanan_alamat);
+        $content .= ': ' . $rekanan_alamat . '<br>';
+        $content .= '</td>';
+        $content .= '</tr>';
+        $content .= '</table>';
+        $content .= '</div>';
+        $content .= '<table class="pengiriman">';
+        $content .= '<tr>';
+        $content .= '<td style="text-align:center; border:1px solid; padding: 5px;;">TANGGAL</td>';
+        $content .= '<td style="text-align:center; border:1px solid; padding: 5px;;">NO. PENAGIHAN</td>';
+        $content .= '<td style="text-align:center; border:1px solid; padding: 5px;;">DIBAYAR</td>';
+        $content .= '</tr>';
+        $total = 0;
+        $ppn = 0;
+        foreach ($datapelunasandetail as $key => $val) {
+            $content .= '<tr>';
+            $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 15%;">'.date('d-m-Y', strtotime($val['penagihan_tgl'])).'</td>';
+            $content .= '<td style="text-align:left; border-left:1px solid; border-right:1px solid; padding: 5px;">'.$val['penagihan_no'].'</td>';
+            $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 30%;">'.number_format($val['pelunasandet_bayar']).'</td>';
+            $content .= '</tr>';
+            $total = $total + $val['pelunasandet_bayar'];
+        }
+        $content .= '<tr>';
+        $tanggalindo = tgl_indo($datapelunasan->pelunasan_tgl);
+        $terbilang = terbilang($total);
+        $content .= '<td style="text-align:right; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 10px;" colspan="2">
+                        Total :
+                     </td>';
+        $content .= '<td style="text-align:right; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 10px;">'.number_format($total).'</td>';
+        $content .= '</tr>';
+        $content .= '<tr>';
+        $content .= '<td style="text-align:left; border-top:1px solid; border-left:1px solid; border-right:1px solid; padding: 10px;" colspan="3">
+                        Telah Terbayar :
+                        <br>
+                        <br>
+                        <p><font style="font-size: 14px;"><b>'.ucfirst($terbilang).'</b></font></p>
+                     </td>';
+        $content .= '</tr>';
+
+        
+        // $content .= '<tr>
+        //                 <td style="border-top:1px solid;border-right:1px solid;padding: 10px;" colspan="6">
+        //                 <p>TERBILANG : </p>
+        //                 <br>
+        //                 <p><font style="font-size: 14px;"><b>'.ucfirst($terbilang).'</b></font></p>
+        //                 </td>
+        //             </tr>';
+        $content .= '</table>';
+        
+        // $content .= '<div style="padding-left: 10px;padding-right: 10px; padding-top: 50px">';
+        // $content .= '<table class="pengiriman">';
+        // $content .= '<tr>';
+        // $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px;" colspan="3">
+        //                 Catatan :
+        //             </td>';
+        // $content .= '</tr>';
+        // $content .= '</table>';
+        $content .= '</div>';
+
+        $content .= '</body>';
+        $content .= '</html>';
+        $mpdf->AddPage("P","","","","","5","5","5","5","","","","","","","","","","","");
+        $mpdf->WriteHTML($content);
+        $mpdf->Output();
+    }
 }
 
 $pelunasan = new C_pelunasan($conn, $conn2, $config);
@@ -215,6 +348,9 @@ switch ($action) {
         break;
     case 'batal':
         $pelunasan->batal($_POST);
+        break;
+    case 'exportpdf':
+        $pelunasan->exportpdf($_GET);
         break;
     default:
         templateAdmin($conn2, '../views/pelunasan/v_pelunasan.php', NULL, 'KEUANGAN', 'PELUNASAN');
