@@ -69,6 +69,7 @@
         $("#grid").jqxGrid({
             width: '100%',
             source: gridAdapter,
+            altrows: true,
             showtoolbar: true,
             rendertoolbar: function (toolbar) {
                 var me = this;
@@ -78,6 +79,7 @@
                 container.append('<div id="rekananfilter" style="margin: 2px;"></div>');
                 container.append('<div id="barangfilter" style="margin: 2px;"></div>');
                 container.append('<div style="margin: 2px;"><input type="button" id="applyfilter" value="FILTER" /></div>');
+                container.append('<div style="margin: 2px;"><input type="button" value="EXCEL" id="excelExport" /></div>');
                 $("#datefilter").jqxDateTimeInput({ width: '200px', height: '30px', formatString: 'dd-MM-yyyy',  selectionMode: 'range'});
                 $('#datefilter').on('change', function (event) {  
                     var jsDate = event.args.date; 
@@ -113,10 +115,15 @@
                     var rekanan = $("#rekananfilter").jqxDropDownList('getCheckedItems');
                     var barang = $("#barangfilter").jqxDropDownList('getCheckedItems');
                     applyfilter(tanggal, rekanan, barang);
-                })
+                });
+
+                $("#excelExport").jqxButton({ width: 120, height: 30 });
+                $("#excelExport").click(function () {
+                    $("#grid").jqxGrid('exportdata', 'xlsx', 'jqxGrid');           
+                });
             },
             columns: [
-                { text: 'No. Transaksi', datafield: 'penerimaan_no', columntype: 'textbox', width : 170, cellsalign : 'center' },
+                { text: 'No. Penerimaan', datafield: 'penerimaan_no', columntype: 'textbox', width : 170, cellsalign : 'center' },
                 { text: 'Tanggal', datafield: 'penerimaan_tgl',  cellsalign: 'center',  cellsformat: 'dd-MM-yyyy', width : 170 },
                 { text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left' },
                 { text: 'Nama Barang', datafield: 'barang_nama',  cellsalign: 'left' },
