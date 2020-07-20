@@ -43,6 +43,10 @@ switch ($action) {
         $tanggal = isset($_GET['tanggal']);
         $infotagihan->getPenagihan($tanggal, $_POST);
         break;
+    case 'getpengiriman':
+        $tanggal = isset($_GET['tanggal']);
+        $infotagihan->getPengiriman($tanggal, $_POST);
+        break;
     default:
         templateAdmin($conn2, '../views/info/v_infotagihan.php', NULL, "INFO", "INFO PENAGIHAN");
         break;
