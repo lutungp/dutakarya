@@ -379,8 +379,8 @@ class C_pengiriman_brg
         $tanggalreal = $tanggal;
         $tanggal = strtotime(date('Y-m-d', strtotime($tanggal)));
         $firstOfMonth = strtotime(date('Y-m-01', $tanggal));
-        $week = intval(date("W", $tanggal)) - intval(date("W", $firstOfMonth));
         $day = date('N', $tanggal);
+        $week = $week = getWeeks($tanggalreal, $day);
         $month = intval(date('m', $tanggal));
         $year = intval(date('Y', $tanggal));
         $data = $this->model->getJadwal($day, $week, $month, $year, $tanggalreal);

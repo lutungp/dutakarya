@@ -395,6 +395,7 @@
             });
             var qty = record.jadwal_qty - record.sudahkirim;
             qty = qty <= 0 ? record.jadwal_qty : qty;
+            var ppn = record.hargakontrakdet_ppn == 'Y' ? (record.hargakontrak * 10/100) : 0;
             var datarow = {
                 pengirimandet_id : 0,
                 t_pengiriman_id : 0,
@@ -403,7 +404,7 @@
                 m_barangsatuan_id : record.m_satuan_id,
                 hargakontrak : record.hargakontrak,
                 hargakontrakdet_ppn : record.hargakontrakdet_ppn,
-                pengirimandet_ppn : record.hargakontrak * record.hargakontrakdet_ppn / 100,
+                pengirimandet_ppn : ppn,
                 pengirimandet_harga : record.hargakontrak,
                 m_satuan_id : record.satuan_nama,
                 satkonv_nilai : 1,
