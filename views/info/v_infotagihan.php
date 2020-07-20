@@ -204,7 +204,7 @@
                 container.append('<div id="tagih2" style="margin: 2px;"></div>');
                 container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER" /></div>');
                 // container.append('<div style="margin: 2px;"><input type="button" value="EXCEL" id="excelExport" /></div>');
-                $("#datefilter2").jqxDateTimeInput({ width: '200px', height: '28px', formatString: 'dd-MM-yyyy',  selectionMode: 'range'});
+                $("#datefilter2").jqxDateTimeInput({ width: '150px', height: '28px', formatString: 'dd-MM-yyyy',  selectionMode: 'range'});
                 $('#datefilter2').on('change', function (event) {  
                     var jsDate = event.args.date; 
                     var type = event.args.type; // keyboard, mouse or null depending on how the date was selected.
@@ -221,7 +221,7 @@
                     async: false
                 };
                 var rekananAdapter2 = new $.jqx.dataAdapter(rekananSource2);
-                $("#rekananfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: rekananAdapter2, checkboxes: true, displayMember: "rekanan_nama", valueMember: "rekanan_id", width: 200, height: 28,});
+                $("#rekananfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: rekananAdapter2, checkboxes: true, displayMember: "rekanan_nama", valueMember: "rekanan_id", width: 150, height: 28,});
                 var barangSource2 = {
                     datatype: "json",
                     datafields: [
@@ -231,10 +231,10 @@
                     url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getbarang",
                 };
                 var barangAdapter = new $.jqx.dataAdapter(barangSource2);
-                $("#barangfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 200, height: 28,});
+                $("#barangfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 150, height: 28,});
                 $("#tagih2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: tagih, displayMember: "penagihan_text", valueMember: "penagihan", width: 150, height: 28,});
 
-                $("#applyfilter2").jqxButton({ template: "primary", width: 120, height: 28 });
+                $("#applyfilter2").jqxButton({ template: "primary", width: 100, height: 28 });
                 $("#applyfilter2").on('click', function() {
                     var tanggal = $("#datefilter2").val();
                     var rekanan = $("#rekananfilter2").jqxDropDownList('getCheckedItems');
