@@ -9,7 +9,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 1,
-            hari : 1,
+            hari : 2,
             hari_nama : 'Senin',
             minggu1 : '',
             minggu2 : '',
@@ -20,7 +20,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 2,
-            hari : 2,
+            hari : 3,
             hari_nama : 'Selasa',
             minggu1 : '',
             minggu2 : '',
@@ -31,7 +31,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 3,
-            hari : 3,
+            hari : 4,
             hari_nama : 'Rabu',
             minggu1 : '',
             minggu2 : '',
@@ -42,7 +42,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 4,
-            hari : 4,
+            hari : 5,
             hari_nama : 'Kamis',
             minggu1 : '',
             minggu2 : '',
@@ -53,7 +53,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 5,
-            hari : 5,
+            hari : 6,
             hari_nama : 'Jumat',
             minggu1 : '',
             minggu2 : '',
@@ -64,7 +64,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 6,
-            hari : 6,
+            hari : 7,
             hari_nama : 'Sabtu',
             minggu1 : '',
             minggu2 : '',
@@ -75,7 +75,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 7,
-            hari : 7,
+            hari : 1,
             hari_nama : 'Minggu',
             minggu1 : '',
             minggu2 : '',
@@ -301,25 +301,25 @@
             var datajadwal = [];
             var hari = [
                 {
-                    hari : 1,
+                    hari : 2,
                     hari_nama : 'Senin'
                 }, {
-                    hari : 2,
+                    hari : 3,
                     hari_nama : 'Selasa'
                 }, {
-                    hari : 3,
+                    hari : 4,
                     hari_nama : 'Rabu'
                 }, {
-                    hari : 4,
+                    hari : 5,
                     hari_nama : 'Kamis'
                 }, {
-                    hari : 5,
+                    hari : 6,
                     hari_nama : 'Jumat'
                 }, {
-                    hari : 6,
+                    hari : 7,
                     hari_nama : 'Sabtu'
                 }, {
-                    hari : 7,
+                    hari : 1,
                     hari_nama : 'Minggu'
                 },
             ]

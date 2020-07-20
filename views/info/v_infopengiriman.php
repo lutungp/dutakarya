@@ -229,13 +229,13 @@
             { 'bulan_id' : 12, 'bulan_nama' : 'Desember'},
         ];
         var hari = [
-            { 'hari_id' : 1, 'hari_nama' : 'Senin'},
-            { 'hari_id' : 2, 'hari_nama' : 'Selasa'},
-            { 'hari_id' : 3, 'hari_nama' : 'Rabu'},
-            { 'hari_id' : 4, 'hari_nama' : 'Kamis'},
-            { 'hari_id' : 5, 'hari_nama' : 'Jumat'},
-            { 'hari_id' : 6, 'hari_nama' : 'Sabtu'},
-            { 'hari_id' : 7, 'hari_nama' : 'Minggu'},
+            { 'hari_id' : 2, 'hari_nama' : 'Senin'},
+            { 'hari_id' : 3, 'hari_nama' : 'Selasa'},
+            { 'hari_id' : 4, 'hari_nama' : 'Rabu'},
+            { 'hari_id' : 5, 'hari_nama' : 'Kamis'},
+            { 'hari_id' : 6, 'hari_nama' : 'Jumat'},
+            { 'hari_id' : 7, 'hari_nama' : 'Sabtu'},
+            { 'hari_id' : 8, 'hari_nama' : 'Minggu'},
         ];
         var tahun = ['2020', '2021', '2022', '2023', '2024', '2025', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035', '2036', '2037', '2038', '2039', '2040'];
         var gridAdapter2 = new $.jqx.dataAdapter(gridSource2);
