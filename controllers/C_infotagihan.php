@@ -30,6 +30,22 @@ class C_infotagihan
         $data = $this->model->getPenagihan($tanggal, $rekananArr);
         echo json_encode($data);
     }
+
+    public function getPengiriman($tanggal, $data)
+    {
+        $rekananArr = isset($data['rekananArr']) ? implode(',', $data['rekananArr']) : '';
+        $barangArr = isset($data['barangArr']) ? implode(',', $data['barangArr']) : '';
+        $tanggal = $tanggal <> '' ? $tanggal : explode(' - ', $data['tanggal']);
+        $tagih = isset($data['tagih']) ? $data['tagih'] : '';
+        $data = $this->model->getPengiriman($tanggal, $rekananArr, $barangArr, $tagih);
+        echo json_encode($data);
+    }
+
+    public function getBarang()
+    {
+        $data = $this->model->getBarang();
+        echo json_encode($data);
+    }
 }
 
 $infotagihan = new C_infotagihan($conn, $conn2, $config);
@@ -46,6 +62,9 @@ switch ($action) {
     case 'getpengiriman':
         $tanggal = isset($_GET['tanggal']);
         $infotagihan->getPengiriman($tanggal, $_POST);
+        break;
+    case 'getbarang':
+        $infotagihan->getBarang();
         break;
     default:
         templateAdmin($conn2, '../views/info/v_infotagihan.php', NULL, "INFO", "INFO PENAGIHAN");
