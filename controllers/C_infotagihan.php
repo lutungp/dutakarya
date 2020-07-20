@@ -16,13 +16,34 @@ class C_infotagihan
         $this->conn2 = $conn2;
         $this->model = new M_infotagihan($conn, $conn2, $config);
     }
+
+    public function getRekanan()
+    {
+        $data = $this->model->getRekanan();
+        echo json_encode($data);
+    }
+
+    public function getPenagihan($tanggal, $data)
+    {
+        $rekananArr = isset($data['rekananArr']) ? implode(',', $data['rekananArr']) : '';
+        $tanggal = $tanggal <> '' ? $tanggal : explode(' - ', $data['tanggal']);
+        $data = $this->model->getPenagihan($tanggal, $rekananArr);
+        echo json_encode($data);
+    }
 }
 
 $infotagihan = new C_infotagihan($conn, $conn2, $config);
 $data = $_GET;
 $action = isset($data["action"]) ? $data["action"] : "";
 switch ($action) {
+    case 'getrekanan':
+        $infotagihan->getRekanan();
+        break;
+    case 'getpenagihan':
+        $tanggal = isset($_GET['tanggal']);
+        $infotagihan->getPenagihan($tanggal, $_POST);
+        break;
     default:
-        templateAdmin($conn2, '../views/info/v_infotagihan.php', NULL, "INFO", "INFO TAGIHAN");
+        templateAdmin($conn2, '../views/info/v_infotagihan.php', NULL, "INFO", "INFO PENAGIHAN");
         break;
 }
