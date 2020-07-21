@@ -33,7 +33,7 @@ class C_barang
         } else {
             echo "202";
         }
-        $this->simpanSatKonv($barang_id);
+        $this->simpanSatKonv($barang_id, $satkonv);
     }
 
     public function updateBarang($data, $satkonv)
