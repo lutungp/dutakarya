@@ -204,7 +204,7 @@
                 container.append('<div id="tagih2" style="margin: 2px;"></div>');
                 container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER" /></div>');
                 // container.append('<div style="margin: 2px;"><input type="button" value="EXCEL" id="excelExport" /></div>');
-                $("#datefilter2").jqxDateTimeInput({ width: '120px', height: '28px', formatString: 'dd-MM-yyyy',  selectionMode: 'range'});
+                $("#datefilter2").jqxDateTimeInput({ width: '180px', height: '28px', formatString: 'dd-MM-yyyy',  selectionMode: 'range'});
                 $('#datefilter2').on('change', function (event) {  
                     var jsDate = event.args.date; 
                     var type = event.args.type; // keyboard, mouse or null depending on how the date was selected.
