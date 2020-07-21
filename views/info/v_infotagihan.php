@@ -112,7 +112,7 @@
                 { text: 'Tanggal', datafield: 'penagihan_tgl',  cellsalign: 'center',  cellsformat: 'dd-MM-yyyy', width : 110 },
                 { text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left' },
                 { text: 'Subtotal', datafield: 'penagihandet_subtotal',  cellsalign: 'right', cellsformat : 'F', width : 100 },
-                { text: 'Subtotal', datafield: 'penagihandet_potongan',  cellsalign: 'right', cellsformat : 'F', width : 100 },
+                { text: 'Potongan', datafield: 'penagihandet_potongan',  cellsalign: 'right', cellsformat : 'F', width : 100 },
                 { text: 'Total', datafield: 'penagihandet_total',  cellsalign: 'right', cellsformat : 'F', width : 100 },
                 { text: 'Dibayar', datafield: 't_pelunasandet_bayar',  cellsalign: 'right', cellsformat : 'F', width : 100 },
             ]
