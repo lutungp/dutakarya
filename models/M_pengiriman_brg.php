@@ -333,7 +333,8 @@ class M_pengiriman_brg
                     WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y' AND t_pengiriman.pengiriman_tgl = '$tanggal'
                     GROUP BY t_pengiriman.m_rekanan_id, t_pengiriman_detail.m_barang_id, m_satuan_konversi.satkonv_nilai
                 ) AS kirim ON kirim.m_barang_id = m_barang.barang_id AND kirim.m_rekanan_id = t_jadwal.m_rekanan_id
-                WHERE hari = $day AND bulan = $month AND tahun = $year";
+                WHERE hari = $day AND bulan = $month AND tahun = $year
+                ORDER BY t_jadwal.rit ASC, m_rekanan.rekanan_nama ASC ";
         
         $qkirim = $this->conn2->query($sql);
         $rkirim = array();

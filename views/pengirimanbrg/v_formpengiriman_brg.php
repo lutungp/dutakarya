@@ -382,6 +382,7 @@
                 { text: 'Hari', datafield: 'hari', cellsalign: 'left', width : 50 },
                 { text: 'Rekanan', datafield: 'rekanan_nama', cellsalign: 'left', width : 120 },
                 { text: 'Minggu', datafield: 'minggu', cellsalign: 'center' , width : 50},
+                { text: 'Rit', datafield: 'rit', cellsalign: 'center', width : 120 },
                 { text: 'Nama Barang', datafield: 'barang_nama', cellsalign: 'left' },
                 { text: 'Jml', datafield: 'jadwal_qty', cellsalign: 'right' , width : 80},
                 { text: 'Sudah Kirim', datafield: 'sudahkirim', cellsalign: 'right', width : 80 },
@@ -496,8 +497,8 @@
                 </form>
             </div>
         </div>
-        <div class="modal fade" id="ModalJadwal" tabindex="-1" role="dialog" aria-labelledby="ModalJadwalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade bd-example-modal-lg" id="ModalJadwal" tabindex="-1" role="dialog" aria-labelledby="ModalJadwalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="card-body">
