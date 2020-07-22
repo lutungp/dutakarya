@@ -315,25 +315,25 @@
             var datajadwal = [];
             var hari = [
                 {
-                    hari : 2,
+                    hari : 1,
                     hari_nama : 'Senin'
                 }, {
-                    hari : 3,
+                    hari : 2,
                     hari_nama : 'Selasa'
                 }, {
-                    hari : 4,
+                    hari : 3,
                     hari_nama : 'Rabu'
                 }, {
-                    hari : 5,
+                    hari : 4,
                     hari_nama : 'Kamis'
                 }, {
-                    hari : 6,
+                    hari : 5,
                     hari_nama : 'Jumat'
                 }, {
-                    hari : 7,
+                    hari : 6,
                     hari_nama : 'Sabtu'
                 }, {
-                    hari : 1,
+                    hari : 7,
                     hari_nama : 'Minggu'
                 },
             ]

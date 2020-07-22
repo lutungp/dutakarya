@@ -44,8 +44,31 @@ class M_jadwalkirim
                 'minggu5' => $val['minggu5']
             );
         }
+        if (count($rkirim) < 7 && count($rkirim) > 1) {
+            $hariexist = array();
+            foreach ($rkirim as $key => $value) {
+                array_push($hariexist, $value['hari']);
+            }
 
-        return $rkirim;
+            for ($i=1; $i < 8; $i++) { 
+                if (!in_array($i, $hariexist)) {
+                    $rkirim[] = array(
+                        'jadwal_id' => 0,
+                        'm_rekanan_id' => $m_rekanan_id,
+                        'hari' => $i,
+                        'bulan' => $bulan,
+                        'tahun' => $tahun,
+                        'minggu1' => 0,
+                        'minggu2' => 0,
+                        'minggu3' => 0,
+                        'minggu4' => 0,
+                        'minggu5' => 0
+                    );
+                }
+            }
+        }
+        usort($rkirim, fn($a, $b) => strcmp($a['hari'], $b['hari']));
+        return  $rkirim;
     }
 
     public function getBarang($search)
