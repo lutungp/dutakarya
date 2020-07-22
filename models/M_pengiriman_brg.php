@@ -49,7 +49,7 @@ class M_pengiriman_brg
         $sql = "SELECT
                 m_rekanan.rekanan_id AS id,
                 m_rekanan.rekanan_kode,
-                m_rekanan.rekanan_nama AS text
+                CONCAT('[', m_rekanan.rekanan_kode, '] ', m_rekanan.rekanan_nama) AS text
             FROM m_rekanan WHERE rekanan_aktif = 'Y'";
         if ($search <> '') {
             $sql .= " AND m_rekanan.rekanan_nama LIKE '%".$search."%' ";
@@ -157,6 +157,7 @@ class M_pengiriman_brg
                     pengiriman_no,
                     pengiriman_tgl,
                     m_rekanan_id,
+                    rit,
                     m_rekanan.rekanan_kode,
                     m_rekanan.rekanan_nama,
                     m_rekanan.rekanan_alamat,
@@ -174,6 +175,7 @@ class M_pengiriman_brg
         $rpengiriman->pengiriman_no = $row->pengiriman_no;
         $rpengiriman->pengiriman_tgl = $row->pengiriman_tgl;
         $rpengiriman->m_rekanan_id = $row->m_rekanan_id;
+        $rpengiriman->rit = $row->rit;
         $rpengiriman->rekanan_kode = $row->rekanan_kode;
         $rpengiriman->rekanan_nama = $row->rekanan_nama;
         $rpengiriman->rekanan_alamat = str_replace("<br />", "\\n", $row->rekanan_alamat);
@@ -295,6 +297,7 @@ class M_pengiriman_brg
                     t_jadwal.hari,
                     t_jadwal.bulan,
                     t_jadwal.tahun,
+                    t_jadwal.rit,
                     t_jadwal.minggu1,
                     t_jadwal.minggu2,
                     t_jadwal.minggu3,
@@ -331,7 +334,7 @@ class M_pengiriman_brg
                     GROUP BY t_pengiriman.m_rekanan_id, t_pengiriman_detail.m_barang_id, m_satuan_konversi.satkonv_nilai
                 ) AS kirim ON kirim.m_barang_id = m_barang.barang_id AND kirim.m_rekanan_id = t_jadwal.m_rekanan_id
                 WHERE hari = $day AND bulan = $month AND tahun = $year";
-                
+        
         $qkirim = $this->conn2->query($sql);
         $rkirim = array();
         $hari = ['', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
@@ -366,6 +369,7 @@ class M_pengiriman_brg
                     'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'],
                     'minggu' => $week,
                     'hari' => $hari[$day],
+                    'rit' => $val['rit'],
                     'jadwal_qty' => $qty,
                     'sudahkirim' => $val['sudahkirim']
                 );

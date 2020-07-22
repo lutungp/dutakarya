@@ -346,6 +346,7 @@
             localdata:  datajadwaldet,
             datafields: [
                 { name: 'jadwal_id', type: 'int'},
+                { name: 'rit', type: 'int'},
                 { name: 'm_rekanan_id', type: 'int'},
                 { name: 'rekanan_nama', type: 'string'},
                 { name: 'm_barang_id', type: 'int'},
@@ -393,6 +394,7 @@
             $("#m_rekanan_id").data('select2').trigger('select', {
                 data: {"id":record.m_rekanan_id, "text": record.rekanan_nama }
             });
+            $('#rit').val(record.rit);
             var qty = record.jadwal_qty - record.sudahkirim;
             qty = qty <= 0 ? record.jadwal_qty : qty;
             var ppn = record.hargakontrakdet_ppn == 'Y' ? (record.hargakontrak * 10/100) : 0;
@@ -437,6 +439,7 @@
                                 <div class="form-group">
                                     <label for="pengiriman_no">No. Pengiriman</label>
                                     <input type="hidden" id="pengiriman_id" name="pengiriman_id">
+                                    <input type="hidden" id="rit" name="rit">
                                     <input type="text" class="form-control" id="pengiriman_no" name="pengiriman_no" readonly>
                                 </div>
                                 <?php 
@@ -584,6 +587,7 @@
                 data: {
                     pengiriman_id : $('#pengiriman_id').val(),
                     pengiriman_no : $('#pengiriman_no').val(),
+                    rit : $('#rit').val(),
                     pengiriman_tgl : moment($('#pengiriman_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
                     m_rekanan_id : $('#m_rekanan_id').val(),
                     rows : rows,
@@ -609,6 +613,7 @@
             var dat = datapengiriman.datapengiriman;
             $('#pengiriman_id').val(dat.pengiriman_id);
             $('#pengiriman_no').val(dat.pengiriman_no);
+            $('#rit').val(dat.rit);
             $('#pengiriman_tgl').val(moment(dat.pengiriman_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY'));
             $("#m_rekanan_id").data('select2').trigger('select', {
                 data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
@@ -680,6 +685,7 @@
 
     function resetForm() {
         var now = new Date();
+        $('#rit').val(0);
         $('#pengiriman_id').val(0);
         $('#pengiriman_no').val('');
         $('#m_rekanan_id').val('');

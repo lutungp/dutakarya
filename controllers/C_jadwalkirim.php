@@ -88,8 +88,8 @@ class C_jadwalkirim
     {
         foreach ($data['rows'] as $key => $value) {
             if ($value['jadwal_id'] > 0) {
-                $fieldSave = ['hari', 'bulan', 'tahun', 'minggu1', 'minggu2', 'minggu3', 'minggu4', 'minggu5', 'jadwal_updated_by', 'jadwal_updated_date', 'jadwal_revised'];
-                $dataSave = [$value['hari'], $value['bulan'], $value['tahun'], $value['minggu1'], $value['minggu2'], $value['minggu3'], $value['minggu4'], $value['minggu5'], $_SESSION["USER_ID"], date('Y-m-d H:i:s'), 'jadwal_revised+1'];
+                $fieldSave = ['hari', 'bulan', 'tahun', 'rit', 'minggu1', 'minggu2', 'minggu3', 'minggu4', 'minggu5', 'jadwal_updated_by', 'jadwal_updated_date', 'jadwal_revised'];
+                $dataSave = [$value['hari'], $value['bulan'], $value['tahun'], $value['rit'], $value['minggu1'], $value['minggu2'], $value['minggu3'], $value['minggu4'], $value['minggu5'], $_SESSION["USER_ID"], date('Y-m-d H:i:s'), 'jadwal_revised+1'];
                 
                 $field = '';
                 foreach ($fieldSave as $key => $val) {
@@ -103,8 +103,8 @@ class C_jadwalkirim
                 $where = "WHERE jadwal_id = " . $value['jadwal_id'];
                 $action = query_update($this->conn2, 't_jadwal', $field, $where);
             } else {
-                $fieldSave = ['m_rekanan_id', 'm_barang_id', 'hari', 'bulan', 'tahun', 'minggu1', 'minggu2', 'minggu3', 'minggu4', 'minggu5', 'jadwal_created_by', 'jadwal_created_date'];
-                $dataSave = [$value['m_rekanan_id'], $value['m_barang_id'], $value['hari'], $value['bulan'], $value['tahun'], $value['minggu1'], $value['minggu2'], $value['minggu3'], $value['minggu4'], $value['minggu5'], $_SESSION["USER_ID"], date('Y-m-d H:i:s')];
+                $fieldSave = ['m_rekanan_id', 'm_barang_id', 'hari', 'bulan', 'tahun', 'rit', 'minggu1', 'minggu2', 'minggu3', 'minggu4', 'minggu5', 'jadwal_created_by', 'jadwal_created_date'];
+                $dataSave = [$value['m_rekanan_id'], $value['m_barang_id'], $value['hari'], $value['bulan'], $value['tahun'], $value['rit'], $value['minggu1'], $value['minggu2'], $value['minggu3'], $value['minggu4'], $value['minggu5'], $_SESSION["USER_ID"], date('Y-m-d H:i:s')];
                 $barang_id = query_create($this->conn2, 't_jadwal', $fieldSave, $dataSave);
             }
             
@@ -115,7 +115,7 @@ class C_jadwalkirim
 
     public function getJadwal($data)
     {
-        $result = $this->model->getJadwal($data['m_rekanan_id'], $data['bulan'], $data['tahun'], $data['m_barang_id']);
+        $result = $this->model->getJadwal($data['m_rekanan_id'], $data['bulan'], $data['tahun'], $data['m_barang_id'], $data['rit']);
         echo json_encode($result);
     }
 

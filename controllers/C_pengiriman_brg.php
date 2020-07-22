@@ -70,8 +70,8 @@ class C_pengiriman_brg
         $pengiriman_no = $data['pengiriman_no'];
 
         if ($pengiriman_id > 0) {
-            $fieldSave = ['pengiriman_tgl', 'm_rekanan_id', 'pengiriman_updated_by', 'pengiriman_updated_date', 'pengiriman_revised'];
-            $dataSave = [$pengiriman_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengiriman_revised+1'];
+            $fieldSave = ['pengiriman_tgl', 'm_rekanan_id', 'rit', 'pengiriman_updated_by', 'pengiriman_updated_date', 'pengiriman_revised'];
+            $dataSave = [$pengiriman_tgl, $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengiriman_revised+1'];
             $field = "";
             foreach ($fieldSave as $key => $value) {
                 $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -85,8 +85,8 @@ class C_pengiriman_brg
             query_update($this->conn2, 't_pengiriman', $field, $where);
         } else {
             $pengiriman_no = getPenomoran($this->conn2, 'KM', 't_pengiriman', 'pengiriman_id', 'pengiriman_no', $pengiriman_tgl);
-            $fieldSave = ['pengiriman_no', 'pengiriman_tgl', 'm_rekanan_id', 'pengiriman_created_by', 'pengiriman_created_date'];
-            $dataSave = [$pengiriman_no, $pengiriman_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+            $fieldSave = ['pengiriman_no', 'pengiriman_tgl', 'm_rekanan_id', 'rit', 'pengiriman_created_by', 'pengiriman_created_date'];
+            $dataSave = [$pengiriman_no, $pengiriman_tgl, $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
             $pengiriman_id = query_create($this->conn2, 't_pengiriman', $fieldSave, $dataSave);
         }
         /* nonaktif detail terlebih dahulu */
@@ -380,7 +380,7 @@ class C_pengiriman_brg
         $tanggal = strtotime(date('Y-m-d', strtotime($tanggal)));
         $firstOfMonth = strtotime(date('Y-m-01', $tanggal));
         $day = date('N', $tanggal);
-        $week = $week = getWeeks($tanggalreal, $day);
+        $week = getWeeks($tanggalreal, $day) - 1;
         $month = intval(date('m', $tanggal));
         $year = intval(date('Y', $tanggal));
         $data = $this->model->getJadwal($day, $week, $month, $year, $tanggalreal);

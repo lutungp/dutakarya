@@ -9,7 +9,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 1,
-            hari : 2,
+            hari : 1,
             hari_nama : 'Senin',
             minggu1 : '',
             minggu2 : '',
@@ -20,7 +20,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 2,
-            hari : 3,
+            hari : 2,
             hari_nama : 'Selasa',
             minggu1 : '',
             minggu2 : '',
@@ -31,7 +31,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 3,
-            hari : 4,
+            hari : 3,
             hari_nama : 'Rabu',
             minggu1 : '',
             minggu2 : '',
@@ -42,7 +42,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 4,
-            hari : 5,
+            hari : 4,
             hari_nama : 'Kamis',
             minggu1 : '',
             minggu2 : '',
@@ -53,7 +53,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 5,
-            hari : 6,
+            hari : 5,
             hari_nama : 'Jumat',
             minggu1 : '',
             minggu2 : '',
@@ -64,7 +64,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 6,
-            hari : 7,
+            hari : 6,
             hari_nama : 'Sabtu',
             minggu1 : '',
             minggu2 : '',
@@ -75,7 +75,7 @@
             jadwal_id : 0,
             m_rekanan_id : 0,
             bulan : 7,
-            hari : 1,
+            hari : 7,
             hari_nama : 'Minggu',
             minggu1 : '',
             minggu2 : '',
@@ -161,13 +161,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="m_rekanan_id">Rekanan</label>
                                     <select id="m_rekanan_id" name="m_rekanan_id" style="width: 100%;" require></select>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="rit">Rit</label>
+                                    <select id="rit" name="rit" class="select2" style="width: 100%;" require>
+                                    <option value="1">Satu</option>
+                                    <option value="2">Dua</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="m_barang_id">Barang</label>
                                     <select id="m_barang_id" name="m_barang_id" style="width: 100%;" require></select>
@@ -236,6 +245,9 @@
         $('#m_rekanan_id').on('select2:select', function (e) {
             getJadwal();
         });
+        $('#rit').on('select2:select', function (e) {
+            getJadwal();
+        });
 
         $('#formjadwal').submit(function (event) {
             event.preventDefault();
@@ -249,6 +261,7 @@
                     m_rekanan_id : $('#m_rekanan_id').val(),
                     bulan : $('#bulan').val(),
                     tahun : $('#tahun').val(),
+                    rit : $('#rit').val(),
                     m_barang_id : $('#m_barang_id').val(),
                     hari : rec.hari,
                     hari_nama : rec.hari_nama,
@@ -294,6 +307,7 @@
             m_rekanan_id : $('#m_rekanan_id').val(),
             bulan : $('#bulan').val(),
             tahun : $('#tahun').val(),
+            rit : $('#rit').val(),
             m_barang_id : $('#m_barang_id').val(),
         }
         $.post("<?php echo BASE_URL ?>/controllers/C_jadwalkirim.php?action=getjadwal", data, function(result){
@@ -329,6 +343,7 @@
                     jadwal_id : element.jadwal_id,
                     m_rekanan_id : element.m_rekanan_id,
                     bulan : element.bulan,
+                    rit : element.rit,
                     hari : element.hari,
                     hari_nama : hariint[0].hari_nama,
                     minggu1 : element.minggu1,

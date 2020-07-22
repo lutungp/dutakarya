@@ -44,11 +44,15 @@ class C_infopengiriman
             echo json_encode([]);
             exit();
         }
-        $rekananArr = isset($data['rekananArr2']) ? implode(',', $data['rekananArr2']) : '';
+        if ($data['rit'] == 1) {
+            $rekananArr = isset($data['rekananArr2']) ? implode(',', $data['rekananArr2']) : '';
+        } else {
+            $rekananArr = isset($data['rekananArr3']) ? implode(',', $data['rekananArr3']) : '';
+        }
         $rekanan    = $this->model->getRekanan($rekananArr);
-        $rpengiriman = $this->model->getJadwalKirim($rekananArr, $data['barang_id'], $data['hari'], $data['bulan'], $data['tahun']);
-        $rjadwal = $this->model->getJadwal($rekananArr, $data['barang_id'], $data['hari'], $data['bulan'], $data['tahun']);
-
+        $rpengiriman = $this->model->getJadwalKirim($rekananArr, $data['barang_id'], $data['hari'], $data['bulan'], $data['tahun'], $data['rit']);
+        $rjadwal = $this->model->getJadwal($rekananArr, $data['barang_id'], $data['hari'], $data['bulan'], $data['tahun'], $data['rit']);
+        
         $data = array();
         foreach ($rekanan as $key => $value) {
             $rekanan_id = $value['rekanan_id'];

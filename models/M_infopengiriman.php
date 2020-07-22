@@ -106,8 +106,15 @@ class M_infopengiriman
         return $rekanan;
     }
 
-    public function getJadwalKirim($rekananArr, $barang_id, $hari, $bulan, $tahun)
+    public function getJadwalKirim($rekananArr, $barang_id, $hari, $bulan, $tahun, $rit)
     {
+        $day['1'] = 2;
+        $day['2'] = 3;
+        $day['3'] = 4;
+        $day['4'] = 5;
+        $day['5'] = 6;
+        $day['6'] = 7;
+        $day['7'] = 1;
         $sql = "SELECT 
                     t_pengiriman.pengiriman_id,
                     t_pengiriman.pengiriman_no,
@@ -127,12 +134,16 @@ class M_infopengiriman
                 WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y' 
                 AND t_pengiriman_detail.m_barang_id = $barang_id
                 AND MONTH(t_pengiriman.pengiriman_tgl) = $bulan AND YEAR(t_pengiriman.pengiriman_tgl) = $tahun
-                AND DAYOFWEEK(t_pengiriman.pengiriman_tgl) = $hari";
-                
+                AND DAYOFWEEK(t_pengiriman.pengiriman_tgl) = $day[$hari]";
+        
         if ($rekananArr <> '') {
             $sql .= " AND t_pengiriman.m_rekanan_id IN (".$rekananArr.")";
         }
-        
+
+        if ($rit > 0) {
+            $sql .= " AND t_pengiriman.rit = $rit ";
+        }
+
         $qpengiriman = $this->conn2->query($sql);
         $rpengiriman = array();
         if ($qpengiriman) {
@@ -142,7 +153,7 @@ class M_infopengiriman
                 $day = date('N', $tanggal);
                 $month = intval(date('m', $tanggal));
                 $year = intval(date('Y', $tanggal));
-                $week = getWeeks($val['pengiriman_tgl'], $day);
+                $week = getWeeks($val['pengiriman_tgl'], $day) - 1;
                 $rpengiriman[] = array(
                     'pengiriman_id' => $val['pengiriman_id'],
                     'pengiriman_no' => $val['pengiriman_no'],
@@ -164,7 +175,7 @@ class M_infopengiriman
         return $rpengiriman;
     }
 
-    public function getJadwal($rekananArr, $barang_id, $hari, $bulan, $tahun)
+    public function getJadwal($rekananArr, $barang_id, $hari, $bulan, $tahun, $rit)
     {
         $sql = "SELECT 
                     jadwal_id,
@@ -176,12 +187,15 @@ class M_infopengiriman
                     minggu2,
                     minggu3,
                     minggu4,
-                    minggu5
+                    minggu5,
                     m_barang_id
                 FROM t_jadwal 
                 WHERE t_jadwal.m_barang_id= $barang_id AND bulan = $bulan AND tahun = $tahun AND hari = $hari";
         if ($rekananArr <> '') {
             $sql .= " AND t_jadwal.m_rekanan_id IN (".$rekananArr.")";
+        }
+        if ($rit > 0) {
+            $sql .= " AND t_jadwal.rit = $rit";
         }
         $qjadwal = $this->conn2->query($sql);
         $rjadwal = array();
@@ -196,6 +210,7 @@ class M_infopengiriman
                 'minggu2' => $val['minggu2'],
                 'minggu3' => $val['minggu3'],
                 'minggu4' => $val['minggu4'],
+                'minggu5' => $val['minggu5'],
                 'm_barang_id' => $val['m_barang_id'],
             );
         }
