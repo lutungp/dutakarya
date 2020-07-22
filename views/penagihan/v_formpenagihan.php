@@ -55,10 +55,10 @@
                                 penagihandet_qty : element.pengirimandet_qty,
                                 penagihandet_qtyreal : element.pengirimandet_qtyreal,
                                 penagihandet_harga : element.pengirimandet_harga,
-                                penagihandet_subtotal : element.pengirimandet_subtotal,
+                                penagihandet_subtotal : element.pengirimandet_subtotal-(element.t_returdet_qty*element.pengirimandet_harga),
                                 penagihandet_ppn : element.pengirimandet_ppn,
                                 penagihandet_potongan : element.pengirimandet_potongan,
-                                penagihandet_total : element.pengirimandet_total,
+                                penagihandet_total : element.pengirimandet_total-(element.t_returdet_qty*element.pengirimandet_harga),
                                 t_returdet_qty : element.t_returdet_qty,
                             };
                             console.log(datarow)
