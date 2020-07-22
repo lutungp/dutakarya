@@ -256,7 +256,7 @@
                 container.append('<div id="tahunfilter2" style="margin: 2px;"></div>');
                 container.append('<div id="rekananfilter2" style="margin: 2px;"></div>');
                 container.append('<div id="barangfilter2" style="margin: 2px;"></div>');
-                container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER" /></div>');
+                container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER RIT 1" /></div>');
                 // container.append('<div style="margin: 2px;"><input type="button" value="EXCEL" id="excelExport2" /></div>');
                 // var bulanAdapter2 = new $.jqx.dataAdapter(bulanSource2);
                 $("#harifilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: hari, displayMember: "hari_nama", valueMember: "hari_id", width: 150, height: 28,});
@@ -456,7 +456,7 @@
                 container.append('<div id="tahunfilter3" style="margin: 2px;"></div>');
                 container.append('<div id="rekananfilter3" style="margin: 2px;"></div>');
                 container.append('<div id="barangfilter3" style="margin: 2px;"></div>');
-                container.append('<div style="margin: 2px;"><input type="button" id="applyfilter3" value="FILTER" /></div>');
+                container.append('<div style="margin: 2px;"><input type="button" id="applyfilter3" value="FILTER RIT 2" /></div>');
                 // container.append('<div style="margin: 2px;"><input type="button" value="EXCEL" id="excelExport2" /></div>');
                 // var bulanAdapter2 = new $.jqx.dataAdapter(bulanSource2);
                 $("#harifilter3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: hari, displayMember: "hari_nama", valueMember: "hari_id", width: 150, height: 28,});
