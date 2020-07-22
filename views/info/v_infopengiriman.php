@@ -108,7 +108,7 @@
                     url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getbarang",
                 };
                 var barangAdapter = new $.jqx.dataAdapter(barangSource);
-                $("#barangfilter").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 200, height: 28,});
+                $("#barangfilter").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 150, height: 28,});
 
                 $("#applyfilter").jqxButton({ template: "primary", width: 120, height: 28 });
                 $("#applyfilter").on('click', function() {
@@ -257,9 +257,9 @@
                 container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER" /></div>');
                 // container.append('<div style="margin: 2px;"><input type="button" value="EXCEL" id="excelExport2" /></div>');
                 // var bulanAdapter2 = new $.jqx.dataAdapter(bulanSource2);
-                $("#harifilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: hari, displayMember: "hari_nama", valueMember: "hari_id", width: 150, height: 28,});
-                $("#bulanfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: bulan, displayMember: "bulan_nama", valueMember: "bulan_id", width: 150, height: 28,});
-                $("#tahunfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: tahun, width: 200, height: 28,});
+                $("#harifilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: hari, displayMember: "hari_nama", valueMember: "hari_id", width: 100, height: 28,});
+                $("#bulanfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: bulan, displayMember: "bulan_nama", valueMember: "bulan_id", width: 100, height: 28,});
+                $("#tahunfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: tahun, width: 80, height: 28,});
                 var rekananSource2 = {
                     datatype: "json",
                     datafields: [
@@ -281,7 +281,7 @@
                     url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getbarang",
                 };
                 var barangAdapter2 = new $.jqx.dataAdapter(barangSource2);
-                $("#barangfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter2, displayMember: "barang_nama", valueMember: "barang_id", width: 200, height: 28,});
+                $("#barangfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter2, displayMember: "barang_nama", valueMember: "barang_id", width: 150, height: 28,});
 
                 $("#applyfilter2").jqxButton({ template: "primary", width: 120, height: 28 });
                 $("#applyfilter2").on('click', function() {

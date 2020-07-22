@@ -14,6 +14,7 @@
                 { name: 'hargakontrak_no', type: 'string' },
                 { name: 'hargakontrak_tgl', type: 'date' },
                 { name: 'hargakontrak_aktif', type: 'string' },
+                { name: 'rekanan_kode', type: 'string' },
                 { name: 'rekanan_nama', type: 'string' },
                 { name: 'user_nama', type: 'string' },
                 { name: 'hargakontrak_created_date', type: 'date' },
@@ -64,11 +65,12 @@
             },
             autoshowfiltericon: true,
             columns: [
-                { text: 'No. Kontrak', datafield: 'hargakontrak_no', cellsalign: 'center'},
-                { text: 'Berlaku Mulai', datafield: 'hargakontrak_tgl', cellsformat: 'dd-MM-yyyy', cellsalign: 'center'},
-                { text: 'Rekanan', datafield: 'rekanan_nama', cellsalign: 'left', width : 200},
-                { text: 'Dibuat Oleh', datafield: 'user_nama', cellsalign: 'left'},
-                { text: 'Dibuat Tgl', datafield: 'hargakontrak_created_date', cellsformat: 'dd-MM-yyyy', cellsalign: 'center'},
+                { text: 'No. Kontrak', datafield: 'hargakontrak_no', cellsalign: 'center',  width : 140 },
+                { text: 'Berlaku Mulai', datafield: 'hargakontrak_tgl', cellsformat: 'dd-MM-yyyy', cellsalign: 'center',  width : 140 },
+                { text: 'Kode Rekanan', datafield: 'rekanan_kode', cellsalign: 'center', width : 100 },
+                { text: 'Rekanan', datafield: 'rekanan_nama', cellsalign: 'left' },
+                { text: 'Dibuat Oleh', datafield: 'user_nama', cellsalign: 'left', width : 100 },
+                { text: 'Dibuat Tgl', datafield: 'hargakontrak_created_date', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 100 },
                 <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {

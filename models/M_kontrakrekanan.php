@@ -20,6 +20,7 @@ class M_kontrakrekanan
                     t_hargakontrak.hargakontrak_no,
                     t_hargakontrak.hargakontrak_tgl,
                     t_hargakontrak.m_rekanan_id,
+                    m_rekanan.rekanan_kode,
                     m_rekanan.rekanan_nama,
                     m_user.user_nama,
                     t_hargakontrak.hargakontrak_created_by,
@@ -38,6 +39,7 @@ class M_kontrakrekanan
                 'hargakontrak_no' => $val['hargakontrak_no'],
                 'hargakontrak_tgl' => $val['hargakontrak_tgl'],
                 'm_rekanan_id' => $val['m_rekanan_id'],
+                'rekanan_kode' => $val['rekanan_kode'],
                 'rekanan_nama' => $val['rekanan_nama'],
                 'user_nama' => $val['user_nama'],
                 'hargakontrak_created_date' => $val['hargakontrak_created_date']
