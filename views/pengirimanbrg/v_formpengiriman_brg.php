@@ -380,7 +380,7 @@
             autoshowfiltericon: true,
             columns: [
                 { text: 'Hari', datafield: 'hari', cellsalign: 'left', width : 50 },
-                { text: 'Rekanan', datafield: 'rekanan_nama', cellsalign: 'left', width : 120 },
+                { text: 'Rekanan', datafield: 'rekanan_nama', cellsalign: 'left', width : 200 },
                 { text: 'Minggu', datafield: 'minggu', cellsalign: 'center' , width : 50},
                 { text: 'Rit', datafield: 'rit', cellsalign: 'center', width : 120 },
                 { text: 'Nama Barang', datafield: 'barang_nama', cellsalign: 'left' },
