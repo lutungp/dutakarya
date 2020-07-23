@@ -165,11 +165,13 @@ class M_pengiriman_brg
                     pegdriver.pegawai_id AS pegdriver_id,
                     pegdriver.pegawai_nama AS pegdriver_nama,
                     peghelper.pegawai_id AS peghelper_id,
-                    peghelper.pegawai_nama AS peghelper_nama
+                    peghelper.pegawai_nama AS peghelper_nama,
+                    m_user.user_nama
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 LEFT JOIN m_pegawai pegdriver ON pegdriver.pegawai_id = t_pengiriman.m_pegdriver_id
                 LEFT JOIN m_pegawai peghelper ON peghelper.pegawai_id = t_pengiriman.m_peghelper_id
+                LEFT JOIN m_user ON m_user.user_id = t_pengiriman.pengiriman_created_by
                 WHERE pengiriman_aktif = 'Y' 
                 AND pengiriman_id = $pengiriman_id ";
                 
@@ -190,6 +192,7 @@ class M_pengiriman_brg
         $rpengiriman->pegdriver_nama = $row->pegdriver_nama;
         $rpengiriman->peghelper_id = $row->peghelper_id;
         $rpengiriman->peghelper_nama = $row->peghelper_nama;
+        $rpengiriman->user_nama = $row->user_nama;
 
         return $rpengiriman;
     }

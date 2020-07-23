@@ -313,9 +313,9 @@ class C_pengiriman_brg
         $content .= '</tr>';
         $content .= '<td style="vertical-align:top;">';
         $content .= ': ' . $datapengiriman->pengiriman_no . '<br>';
+        $content .= ': ' . ucfirst($datapengiriman->user_nama) . '<br>';
         $content .= ':<br>';
-        $content .= ':<br>';
-        $content .= ':<br>';
+        $content .= ': ' . ucfirst($datapengiriman->pegdriver_nama) . '<br>';
         $content .= ':<br>';
         $content .= '</td>';
         $content .= '</table>';
@@ -361,7 +361,7 @@ class C_pengiriman_brg
         $content .= '<div style="padding-left: 10px;padding-right: 10px; padding-top: 50px">';
         $content .= '<table class="assign">';
         $content .= '<tr>';
-        $content .= '<td style="text-align: center;">( DIBUAT OLEH )<br><br><br><br><br><br>.............................</td>';
+        $content .= '<td style="text-align: center;">( DIBUAT OLEH )<br><br><br><br><br><br>'.ucfirst($datapengiriman->user_nama).'</td>';
         $content .= '<td style="text-align: center;">( DIKIRIM OLEH )<br><br><br><br><br><br>.............................</td>';
         $content .= '<td style="text-align: center;">( DITERIMA OLEH )<br><br><br><br><br><br>.............................</td>';
         $content .= '</tr>';
