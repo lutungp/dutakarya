@@ -161,9 +161,15 @@ class M_pengiriman_brg
                     m_rekanan.rekanan_kode,
                     m_rekanan.rekanan_nama,
                     m_rekanan.rekanan_alamat,
-                    COALESCE(t_pengiriman.t_penagihan_no, '') AS t_penagihan_no
+                    COALESCE(t_pengiriman.t_penagihan_no, '') AS t_penagihan_no,
+                    pegdriver.pegawai_id AS pegdriver_id,
+                    pegdriver.pegawai_nama AS pegdriver_nama,
+                    peghelper.pegawai_id AS peghelper_id,
+                    peghelper.pegawai_nama AS peghelper_nama
                 FROM t_pengiriman
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
+                LEFT JOIN m_pegawai pegdriver ON pegdriver.pegawai_id = t_pengiriman.m_pegdriver_id
+                LEFT JOIN m_pegawai peghelper ON peghelper.pegawai_id = t_pengiriman.m_peghelper_id
                 WHERE pengiriman_aktif = 'Y' 
                 AND pengiriman_id = $pengiriman_id ";
                 
@@ -180,6 +186,10 @@ class M_pengiriman_brg
         $rpengiriman->rekanan_nama = $row->rekanan_nama;
         $rpengiriman->rekanan_alamat = str_replace("<br />", "\\n", $row->rekanan_alamat);
         $rpengiriman->t_penagihan_no = $row->t_penagihan_no;
+        $rpengiriman->pegdriver_id = $row->pegdriver_id;
+        $rpengiriman->pegdriver_nama = $row->pegdriver_nama;
+        $rpengiriman->peghelper_id = $row->peghelper_id;
+        $rpengiriman->peghelper_nama = $row->peghelper_nama;
 
         return $rpengiriman;
     }
@@ -402,6 +412,29 @@ class M_pengiriman_brg
             $result['hargakontrakdet_ppn'] = isset($rbarang->hargakontrakdet_ppn) ? $rbarang->hargakontrakdet_ppn : 'N';
         }
         return $result;
+    }
+
+    public function getPegawai($search, $bagian, $tanggal)
+    {
+        $tanggal = strtotime(date('Y-m-d', strtotime($tanggal)));
+        $day = date('N', $tanggal);
+        $sql = "SELECT
+                DISTINCT m_pegawai.pegawai_id AS id,
+                m_pegawai.pegawai_nama AS text
+            FROM m_pegawai
+            INNER JOIN t_jadwalpeg ON t_jadwalpeg.m_pegawai_id = m_pegawai.pegawai_id
+            WHERE pegawai_aktif = 'Y' AND m_pegawai.pegawai_bagian = '$bagian' AND t_jadwalpeg.hari = $day";
+
+        if ($search <> '') {
+            $sql .= " AND m_pegawai.pegawai_nama LIKE '%".$search."%' ";
+        }
+        
+        $qpegawai = $this->conn2->query($sql);
+        $pegawai = [];
+        while ($result = $qpegawai->fetch_array(MYSQLI_ASSOC)) {
+            array_push($pegawai, $result);
+        }
+        return $pegawai;
     }
 
 }

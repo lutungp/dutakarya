@@ -99,10 +99,9 @@
                         $("#pegawai_alamat").val(dataRecord.pegawai_alamat);
                         $.post("<?php echo BASE_URL ?>/controllers/C_pegawai.php?action=getjadwal", { pegawai_id : dataRecord.pegawai_id }, function(result){
                             let res = JSON.parse(result);
-                            if (res.length > 0) {
-                                renderJadwal(res);   
-                            }
+                            renderJadwal(res);
                         });
+                        $("#jadwalGrid").jqxGrid('clear');
                     }
                 },
                 { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
@@ -247,6 +246,7 @@
                 'hari_nama' : hari[index],
                 'jadwalpeg_aktif' : jadwalpeg_aktif == 'Y' ? true : false,
             }
+            console.log(newdata)
             $("#jadwalGrid").jqxGrid('addrow', null, newdata);
         }
     }

@@ -460,11 +460,19 @@
                                     <input type="text" class="form-control tgllahir" id="pengiriman_tgl" name="pengiriman_tgl"
                                     data-inputmask-alias="datetime" data-inputmask-inputformat="dd-mm-yyyy" data-mask require>
                                 </div>
+                                <div class="form-group">
+                                    <label for="m_pegdriver_id">Driver</label>
+                                    <select id="m_pegdriver_id" name="m_pegdriver_id" style="width: 100%;" require></select>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="m_rekanan_id">Rekanan</label>
                                     <select id="m_rekanan_id" name="m_rekanan_id" style="width: 100%;" require></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="m_peghelper_id">Helper</label>
+                                    <select id="m_peghelper_id" name="m_peghelper_id" style="width: 100%;" require></select>
                                 </div>
                                 <div class="form-group">
                                     <label for="pengiriman_total">TOTAL</label>
@@ -536,6 +544,48 @@
             }
         });
 
+        $("#m_pegdriver_id").select2({
+            ajax: {
+                url: '<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=getpegdriver',
+                type: "get",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        tanggal: $('#pengiriman_tgl').val(),
+                        searchTerm: params.term // search term
+                    };
+                },
+                processResults: function (response) {
+                    return {
+                        results: response
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $("#m_peghelper_id").select2({
+            ajax: {
+                url: '<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=getpeghelper',
+                type: "get",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        tanggal: $('#pengiriman_tgl').val(),
+                        searchTerm: params.term // search term
+                    };
+                },
+                processResults: function (response) {
+                    return {
+                        results: response
+                    };
+                },
+                cache: true
+            }
+        });
+
         $('#formpengiriman').submit(function (event) {
             event.preventDefault();
             var griddata = $('#pengirimanGrid').jqxGrid('getdatainformation');
@@ -591,6 +641,8 @@
                     rit : $('#rit').val(),
                     pengiriman_tgl : moment($('#pengiriman_tgl').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'),
                     m_rekanan_id : $('#m_rekanan_id').val(),
+                    m_pegdriver_id : $('#m_pegdriver_id').val(),
+                    m_peghelper_id : $('#m_peghelper_id').val(),
                     rows : rows,
                     'hapusdetail' : hapusdetail
                 },
@@ -618,6 +670,12 @@
             $('#pengiriman_tgl').val(moment(dat.pengiriman_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY'));
             $("#m_rekanan_id").data('select2').trigger('select', {
                 data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
+            });
+            $("#m_pegdriver_id").data('select2').trigger('select', {
+                data: {"id":dat.pegdriver_id, "text": dat.pegdriver_nama }
+            });
+            $("#m_peghelper_id").data('select2').trigger('select', {
+                data: {"id":dat.peghelper_id, "text": dat.peghelper_nama }
             });
             $("#m_rekanan_id").prop("disabled", true);
             $('#batal').removeAttr('disabled');

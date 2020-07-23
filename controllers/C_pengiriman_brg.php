@@ -40,6 +40,7 @@ class C_pengiriman_brg
     public function formTransaksi($data)
     {
         $result = NULL;
+        $tanggal = date('Y-m-d');
         if (isset($data['id']) > 0) {
             $pengiriman_id = $data['id'];
             $result['pengiriman_id'] = $pengiriman_id;
@@ -70,8 +71,8 @@ class C_pengiriman_brg
         $pengiriman_no = $data['pengiriman_no'];
 
         if ($pengiriman_id > 0) {
-            $fieldSave = ['pengiriman_tgl', 'm_rekanan_id', 'rit', 'pengiriman_updated_by', 'pengiriman_updated_date', 'pengiriman_revised'];
-            $dataSave = [$pengiriman_tgl, $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengiriman_revised+1'];
+            $fieldSave = ['pengiriman_tgl', 'm_pegdriver_id', 'm_peghelper_id', 'm_rekanan_id', 'rit', 'pengiriman_updated_by', 'pengiriman_updated_date', 'pengiriman_revised'];
+            $dataSave = [$pengiriman_tgl, $data['m_pegdriver_id'], $data['m_peghelper_id'], $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengiriman_revised+1'];
             $field = "";
             foreach ($fieldSave as $key => $value) {
                 $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -85,8 +86,8 @@ class C_pengiriman_brg
             query_update($this->conn2, 't_pengiriman', $field, $where);
         } else {
             $pengiriman_no = getPenomoran($this->conn2, 'KM', 't_pengiriman', 'pengiriman_id', 'pengiriman_no', $pengiriman_tgl);
-            $fieldSave = ['pengiriman_no', 'pengiriman_tgl', 'm_rekanan_id', 'rit', 'pengiriman_created_by', 'pengiriman_created_date'];
-            $dataSave = [$pengiriman_no, $pengiriman_tgl, $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+            $fieldSave = ['pengiriman_no', 'pengiriman_tgl', 'm_pegdriver_id', 'm_peghelper_id', 'm_rekanan_id', 'rit', 'pengiriman_created_by', 'pengiriman_created_date'];
+            $dataSave = [$pengiriman_no, $pengiriman_tgl, $data['m_pegdriver_id'], $data['m_peghelper_id'], $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
             $pengiriman_id = query_create($this->conn2, 't_pengiriman', $fieldSave, $dataSave);
         }
         /* nonaktif detail terlebih dahulu */
@@ -378,7 +379,6 @@ class C_pengiriman_brg
     {
         $tanggalreal = $tanggal;
         $tanggal = strtotime(date('Y-m-d', strtotime($tanggal)));
-        $firstOfMonth = strtotime(date('Y-m-01', $tanggal));
         $day = date('N', $tanggal);
         $week = getWeeks($tanggalreal, $day) - 1;
         $month = intval(date('m', $tanggal));
@@ -425,6 +425,22 @@ class C_pengiriman_brg
         }
         
     }
+
+    public function getPegDriver($data)
+    {
+        $search = isset($data['searchTerm']) ? $data['searchTerm'] : '';
+        $tanggal = isset($data['tanggal']) ? $data['tanggal'] : '';
+        $pegawai = $this->model->getPegawai($search, 'driver', $tanggal);
+        echo json_encode($pegawai);
+    }
+
+    public function getPegHelper($data)
+    {
+        $search = isset($data['searchTerm']) ? $data['searchTerm'] : '';
+        $tanggal = isset($data['tanggal']) ? $data['tanggal'] : '';
+        $pegawai = $this->model->getPegawai($search, 'helper', $tanggal);
+        echo json_encode($pegawai);
+    }
 }
 
 $pengiriman = new C_pengiriman_brg($conn, $conn2, $config);
@@ -457,6 +473,12 @@ switch ($action) {
         break;
     case 'batal':
         $pengiriman->batal($_POST);
+        break;
+    case 'getpegdriver':
+        $pengiriman->getPegDriver($_GET);
+        break;
+    case 'getpeghelper':
+        $pengiriman->getPegHelper($_GET);
         break;
     default:
         $pengiriman->Pengiriman();

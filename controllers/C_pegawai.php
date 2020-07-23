@@ -50,7 +50,7 @@ class C_pegawai
         }
         $where = "WHERE pegawai_id = " . $data['pegawai_id'];
         $action = query_update($this->conn2, 'm_pegawai', $field, $where);
-        $this->saveJadwal($action, $data['rows']);
+        $this->saveJadwal($data['pegawai_id'], $data['rows']);
 
         if ($action > 0) {
             echo "200";
