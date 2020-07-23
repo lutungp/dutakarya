@@ -391,7 +391,7 @@
                 datatype : 'json',
                 data: {rows : rows},
                 success : function (res) {
-                    if (res == 200) {
+                    if (parseInt(res) == 200) {
                         resetForm();
                         swal("Info!", "Jadwal Berhasil disimpan", "success");
                         $("#ModalSatuan").modal('toggle');

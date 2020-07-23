@@ -349,6 +349,10 @@
                 { name: 'rit', type: 'int'},
                 { name: 'm_rekanan_id', type: 'int'},
                 { name: 'rekanan_nama', type: 'string'},
+                { name: 'm_pegdriver_id', type: 'int'},
+                { name: 'm_pegdriver_nama', type: 'string'},
+                { name: 'm_peghelper_id', type: 'int'},
+                { name: 'm_peghelper_nama', type: 'string'},
                 { name: 'm_barang_id', type: 'int'},
                 { name: 'm_satuan_id', type: 'int'},
                 { name: 'satuan_nama', type: 'string'},
@@ -392,8 +396,15 @@
         $("#jadwalGrid").on('rowselect', function (event) {
             $("#pengirimanGrid").jqxGrid('clear');
             var record = event.args.row;
+            
             $("#m_rekanan_id").data('select2').trigger('select', {
                 data: {"id":record.m_rekanan_id, "text": record.rekanan_nama }
+            });
+            $("#m_pegdriver_id").data('select2').trigger('select', {
+                data: {"id":record.m_pegdriver_id, "text": record.m_pegdriver_nama }
+            });
+            $("#m_peghelper_id").data('select2').trigger('select', {
+                data: {"id":record.m_peghelper_id, "text": record.m_peghelper_nama }
             });
             $('#rit').val(record.rit);
             var qty = record.jadwal_qty - record.sudahkirim;

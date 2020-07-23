@@ -298,6 +298,10 @@ class M_pengiriman_brg
 	                t_jadwal.m_rekanan_id,
                     t_jadwal.m_rekanan_id,
                     m_rekanan.rekanan_nama,
+                    t_jadwal.m_pegdriver_id,
+                    driver.pegawai_nama AS m_pegdriver_nama,
+                    t_jadwal.m_peghelper_id,
+                    helper.pegawai_nama AS m_peghelper_nama,
                     t_jadwal.m_barang_id,
                     m_barang.barang_nama,
                     m_barang.m_satuan_id,
@@ -315,6 +319,8 @@ class M_pengiriman_brg
                     t_jadwal.minggu5,
                     (kirim.satkonv_nilai * kirim.pengirimandet_qty) AS sudahkirim
                 FROM t_jadwal
+                LEFT JOIN m_pegawai AS driver ON driver.pegawai_id = t_jadwal.m_pegdriver_id
+                LEFT JOIN m_pegawai AS helper ON helper.pegawai_id = t_jadwal.m_peghelper_id
                 INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_jadwal.m_rekanan_id
                 INNER JOIN m_barang ON m_barang.barang_id = t_jadwal.m_barang_id
                 INNER JOIN (
@@ -370,6 +376,10 @@ class M_pengiriman_brg
             if ($qty>0) {
                 $rkirim[] = array(
                     'jadwal_id' => $val['jadwal_id'],
+                    'm_pegdriver_id' => $val['m_pegdriver_id'],
+                    'm_pegdriver_nama' => $val['m_pegdriver_nama'],
+                    'm_peghelper_id' => $val['m_peghelper_id'],
+                    'm_peghelper_nama' => $val['m_peghelper_nama'],
                     'm_rekanan_id' => $val['m_rekanan_id'],
                     'rekanan_nama' => $val['rekanan_nama'],
                     'm_barang_id' => $val['m_barang_id'],
