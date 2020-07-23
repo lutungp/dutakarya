@@ -87,9 +87,11 @@ class C_jadwalkirim
     public function submit($data)
     {
         foreach ($data['rows'] as $key => $value) {
+            $m_pegdriver_id = isset($value['m_pegdriver_id']) ? $value['m_pegdriver_id'] : 0;
+            $m_peghelper_id = isset($value['m_peghelper_id']) ? $value['m_peghelper_id'] : 0;
             if ($value['jadwal_id'] > 0) {
-                $fieldSave = ['hari', 'bulan', 'tahun', 'rit', 'minggu1', 'minggu2', 'minggu3', 'minggu4', 'minggu5', 'jadwal_updated_by', 'jadwal_updated_date', 'jadwal_revised'];
-                $dataSave = [$value['hari'], $value['bulan'], $value['tahun'], $value['rit'], $value['minggu1'], $value['minggu2'], $value['minggu3'], $value['minggu4'], $value['minggu5'], $_SESSION["USER_ID"], date('Y-m-d H:i:s'), 'jadwal_revised+1'];
+                $fieldSave = ['m_pegdriver_id', 'm_peghelper_id', 'hari', 'bulan', 'tahun', 'rit', 'minggu1', 'minggu2', 'minggu3', 'minggu4', 'minggu5', 'jadwal_updated_by', 'jadwal_updated_date', 'jadwal_revised'];
+                $dataSave = [$m_pegdriver_id, $m_peghelper_id, $value['hari'], $value['bulan'], $value['tahun'], $value['rit'], $value['minggu1'], $value['minggu2'], $value['minggu3'], $value['minggu4'], $value['minggu5'], $_SESSION["USER_ID"], date('Y-m-d H:i:s'), 'jadwal_revised+1'];
                 
                 $field = '';
                 foreach ($fieldSave as $key => $val) {
@@ -103,8 +105,8 @@ class C_jadwalkirim
                 $where = "WHERE jadwal_id = " . $value['jadwal_id'];
                 $action = query_update($this->conn2, 't_jadwal', $field, $where);
             } else {
-                $fieldSave = ['m_rekanan_id', 'm_barang_id', 'hari', 'bulan', 'tahun', 'rit', 'minggu1', 'minggu2', 'minggu3', 'minggu4', 'minggu5', 'jadwal_created_by', 'jadwal_created_date'];
-                $dataSave = [$value['m_rekanan_id'], $value['m_barang_id'], $value['hari'], $value['bulan'], $value['tahun'], $value['rit'], $value['minggu1'], $value['minggu2'], $value['minggu3'], $value['minggu4'], $value['minggu5'], $_SESSION["USER_ID"], date('Y-m-d H:i:s')];
+                $fieldSave = ['m_pegdriver_id', 'm_peghelper_id', 'm_rekanan_id', 'm_barang_id', 'hari', 'bulan', 'tahun', 'rit', 'minggu1', 'minggu2', 'minggu3', 'minggu4', 'minggu5', 'jadwal_created_by', 'jadwal_created_date'];
+                $dataSave = [$m_pegdriver_id, $m_peghelper_id, $value['m_rekanan_id'], $value['m_barang_id'], $value['hari'], $value['bulan'], $value['tahun'], $value['rit'], $value['minggu1'], $value['minggu2'], $value['minggu3'], $value['minggu4'], $value['minggu5'], $_SESSION["USER_ID"], date('Y-m-d H:i:s')];
                 $barang_id = query_create($this->conn2, 't_jadwal', $fieldSave, $dataSave);
             }
             
@@ -125,6 +127,12 @@ class C_jadwalkirim
         $result = $this->model->getBarang($search);
         echo json_encode($result);
     }
+
+    public function getPegawai()
+    {
+        $pegawai = $this->model->getPegawai();
+        echo json_encode($pegawai);
+    }
 }
 
 $jadwal = new C_jadwalkirim($conn, $conn2, $config);
@@ -141,6 +149,10 @@ switch ($action) {
     
     case 'getbarang':
         $jadwal->getBarang($_GET);
+        break;
+
+    case 'getpegawai':
+        $jadwal->getPegawai();
         break;
 
     default:

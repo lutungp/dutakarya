@@ -7,6 +7,10 @@
     var datajadwaldet = [
         {
             jadwal_id : 0,
+            m_pegdriver_id : 0,
+            m_pegdriver_nama : '',
+            m_peghelper_id : '',
+            m_peghelper_nama : '',
             m_rekanan_id : 0,
             bulan : 1,
             hari : 1,
@@ -18,6 +22,10 @@
             minggu5 : '',
         }, {
             jadwal_id : 0,
+            m_pegdriver_id : 0,
+            m_pegdriver_nama : '',
+            m_peghelper_id : '',
+            m_peghelper_nama : '',
             m_rekanan_id : 0,
             bulan : 2,
             hari : 2,
@@ -29,6 +37,10 @@
             minggu5 : '',
         }, {
             jadwal_id : 0,
+            m_pegdriver_id : 0,
+            m_pegdriver_nama : '',
+            m_peghelper_id : '',
+            m_peghelper_nama : '',
             m_rekanan_id : 0,
             bulan : 3,
             hari : 3,
@@ -40,6 +52,10 @@
             minggu5 : '',
         }, {
             jadwal_id : 0,
+            m_pegdriver_id : 0,
+            m_pegdriver_nama : '',
+            m_peghelper_id : '',
+            m_peghelper_nama : '',
             m_rekanan_id : 0,
             bulan : 4,
             hari : 4,
@@ -51,6 +67,10 @@
             minggu5 : '',
         }, {
             jadwal_id : 0,
+            m_pegdriver_id : 0,
+            m_pegdriver_nama : '',
+            m_peghelper_id : '',
+            m_peghelper_nama : '',
             m_rekanan_id : 0,
             bulan : 5,
             hari : 5,
@@ -62,6 +82,10 @@
             minggu5 : '',
         }, {
             jadwal_id : 0,
+            m_pegdriver_id : 0,
+            m_pegdriver_nama : '',
+            m_peghelper_id : '',
+            m_peghelper_nama : '',
             m_rekanan_id : 0,
             bulan : 6,
             hari : 6,
@@ -73,6 +97,10 @@
             minggu5 : '',
         }, {
             jadwal_id : 0,
+            m_pegdriver_id : 0,
+            m_pegdriver_nama : '',
+            m_peghelper_id : '',
+            m_peghelper_nama : '',
             m_rekanan_id : 0,
             bulan : 7,
             hari : 7,
@@ -85,15 +113,71 @@
         }
     ];
     $(document).ready(function () {
-        gridrender(datajadwaldet);
+        gridrender2(datajadwaldet);
     });
 
-    function gridrender(datajadwaldet) {
+    function gridrender2(datajadwaldet) {
+        $.ajax({
+            url: "<?php echo BASE_URL ?>/controllers/C_jadwalkirim.php?action=getpegawai",
+            type: "get",
+            datatype : 'json',
+            success : function (res) {
+                res = JSON.parse(res);
+                var driver = res.filter(p=>p.pegawai_bagian == 'driver');
+                var driverArr = [];
+                driver.forEach(element => {
+                    driverArr.push({
+                        value: element.pegawai_id, 
+                        label: element.pegawai_nama
+                    });
+                });
+                var helper = res.filter(p=>p.pegawai_bagian == 'helper');
+                var helperArr = [];
+                helper.forEach(element => {
+                    helperArr.push({
+                        value: element.pegawai_id, 
+                        label: element.pegawai_nama
+                    });
+                });
+                gridrender(datajadwaldet, driverArr, helperArr);
+            }
+        });
+    }
+
+    function gridrender(datajadwaldet, driverArr, helperArr) {
+        var driverSource = {
+            datatype: "array",
+            datafields: [
+                { name: 'label', type: 'string' },
+                { name: 'value', type: 'string' }
+            ],
+            localdata: driverArr
+        };
+        var driverAdapter = new $.jqx.dataAdapter(driverSource, {
+            autoBind: true
+        });
+        
+        var helperSource = {
+            datatype: "array",
+            datafields: [
+                { name: 'label', type: 'string' },
+                { name: 'value', type: 'string' }
+            ],
+            localdata: helperArr
+        };
+        var helperAdapter = new $.jqx.dataAdapter(helperSource, {
+            autoBind: true
+        });
+
         var jadwalGridSource = {
             datatype: "array",
             localdata:  datajadwaldet,
             datafields: [
                 { name: 'jadwal_id', type: 'int'},
+                { name: 'm_pegdriver_nama', value: 'm_pegdriver_id', values: { source: driverAdapter.records, value: 'pegawai_id', name: 'pegawai_nama' }},
+                { name: 'm_pegdriver_id', type: 'int'},
+                { name: 'm_peghelper_nama', value: 'm_peghelper_id', values: { source: helperAdapter.records, value: 'pegawai_id', name: 'pegawai_nama' }},
+                { name: 'm_peghelper_id', type: 'int'},
                 { name: 'm_rekanan_id', type: 'int'},
                 { name: 'bulan', type: 'int'},
                 { name: 'hari', type: 'int'},
@@ -106,6 +190,7 @@
             ],
         };
         var jadwalAdapter = new $.jqx.dataAdapter(jadwalGridSource);
+
         $("#jadwalGrid").jqxGrid({
             width: "100%",
             height: "100%",
@@ -114,6 +199,26 @@
             selectionmode: 'singlecell',
             columns: [
                 { text: 'Hari', datafield: 'hari_nama', cellsalign: 'left', editable : false },
+                {   
+                    text: 'Driver', datafield: 'm_pegdriver_id', displayfield: 'm_pegdriver_nama', columntype: 'combobox',
+                    createeditor: function (row, value, editor) {
+                        editor.jqxComboBox({
+                            source: driverAdapter,
+                            valueMember: 'label',
+                            displayMember: 'value',
+                        });
+                    },
+                },
+                {   
+                    text: 'Helper', datafield: 'm_peghelper_id', displayfield: 'm_peghelper_nama', columntype: 'combobox',
+                    createeditor: function (row, value, editor) {
+                        editor.jqxComboBox({
+                            source: helperAdapter,
+                            valueMember: 'label',
+                            displayMember: 'value',
+                        });
+                    },
+                },
                 { text: 'Minggu 1', datafield: 'minggu1', cellsalign: 'right', editable : true },
                 { text: 'Minggu 2', datafield: 'minggu2', cellsalign: 'right', editable : true },
                 { text: 'Minggu 3', datafield: 'minggu3', cellsalign: 'right', editable : true },
@@ -265,6 +370,8 @@
                     m_barang_id : $('#m_barang_id').val(),
                     hari : rec.hari,
                     hari_nama : rec.hari_nama,
+                    m_pegdriver_id : rec.m_pegdriver_id,
+                    m_peghelper_id : rec.m_peghelper_id,
                     minggu1 : rec.minggu1,
                     minggu2 : rec.minggu2,
                     minggu3 : rec.minggu3,
@@ -272,7 +379,7 @@
                     minggu5 : rec.minggu5,
                 }); 
             }
-
+            
             if ($('#m_rekanan_id').val() < 1 || $('bulan').val() == '' || $('tahun').val() < 1 ) {
                 swal("Info!", "Inputan Belum Lengkap", "error");
                 return false;
@@ -346,6 +453,10 @@
                     rit : element.rit,
                     hari : element.hari,
                     hari_nama : hariint[0].hari_nama,
+                    m_pegdriver_id : element.m_pegdriver_id,
+                    m_pegdriver_nama : element.m_pegdriver_nama,
+                    m_peghelper_id : element.m_peghelper_id,
+                    m_peghelper_nama : element.m_peghelper_nama,
                     minggu1 : element.minggu1,
                     minggu2 : element.minggu2,
                     minggu3 : element.minggu3,
@@ -354,9 +465,9 @@
                 });
             });
             if (res.length > 0) {
-                gridrender(datajadwal);
+                gridrender2(datajadwal);
             } else {
-                gridrender(datajadwaldet);
+                gridrender2(datajadwaldet);
             }
         });
     }
