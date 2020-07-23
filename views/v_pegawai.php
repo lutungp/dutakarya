@@ -65,7 +65,17 @@
             autoshowfiltericon: true,
             columns: [
                 { text: 'Pegawai Nama', datafield: 'pegawai_nama'},
-                { text: 'Pegawai Bagian', datafield: 'pegawai_bagian'},
+                { 
+                    text: 'Pegawai Bagian', datafield: 'pegawai_bagian',
+                    cellsrenderer: function (row) {
+                        var recorddata = $('#grid').jqxGrid('getrenderedrowdata', row);
+                        var pegawai_bagian = recorddata.pegawai_bagian;
+                        pegawai_bagian = pegawai_bagian.toLowerCase().replace(/^[\u00C0-\u1FFF\u2C00-\uD7FF\w]|\s[\u00C0-\u1FFF\u2C00-\uD7FF\w]/g, function(letter) {
+                            return letter.toUpperCase();
+                        });
+                        return '<div style="margin-top: 8.5px;margin-left: 8.5px;">' + pegawai_bagian + '</div>';
+                    }
+                },
                 { text: 'No. Telp', datafield: 'pegawai_notelp'},
                 { text: 'Pegawai Aktif', datafield: 'pegawaiaktif', filterable: false},
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
@@ -78,9 +88,21 @@
                         $("#Modalpegawai").modal('toggle');
                         $("#pegawai_id").val(dataRecord.pegawai_id);
                         $("#pegawai_nama").val(dataRecord.pegawai_nama);
-                        $("#pegawai_bagian").val(dataRecord.pegawai_bagian);
+                        var pegawai_bagian = dataRecord.pegawai_bagian;
+                        pegawai_bagian = pegawai_bagian.toLowerCase().replace(/^[\u00C0-\u1FFF\u2C00-\uD7FF\w]|\s[\u00C0-\u1FFF\u2C00-\uD7FF\w]/g, function(letter) {
+                            return letter.toUpperCase();
+                        });
+                        $("#pegawai_bagian").data('select2').trigger('select', {
+                            data: {"id":dataRecord.pegawai_bagian, "text": pegawai_bagian }
+                        });
                         $("#pegawai_notelp").val(dataRecord.pegawai_notelp);
                         $("#pegawai_alamat").val(dataRecord.pegawai_alamat);
+                        $.post("<?php echo BASE_URL ?>/controllers/C_pegawai.php?action=getjadwal", { pegawai_id : dataRecord.pegawai_id }, function(result){
+                            let res = JSON.parse(result);
+                            if (res.length > 0) {
+                                renderJadwal(res);   
+                            }
+                        });
                     }
                 },
                 { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
@@ -139,7 +161,95 @@
           cache: true
           }
         });
+
+        var jadwalGridSource = {
+            datatype: "array",
+            localdata:  [
+                    {
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 1,
+                'hari_nama' : 'Senin',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 2,
+                'hari_nama' : 'Selasa',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 3,
+                'hari_nama' : 'Rabu',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 4,
+                'hari_nama' : 'Kamis',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 5,
+                'hari_nama' : "Jum'at",
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 6,
+                'hari_nama' : 'Sabtu',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 7,
+                'hari_nama' : 'Minggu',
+                'jadwalpeg_aktif' : false,
+            }],
+            datafields: [
+                { name: 'jadwalpeg_id', type: 'int'},
+                { name: 'hari_nama', type: 'string' },
+                { name: 'hari', type: 'string' },
+                { name: 'm_pegawai_id', type: 'int'},
+                { name: 'jadwalpeg_aktif', type: 'boolean'}
+            ]
+        };
+
+        var jadwalgridAdapter = new $.jqx.dataAdapter(jadwalGridSource);
+
+        $("#jadwalGrid").jqxGrid({
+            height : 300,
+            width : "100%",
+            source: jadwalgridAdapter,
+            selectionmode: 'singlecell',
+            editable: true,
+            columns: [
+                { text: 'Hari', datafield: 'hari_nama', displayfield: 'hari_nama' },
+                { text: 'Masuk', datafield: 'jadwalpeg_aktif', threestatecheckbox: false, columntype: 'checkbox', width: 70 },
+            ]
+        });
     });
+
+    function renderJadwal(data) {
+        $("#jadwalGrid").jqxGrid('clear');
+        var hari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        for (let index = 0; index < 7; index++) {
+            let datajdw = data.filter(p=>parseInt(p.hari)==parseInt(index+1));
+            var jadwalpeg_aktif = datajdw.length > 0 ? datajdw[0].jadwalpeg_aktif : false;
+            
+            var jadwalpeg_id = datajdw.length > 0 ? datajdw[0].jadwalpeg_id : 0;
+            var newdata = {
+                'jadwalpeg_id' : jadwalpeg_id,
+                'm_pegawai_id' : $('#pegawai_id').val(),
+                'hari' : parseInt(index+1),
+                'hari_nama' : hari[index],
+                'jadwalpeg_aktif' : jadwalpeg_aktif == 'Y' ? true : false,
+            }
+            $("#jadwalGrid").jqxGrid('addrow', null, newdata);
+        }
+    }
 </script>
 
 <section class="content">
@@ -187,6 +297,7 @@
                                             <label for="pegawai_alamat">Alamat</label>
                                             <textarea class="form-control" id="pegawai_alamat" name="pegawai_alamat" rows="3" placeholder="Enter ..."></textarea>
                                         </div>
+                                        <div id="jadwalGrid" style="margin-top: 10px;"></div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -207,12 +318,29 @@
     });
 
     function submitForm() {
+        if ($('#pegawai_nama').val() == '') {
+            swal("Info!", "Inputan belum lengkap", "error");
+            return false;
+        }
+        var griddata = $('#jadwalGrid').jqxGrid('getdatainformation');
+        rows = [];
+        for (var i = 0; i < griddata.rowscount; i++){
+            var rec = $('#jadwalGrid').jqxGrid('getrenderedrowdata', i);
+            rows.push({
+                'jadwalpeg_id' : rec.jadwalpeg_id,
+                'm_pegawai_id' : rec.m_pegawai_id,
+                'hari' : rec.hari,
+                'hari_nama' : rec.hari_nama,
+                'jadwalpeg_aktif' : rec.jadwalpeg_aktif,
+            }); 
+        }
         var dataForm = {
             pegawai_id : $("#pegawai_id").val(),
             pegawai_nama : $("#pegawai_nama").val(),
             pegawai_bagian : $("#pegawai_bagian").val(),
             pegawai_alamat : $("#pegawai_alamat").val(),
             pegawai_notelp : $("#pegawai_notelp").val(),
+            rows : rows
         };
 
         $.ajax({
