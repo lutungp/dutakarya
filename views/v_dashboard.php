@@ -65,21 +65,31 @@
     function applyfilter(tanggal, rekanan, barang) {
         var rekananArr2 = [];
         var rekananindex1 = [];
-        rekanan.forEach(function (elem) {
-            rekananArr2.push(elem.value)
-            rekananindex1.push(elem.index)
-        });
         var barangArr2 = [];
         var barangindex1 = [];
-        barang.forEach(function (elem) {
-            barangArr2.push(elem.value)
-            barangindex1.push(elem.index)
-        });
         var param = {
             tanggal : tanggal,
             rekanan : JSON.stringify(rekananArr2),
             barang : JSON.stringify(barangArr2),
             rit : 1
+        };
+        var rekananSource2 = {
+            datatype: "json",
+            datafields: [
+                { name: 'rekanan_id' },
+                { name: 'rekanan_nama' }
+            ],
+            id: 'id',
+            url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getrekanan",
+            async: false
+        };
+        var barangSource2 = {
+            datatype: "json",
+            datafields: [
+                { name: 'barang_id' },
+                { name: 'barang_nama' }
+            ],
+            url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getbarang",
         };
         $.post("<?php echo BASE_URL ?>/controllers/C_dashboard.php?action=getjadwal", param, function(data, status){
             var source = {
@@ -116,30 +126,14 @@
                     container.append('<div id="barangfilter" style="margin: 2px;"></div>');
                     container.append('<div style="margin: 2px;"><input type="button" id="applyfilter" value="FILTER RIT 1" /></div>');
                     $("#datefilter").jqxDateTimeInput({ width: '150px', height: '25px', formatString: 'dd-MM-yyyy'});
-                    var rekananSource2 = {
-                        datatype: "json",
-                        datafields: [
-                            { name: 'rekanan_id' },
-                            { name: 'rekanan_nama' }
-                        ],
-                        id: 'id',
-                        url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getrekanan",
-                        async: false
-                    };
+                    $('#datefilter').jqxDateTimeInput('val', new Date(tanggal));
+                    
                     var rekananAdapter2 = new $.jqx.dataAdapter(rekananSource2);
                     $("#rekananfilter").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: rekananAdapter2, checkboxes: true, displayMember: "rekanan_nama", valueMember: "rekanan_id", width: 200, height: 28,});
                     /* set rekanan yang dipilih sebelumnya */
                     rekananindex1.forEach(element => {
                         $("#rekananfilter").jqxDropDownList('checkIndex', element); 
                     });
-                    var barangSource2 = {
-                        datatype: "json",
-                        datafields: [
-                            { name: 'barang_id' },
-                            { name: 'barang_nama' }
-                        ],
-                        url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getbarang",
-                    };
 
                     var barangAdapter2 = new $.jqx.dataAdapter(barangSource2);
                     $("#barangfilter").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter2, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 150, height: 28,});
@@ -153,7 +147,31 @@
                         tanggal = moment(tanggal, 'DD-MM-YYYY').format('YYYY-MM-DD');
                         var rekanan = $("#rekananfilter").jqxDropDownList('getCheckedItems');
                         var barang = $("#barangfilter").jqxDropDownList('getCheckedItems');
-                        applyfilter(tanggal, rekanan, barang);
+
+                        var rekananArr2 = [];
+                        rekananindex1 = [];
+                        rekanan.forEach(function (elem) {
+                            rekananArr2.push(elem.value)
+                            rekananindex1.push(elem.index)
+                        });
+                        var barangArr2 = [];
+                        barangindex1 = [];
+                        barang.forEach(function (elem) {
+                            barangArr2.push(elem.value)
+                            barangindex1.push(elem.index)
+                        });
+
+                        var param = {
+                            tanggal : tanggal,
+                            rekanan : JSON.stringify(rekananArr2),
+                            barang : JSON.stringify(barangArr2),
+                            rit : 1
+                        };
+
+                        $.post("<?php echo BASE_URL ?>/controllers/C_dashboard.php?action=getjadwal", param, function(data, status){
+                            source.localdata = JSON.parse(data);
+                            $("#jadwalGrid").jqxGrid('updatebounddata', 'cells');
+                        });
                     });
                 },
                 columns: [
@@ -183,21 +201,31 @@
     function applyfilter2(tanggal, rekanan, barang) {
         var rekananArr2 = [];
         var rekananindex1 = [];
-        rekanan.forEach(function (elem) {
-            rekananArr2.push(elem.value)
-            rekananindex1.push(elem.index)
-        });
         var barangArr2 = [];
         var barangindex1 = [];
-        barang.forEach(function (elem) {
-            barangArr2.push(elem.value)
-            barangindex1.push(elem.index)
-        });
         var param = {
             tanggal : tanggal,
             rekanan : JSON.stringify(rekananArr2),
             barang : JSON.stringify(barangArr2),
             rit : 2
+        };
+        var rekananSource2 = {
+            datatype: "json",
+            datafields: [
+                { name: 'rekanan_id' },
+                { name: 'rekanan_nama' }
+            ],
+            id: 'id',
+            url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getrekanan",
+            async: false
+        };
+        var barangSource2 = {
+            datatype: "json",
+            datafields: [
+                { name: 'barang_id' },
+                { name: 'barang_nama' }
+            ],
+            url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getbarang",
         };
         $.post("<?php echo BASE_URL ?>/controllers/C_dashboard.php?action=getjadwal", param, function(data, status){
             var source = {
@@ -232,32 +260,16 @@
                     container.append('<div id="datefilter2" style="margin: 2px;"></div>');
                     container.append('<div id="rekananfilter2" style="margin: 2px;"></div>');
                     container.append('<div id="barangfilter2" style="margin: 2px;"></div>');
-                    container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER RIT 1" /></div>');
+                    container.append('<div style="margin: 2px;"><input type="button" id="applyfilter" value="FILTER RIT 1" /></div>');
                     $("#datefilter2").jqxDateTimeInput({ width: '150px', height: '25px', formatString: 'dd-MM-yyyy'});
-                    var rekananSource2 = {
-                        datatype: "json",
-                        datafields: [
-                            { name: 'rekanan_id' },
-                            { name: 'rekanan_nama' }
-                        ],
-                        id: 'id',
-                        url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getrekanan",
-                        async: false
-                    };
+                    $('#datefilter2').jqxDateTimeInput('val', new Date(tanggal));
+                    
                     var rekananAdapter2 = new $.jqx.dataAdapter(rekananSource2);
                     $("#rekananfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: rekananAdapter2, checkboxes: true, displayMember: "rekanan_nama", valueMember: "rekanan_id", width: 200, height: 28,});
                     /* set rekanan yang dipilih sebelumnya */
                     rekananindex1.forEach(element => {
                         $("#rekananfilter2").jqxDropDownList('checkIndex', element); 
                     });
-                    var barangSource2 = {
-                        datatype: "json",
-                        datafields: [
-                            { name: 'barang_id' },
-                            { name: 'barang_nama' }
-                        ],
-                        url: "<?php echo BASE_URL ?>/controllers/C_infopengiriman.php?action=getbarang",
-                    };
 
                     var barangAdapter2 = new $.jqx.dataAdapter(barangSource2);
                     $("#barangfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter2, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 150, height: 28,});
@@ -265,13 +277,37 @@
                         $("#barangfilter2").jqxDropDownList('checkIndex', element); 
                     });
 
-                    $("#applyfilter2").jqxButton({ template: "primary", width: 120, height: 28 });
-                    $("#applyfilter2").on('click', function() {
+                    $("#applyfilter").jqxButton({ template: "primary", width: 120, height: 28 });
+                    $("#applyfilter").on('click', function() {
                         var tanggal = $("#datefilter2").val();
                         tanggal = moment(tanggal, 'DD-MM-YYYY').format('YYYY-MM-DD');
                         var rekanan = $("#rekananfilter2").jqxDropDownList('getCheckedItems');
                         var barang = $("#barangfilter2").jqxDropDownList('getCheckedItems');
-                        applyfilter2(tanggal, rekanan, barang);
+
+                        var rekananArr2 = [];
+                        rekananindex1 = [];
+                        rekanan.forEach(function (elem) {
+                            rekananArr2.push(elem.value)
+                            rekananindex1.push(elem.index)
+                        });
+                        var barangArr2 = [];
+                        barangindex1 = [];
+                        barang.forEach(function (elem) {
+                            barangArr2.push(elem.value)
+                            barangindex1.push(elem.index)
+                        });
+
+                        var param = {
+                            tanggal : tanggal,
+                            rekanan : JSON.stringify(rekananArr2),
+                            barang : JSON.stringify(barangArr2),
+                            rit : 2
+                        };
+
+                        $.post("<?php echo BASE_URL ?>/controllers/C_dashboard.php?action=getjadwal", param, function(data, status){
+                            source.localdata = JSON.parse(data);
+                            $("#jadwalGrid2").jqxGrid('updatebounddata', 'cells');
+                        });
                     });
                 },
                 columns: [
