@@ -260,7 +260,7 @@
                     container.append('<div id="datefilter2" style="margin: 2px;"></div>');
                     container.append('<div id="rekananfilter2" style="margin: 2px;"></div>');
                     container.append('<div id="barangfilter2" style="margin: 2px;"></div>');
-                    container.append('<div style="margin: 2px;"><input type="button" id="applyfilter" value="FILTER RIT 1" /></div>');
+                    container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER RIT 1" /></div>');
                     $("#datefilter2").jqxDateTimeInput({ width: '150px', height: '25px', formatString: 'dd-MM-yyyy'});
                     $('#datefilter2').jqxDateTimeInput('val', new Date(tanggal));
                     
@@ -277,8 +277,8 @@
                         $("#barangfilter2").jqxDropDownList('checkIndex', element); 
                     });
 
-                    $("#applyfilter").jqxButton({ template: "primary", width: 120, height: 28 });
-                    $("#applyfilter").on('click', function() {
+                    $("#applyfilter2").jqxButton({ template: "primary", width: 120, height: 28 });
+                    $("#applyfilter2").on('click', function() {
                         var tanggal = $("#datefilter2").val();
                         tanggal = moment(tanggal, 'DD-MM-YYYY').format('YYYY-MM-DD');
                         var rekanan = $("#rekananfilter2").jqxDropDownList('getCheckedItems');
