@@ -296,10 +296,10 @@
                     applyfilter2(tanggal, rekanan, barang, hari, bulan, tahun);
                 });
 
-                $("#excelExport2").jqxButton({ width: 120, height: 28 });
-                $("#excelExport2").click(function () {
-                    $("#jadwalkirimgrid2").jqxGrid('exportdata', 'xlsx', 'jqxGrid');           
-                });
+                // $("#excelExport2").jqxButton({ width: 120, height: 28 });
+                // $("#excelExport2").click(function () {
+                //     $("#jadwalkirimgrid2").jqxGrid('exportdata', 'xlsx', 'jqxGrid');           
+                // });
             },
             columns: [
                 { text: 'Rekanan', datafield: 'rekanan_nama', cellsalign : 'left', width : 150 },
@@ -496,10 +496,10 @@
                     applyfilter3(tanggal, rekanan, barang, hari, bulan, tahun);
                 });
 
-                $("#excelExport2").jqxButton({ width: 120, height: 28 });
-                $("#excelExport2").click(function () {
-                    $("#jadwalkirimgrid3").jqxGrid('exportdata', 'xlsx', 'jqxGrid');           
-                });
+                // $("#excelExport2").jqxButton({ width: 120, height: 28 });
+                // $("#excelExport2").click(function () {
+                //     $("#jadwalkirimgrid3").jqxGrid('exportdata', 'xlsx', 'jqxGrid');           
+                // });
             },
             columns: [
                 { text: 'Rekanan', datafield: 'rekanan_nama', cellsalign : 'left', width : 150 },
