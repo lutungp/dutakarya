@@ -23,7 +23,7 @@ class C_barang
         echo json_encode($result);
     }
 
-    public function createBarang($data, $satkonv)
+    public function createBarang($data, $satkonv, $bahanbaku)
     {
         $fieldSave = ["barang_nama", "barang_kode", "m_satuan_id", "barang_created_by", "barang_created_date", "barang_revised"];
         $dataSave = [$data["barang_nama"], $data["barang_kode"], $data["m_satuan_id"], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 0];
@@ -34,9 +34,10 @@ class C_barang
             echo "202";
         }
         $this->simpanSatKonv($barang_id, $satkonv);
+        $this->simpanBahan($barang_id, $bahanbaku);
     }
 
-    public function updateBarang($data, $satkonv)
+    public function updateBarang($data, $satkonv, $bahanbaku)
     {
         $fieldSave = ["barang_nama", "barang_kode", "m_satuan_id", "barang_created_by", "barang_created_date", "barang_revised"];
         $dataSave = [$data["barang_nama"], $data["barang_kode"], $data["m_satuan_id"], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), "barang_revised+1"];
@@ -51,7 +52,9 @@ class C_barang
         }
         $where = "WHERE barang_id = " . $data['barang_id'];
         $action = query_update($this->conn2, 'm_barang', $field, $where);
-        $this->simpanSatKonv($data['barang_id'], $satkonv);
+        $barang_id = $data['barang_id'];
+        $this->simpanSatKonv($barang_id, $satkonv);
+        $this->simpanBahan($barang_id, $bahanbaku);
         if ($action) {
             echo "200";
         } else {
@@ -100,6 +103,47 @@ class C_barang
         }
     }
 
+    public function simpanBahan($barang_id, $bahanbaku)
+    {
+        $fieldSave = ["bahanbrg_aktif"];
+        $dataSave = ["N"];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+        $where = "WHERE m_brg_id = " . $barang_id;
+        $action = query_update($this->conn2, 'm_bahanbrg', $field, $where);
+
+        foreach ($bahanbaku as $key => $val) {
+            if ($val["bahanbrg_id"] > 0) {
+                $fieldUpdate = ["bahanbrg_ketika", "bahanbrg_qty", "m_brg_id", "m_barang_id", "bahanbrg_aktif", "bahanbrg_updated_by", "bahanbrg_updated_date", "bahanbrg_revised"];
+                $dataSave = [$val["bahanbrg_ketika"], $val["bahanbrg_qty"], $barang_id, $val["m_barang_id"], "Y", $_SESSION['USER_ID'], date('Y-m-d H:i:s'), 'bahanbrg_revised+1'];
+
+                $field = '';
+                foreach ($fieldUpdate as $key => $value) {
+                    $regex = (integer)$key < count($fieldUpdate)-1 ? "," : "";
+                    if (!preg_match("/revised/i", $value)) {
+                        $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+                    } else {
+                        $field .= "$value = $dataSave[$key]" . $regex . " ";
+                    }
+                }
+                $where = " WHERE bahanbrg_id = " . $val['bahanbrg_id'];
+                query_update($this->conn2, 'm_bahanbrg', $field, $where);
+            } else {
+                $fieldSave = ["bahanbrg_ketika", "bahanbrg_qty", "m_brg_id", "m_barang_id", "bahanbrg_aktif", "bahanbrg_created_by", "bahanbrg_created_date"];
+                $dataSave = [$val["bahanbrg_ketika"], $val["bahanbrg_qty"], $barang_id, $val["m_barang_id"], "Y", $_SESSION['USER_ID'], date('Y-m-d H:i:s')];
+                
+                $satkonv_id = query_create($this->conn2, 'm_bahanbrg', $fieldSave, $dataSave);
+            }
+        }
+    }
+
     public function deleteBarang($data)
     {
         $fieldSave = ["barang_aktif", "barang_void_alasan", "barang_void_by", "barang_void_date"];
@@ -143,6 +187,13 @@ class C_barang
         echo json_encode($data);
     }
 
+    public function getBahanBaku($barang_id)
+    {
+        $data['bahanbrg'] = $this->model->getBrgBahanBaku($barang_id);
+        $data['barang'] = $this->model->getBahanBaku();
+        echo json_encode($data);
+    }
+
 }
 
 $barang = new C_barang($conn, $conn2, $config);
@@ -156,9 +207,9 @@ switch ($action) {
     case 'createbarang':
         $dataSatKonv = isset($_POST['dataSatKonv']) ? $_POST['dataSatKonv'] : [];
         if($_POST['dataForm']["barang_id"] == 0) {
-            $barang->createBarang($_POST['dataForm'], $dataSatKonv);
+            $barang->createBarang($_POST['dataForm'], $dataSatKonv, $_POST['dataBahan']);
         } else {
-            $barang->updateBarang($_POST['dataForm'], $dataSatKonv);
+            $barang->updateBarang($_POST['dataForm'], $dataSatKonv, $_POST['dataBahan']);
         }    
         break;
     
@@ -176,6 +227,10 @@ switch ($action) {
     
     case 'getharga':
         $barang->getHarga($_POST["barang_id"]);
+        break;
+    
+    case 'getbahanbaku':
+        $barang->getBahanBaku($_POST['barang_id']);
         break;
     
     default:

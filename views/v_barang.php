@@ -39,11 +39,9 @@
 
             filtergroup.addfilter(filter_or_operator, filter1);
             filtergroup.addfilter(filter_or_operator, filter2);
-            // add the filters.
             $("#grid").jqxGrid('addfilter', 'barang_nama', filtergroup);
-            // // apply the filters.
-            // $("#grid").jqxGrid('applyfilters');
         }
+
         var dataAdapter = new $.jqx.dataAdapter(source, {
             downloadComplete: function (data, status, xhr) { },
             loadComplete: function (data) {},
@@ -99,7 +97,7 @@
 
             var satkonvgridAdapter = new $.jqx.dataAdapter(satkonvGridSource);
             $("#satuanGrid").jqxGrid({
-                height : 200,
+                autoheight : true,
                 // width: "95%",
                 width : "100%",
                 source: satkonvgridAdapter,
@@ -110,9 +108,9 @@
                         text: 'Satuan Konv', datafield: 'm_satuan_id', displayfield: 'm_satuan_id', columntype: 'dropdownlist',
                         createeditor: function (row, value, editor) {
                             editor.jqxDropDownList({ source: satbesarAdapter, displayMember: 'label', valueMember: 'value' });
-                        }
+                        }, width: 150
                     },
-                    { text: 'Nilai', datafield: 'satkonv_nilai'},
+                    { text: 'Nilai', datafield: 'satkonv_nilai', width: 100, cellsalign : 'right'},
                 ]
             });
             $("#satuanGrid").on('cellselect', function (event) {
@@ -211,7 +209,7 @@
                                 };
                                 var satkonvgridAdapter = new $.jqx.dataAdapter(satkonvGridSource);
                                 $("#satuanGrid").jqxGrid({
-                                    height : 200,
+                                    autoheight : true,
                                     width: "95%",
                                     source: satkonvgridAdapter,
                                     selectionmode: 'singlecell',
@@ -221,9 +219,9 @@
                                             text: 'Satuan Konv', datafield: 'm_satuan_id', displayfield: 'm_satuan_id', columntype: 'dropdownlist',
                                             createeditor: function (row, value, editor) {
                                                 editor.jqxDropDownList({ source: satbesarAdapter, displayMember: 'label', valueMember: 'value' });
-                                            }, width : 323
+                                            }, width : 150
                                         },
-                                        { text: 'Nilai', datafield: 'satkonv_nilai', width : 150},
+                                        { text: 'Nilai', datafield: 'satkonv_nilai', width : 100, cellsalign : 'right'},
                                     ]
                                 });
                                 $("#satuanGrid").on('cellselect', function (event) {
@@ -288,6 +286,8 @@
                                 });
                             }
                         });
+
+                        bahanBaku();
                     }
                 },
                 { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
@@ -348,6 +348,109 @@
         });
         
     });
+
+    function bahanBaku() {
+        $.ajax({
+            url: "<?php echo BASE_URL ?>/controllers/C_barang.php?action=getbahanbaku",
+            type: "post",
+            data : {
+                barang_id : $('#barang_id').val()
+            },
+            datatype : 'json',
+            success : function (res) {
+                var barang = JSON.parse(res);
+                var barangArr = [];
+                barang['barang'].forEach(element => {
+                    barangArr.push({
+                        value: element.barang_id, 
+                        label: element.barang_nama
+                    });
+                });
+                gridBahanBrg(barangArr, barang['bahanbrg']);
+            }
+        });
+    }
+
+    function gridBahanBrg(barangarr, bahanbrg) {
+        var bahanBakuSource = {
+            datatype: "array",
+            datafields: [
+                { name: 'label', type: 'string' },
+                { name: 'value', type: 'int' }
+            ],
+            localdata: barangarr
+        };
+        bahanAdapter = new $.jqx.dataAdapter(bahanBakuSource, {
+            autoBind: true
+        });
+        databahanbrg = [];
+        for (let index = 0; index < bahanbrg.length; index++) {
+            const element = bahanbrg[index];
+            var data = {
+                'bahanbrg_id' : element.bahanbrg_id,
+                'm_barang_id' : element.m_barang_id,
+                'm_barang_nama' : element.m_barang_nama,
+                'bahanbrg_qty' : element.bahanbrg_qty,
+                'bahanbrg_ketika' : element.bahanbrg_ketika
+            }
+            databahanbrg.push(data);
+        }
+        countdata = databahanbrg.length
+        for (let index = 0; index < (4 - countdata); index++) {
+            var data = {
+                'bahanbrg_id' : 0,
+                'm_barang_id' : 0,
+                'm_barang_nama' : '',
+                'bahanbrg_qty' : '',
+                'bahanbrg_ketika' : ''
+            }
+            databahanbrg.push(data);
+        }
+
+        var bahanbrgGridSource = {
+            datatype: "array",
+            localdata:  databahanbrg,
+            datafields: [
+                { name: 'bahanbrg_id', type: 'int'},
+                { name: 'm_barang_nama', value: 'm_barang_id', values: { source: bahanAdapter.records, value: 'barang_id', name: 'barang_nama' } },
+                { name: 'm_barang_id', type: 'int'},
+                { name: 'bahanbrg_qty', type: 'float'},
+                { name: 'bahanbrg_ketika', type: 'string'},
+            ]
+        };
+        var bahanbrggridAdapter = new $.jqx.dataAdapter(bahanbrgGridSource);
+        $("#bahanGrid").jqxGrid({
+            height : 200,
+            width : "100%",
+            source: bahanbrggridAdapter,
+            selectionmode: 'singlecell',
+            editable: true,
+            columns: [
+                {
+                    text: 'Barang', datafield: 'm_barang_id', displayfield: 'm_barang_nama', columntype: 'combobox', width:250,
+                    createeditor: function (row, value, editor) {
+                        editor.jqxComboBox({ source: bahanAdapter, displayMember: 'label', valueMember: 'value' });
+                    }
+                },
+                { text: 'Qty', datafield: 'bahanbrg_qty', width:100, cellsalign : 'right' },
+                {
+                    text: 'Berkurang', datafield: 'bahanbrg_ketika', displayfield: 'bahanbrg_ketika', columntype: 'combobox',
+                    width:100,
+                    createeditor: function (row, value, editor) {
+                        var ketikasource = {
+                            localdata: [
+                                { label : 'kirim', value : 'kirim' },
+                                { label : 'produksi', value : 'produksi' }
+                            ],
+                            datatype: "array"
+                        };
+                        var ketikaAdapter = new $.jqx.dataAdapter(ketikasource);
+                        editor.jqxComboBox({ source: ketikaAdapter, displayMember: 'label', valueMember: 'value' });
+                    }
+                },
+            ]
+        });
+    }
 </script>
 
 <section class="content">
@@ -355,7 +458,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body default">
-                    <button type="button" id="btn-filter" class="btn btn-primary btn-sm" onclick="adduser()" 
+                    <button type="button" id="btn-filter" class="btn btn-primary btn-sm" onclick="addbarang()" 
                     <?php 
                         if ($create == '') {
                             echo "disabled";
@@ -397,12 +500,16 @@
                                         <ul>
                                             <li style="margin-left: 30px;">Satuan Konversi</li>
                                             <li>Harga</li>
+                                            <li>Bahan Baku</li>
                                         </ul>
-                                        <div>
-                                            <div id="satuanGrid" style="margin: 10px;"></div>
+                                        <div style="padding: 5px;">
+                                            <div id="satuanGrid"></div>
                                         </div>
-                                        <div>
-                                            <div id="hargaGrid" style="margin: 10px;"></div>
+                                        <div style="padding: 5px;">
+                                            <div id="hargaGrid"></div>
+                                        </div>
+                                        <div style="padding: 5px;">
+                                            <div id="bahanGrid"></div>
                                         </div>
                                     </div>
                                 </div> 
@@ -442,12 +549,27 @@
             }
         }
 
+        var dataBahan = $('#bahanGrid').jqxGrid('getdatainformation');
+        var bahanrows = [];
+        var barang_id = $("#barang_id").val();
+        for (var i = 0; i < dataBahan.rowscount; i++){
+            var rec = $('#bahanGrid').jqxGrid('getrenderedrowdata', i);
+            if(rec.m_barang_id > 0) {
+                bahanrows.push({
+                    bahanbrg_id: rec.bahanbrg_id,
+                    bahanbrg_ketika: rec.bahanbrg_ketika,
+                    bahanbrg_qty: rec.bahanbrg_qty,
+                    m_barang_id: rec.m_barang_id
+                });
+            }
+        }
         $.ajax({
             url: "<?php echo BASE_URL ?>/controllers/C_barang.php?action=createbarang",
             type: "post",
             data: {
                 dataForm : dataForm,
-                dataSatKonv : rows
+                dataSatKonv : rows,
+                dataBahan : bahanrows
             },
             success : function (res) {
                 $("#grid").jqxGrid('updatebounddata');
@@ -467,10 +589,12 @@
         $("#barang_kode").val('');
         $("#barang_nama").val('');
         $("#satuanGrid").jqxGrid('updatebounddata');
+        $("#bahanGrid").jqxGrid('updatebounddata');
     }
 
-    function adduser() {
+    function addbarang() {
         resetForm();
         $("#ModalSatuan").modal('toggle');
+        bahanBaku();
     }
 </script>

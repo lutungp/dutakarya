@@ -83,4 +83,49 @@ class M_barang
 
         return $rbaranghna;
     }
+
+    public function getBahanBaku()
+    {
+        $sql = "SELECT barang_id, barang_nama FROM m_barang WHERE m_barang.barang_aktif = 'Y'";
+        $qbarang = $this->conn2->query($sql);
+        $rbarang = array();
+        while ($val = $qbarang->fetch_array()) {
+            $rbarang[] = array(
+                'barang_id' => $val['barang_id'],
+                'barang_nama' => $val['barang_nama'],
+            );
+        }
+
+        return $rbarang;
+    }
+
+    public function getBrgBahanBaku($barang_id)
+    {
+        $sql = "SELECT 
+                    bahanbrg_id, 
+                    m_brg_id, 
+                    m_barang_id, 
+                    m_barang.barang_nama, 
+                    bahanbrg_qty, 
+                    bahanbrg_ketika
+                FROM m_bahanbrg
+                LEFT JOIN m_barang ON m_barang.barang_id = m_bahanbrg.m_barang_id
+                WHERE m_bahanbrg.bahanbrg_aktif = 'Y'
+                AND m_bahanbrg.m_brg_id = $barang_id";
+        
+        $qbarang = $this->conn2->query($sql);
+        $rbarang = array();
+        while ($val = $qbarang->fetch_array()) {
+            $rbarang[] = array(
+                'bahanbrg_id' => $val['bahanbrg_id'],
+                'm_barang_id' => $val['m_barang_id'],
+                'm_barang_nama' => $val['barang_nama'],
+                'bahanbrg_qty' => $val['bahanbrg_qty'],
+                'bahanbrg_ketika' => $val['bahanbrg_ketika'],
+            );
+        }
+
+        return $rbarang;
+    }
+
 }
