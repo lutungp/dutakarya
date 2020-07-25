@@ -15,6 +15,68 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3 id="terimabrg">0</h3>
+
+                <p>Penerimaan Barang</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+              <h3 id="kirimbrg">0</h3>
+
+                <p>Pengiriman Barang</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-outlet"></i>
+              </div>
+              <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3 id="returbrg">0</h3>
+
+                <p>Retur Barang</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-arrow-return-left"></i>
+              </div>
+              <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                <h3 id="tagihbrg">0</h3>
+
+                <p>Belum Ditagih</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-information-circled"></i>
+              </div>
+              <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+            </div>
+          </div>
+          <!-- ./col -->
+        </div>
+        <div class="row">
             <div class="col-md-12">
                 <div class="card card-primary">
                     <div class="card-body">
@@ -59,7 +121,7 @@
             { 'hari_id' : 7, 'hari_nama' : 'Minggu'},
         ];
         var tahunArr = ['2020', '2021', '2022', '2023', '2024', '2025', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035', '2036', '2037', '2038', '2039', '2040'];
-        
+        getSummaryToday(moment(now).format('YYYY-MM-DD'));
     });
     
     function applyfilter(tanggal, rekanan, barang) {
@@ -260,7 +322,7 @@
                     container.append('<div id="datefilter2" style="margin: 2px;"></div>');
                     container.append('<div id="rekananfilter2" style="margin: 2px;"></div>');
                     container.append('<div id="barangfilter2" style="margin: 2px;"></div>');
-                    container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER RIT 1" /></div>');
+                    container.append('<div style="margin: 2px;"><input type="button" id="applyfilter2" value="FILTER RIT 2" /></div>');
                     $("#datefilter2").jqxDateTimeInput({ width: '150px', height: '25px', formatString: 'dd-MM-yyyy'});
                     $('#datefilter2').jqxDateTimeInput('val', new Date(tanggal));
                     
@@ -331,6 +393,15 @@
                     { text: 'Kirim', datafield: 'sudahkirim', width: 50, cellsalign : 'right' },
                 ]
             });
+        });
+    }
+
+    function getSummaryToday(tanggal) {
+        $.get("<?php echo BASE_URL ?>/controllers/C_dashboard.php?action=getsummary&tanggal="+tanggal, function(data, status){
+            var res = JSON.parse(data);
+            $('#terimabrg').html(res.totalkirim);
+            $('#kirimbrg').html(res.totalterima);
+            $('#returbrg').html(res.totalretur);
         });
     }
 </script>

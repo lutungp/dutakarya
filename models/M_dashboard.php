@@ -120,4 +120,40 @@ class M_dashboard
         return $rkirim;
     }
 
+    public function getTotalKirim($tanggal)
+    {
+        $sql = "SELECT COUNT(*) AS totalkirim FROM t_pengiriman WHERE t_pengiriman.pengiriman_aktif = 'Y' AND pengiriman_tgl = '$tanggal'";
+        $q = $this->conn2->query($sql);
+        $o = $q->fetch_object();
+
+        return $o->totalkirim;
+    }
+
+    public function getTotalTerima($tanggal)
+    {
+        $sql = "SELECT COUNT(*) AS totalterima FROM t_penerimaan WHERE t_penerimaan.penerimaan_aktif = 'Y' AND penerimaan_tgl = '$tanggal'";
+        $q = $this->conn2->query($sql);
+        $o = $q->fetch_object();
+
+        return $o->totalterima;
+    }
+
+    public function getTotalRetur($tanggal)
+    {
+        $sql = "SELECT COUNT(*) AS totalretur FROM t_retur WHERE t_retur.retur_aktif = 'Y' AND retur_tgl = '$tanggal'";
+        $q = $this->conn2->query($sql);
+        $o = $q->fetch_object();
+
+        return $o->totalretur;
+    }
+
+    public function getTotalBlmTagih($tanggal)
+    {
+        $sql = "SELECT COUNT(*) AS totalretur FROM t_pengiriman WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_penagihan_no IS NULL AND pengiriman_tgl = '$tanggal'";
+        $q = $this->conn2->query($sql);
+        $o = $q->fetch_object();
+
+        return $o->totalretur;
+    }
+
 }

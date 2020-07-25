@@ -47,6 +47,17 @@ class C_dashboard
 
         echo json_encode($data);
     }
+
+    public function getSummary($tanggal)
+    {
+        $data['totalkirim'] = $this->model->getTotalKirim($tanggal);
+        $data['totalterima'] = $this->model->getTotalTerima($tanggal);
+        $data['totalretur'] = $this->model->getTotalRetur($tanggal);
+        $data['totalblmtagih'] = $this->model->getTotalBlmTagih($tanggal);
+
+        echo json_encode($data);
+    }
+    
 }
 
 $dashboard = new C_dashboard($conn, $conn2, $config);
@@ -55,6 +66,9 @@ $action = isset($data["action"]) ? $data["action"] : "";
 switch ($action) {
     case 'getjadwal':
         $dashboard->getJadwal($_POST);
+        break;
+    case 'getsummary':
+        $dashboard->getSummary($_GET['tanggal']);
         break;
     default:
         if(!isset($_SESSION["USERNAME"])) {
