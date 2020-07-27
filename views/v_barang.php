@@ -309,7 +309,7 @@
                                 return false
                             }
                             $.ajax({
-                                url: "<?php echo BASE_URL ?>/controllers/C_barang.php?action=deletesatuan",
+                                url: "<?php echo BASE_URL ?>/controllers/C_barang.php?action=deletebarang",
                                 type: "post",
                                 data: { barang_id : dataRecord.barang_id,  alasan : inputValue},
                                 success : function (res) {

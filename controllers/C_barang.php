@@ -206,10 +206,11 @@ switch ($action) {
     
     case 'createbarang':
         $dataSatKonv = isset($_POST['dataSatKonv']) ? $_POST['dataSatKonv'] : [];
+        $dataBahan = isset($_POST['dataBahan']) ? $_POST['dataBahan'] : [];
         if($_POST['dataForm']["barang_id"] == 0) {
-            $barang->createBarang($_POST['dataForm'], $dataSatKonv, $_POST['dataBahan']);
+            $barang->createBarang($_POST['dataForm'], $dataSatKonv, $dataBahan);
         } else {
-            $barang->updateBarang($_POST['dataForm'], $dataSatKonv, $_POST['dataBahan']);
+            $barang->updateBarang($_POST['dataForm'], $dataSatKonv, $dataBahan);
         }    
         break;
     
