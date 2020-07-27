@@ -69,7 +69,6 @@ class C_pengiriman_brg
         $pengiriman_tgl = date('Y-m-d', strtotime($data['pengiriman_tgl']));
         $pengiriman_id = $data['pengiriman_id'];
         $pengiriman_no = $data['pengiriman_no'];
-
         if ($pengiriman_id > 0) {
             $fieldSave = ['pengiriman_tgl', 'm_pegdriver_id', 'm_peghelper_id', 'm_rekanan_id', 'rit', 'pengiriman_updated_by', 'pengiriman_updated_date', 'pengiriman_revised'];
             $dataSave = [$pengiriman_tgl, $data['m_pegdriver_id'], $data['m_peghelper_id'], $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengiriman_revised+1'];
@@ -99,9 +98,9 @@ class C_pengiriman_brg
             foreach ($data['rows'] as $key => $val) {
                 $pengirimandet_id = $val['pengirimandet_id'];
                 if ($pengirimandet_id > 0) {
-                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_ppn', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
+                    $fieldSave = ['t_pengiriman_id', 'm_bahanbakubrg_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_ppn', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
                                   'pengirimandet_updated_by', 'pengirimandet_updated_date', 'pengirimandet_revised'];
-                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_ppn'], $val['pengirimandet_harga'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
+                    $dataSave = [$pengiriman_id, $val['m_bahanbakubrg_id'], $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_ppn'], $val['pengirimandet_harga'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
                                     $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengirimandet_revised+1'];
                     $field = "";
                     foreach ($fieldSave as $key => $value) {
@@ -115,9 +114,9 @@ class C_pengiriman_brg
                     $where = "WHERE pengirimandet_id = " . $val['pengirimandet_id'];
                     query_update($this->conn2, 't_pengiriman_detail', $field, $where);
                 } else {
-                    $fieldSave = ['t_pengiriman_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_ppn', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
+                    $fieldSave = ['t_pengiriman_id', 'm_bahanbakubrg_id', 'm_barang_id', 'm_satuan_id', 'pengirimandet_qty', 'pengirimandet_harga', 'pengirimandet_ppn', 'pengirimandet_subtotal', 'pengirimandet_potongan', 'pengirimandet_total',
                                     'pengirimandet_created_by', 'pengirimandet_created_date'];
-                    $dataSave = [$pengiriman_id, $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_harga'], $val['pengirimandet_ppn'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
+                    $dataSave = [$pengiriman_id, $val['m_bahanbakubrg_id'], $val['m_barang_id'], $val['m_satuan_id'], $val['pengirimandet_qty'], $val['pengirimandet_harga'], $val['pengirimandet_ppn'], $val['pengirimandet_subtotal'], $val['pengirimandet_potongan'], $val['pengirimandet_total'],
                                 $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     $pengirimandet_id = query_create($this->conn2, 't_pengiriman_detail', $fieldSave, $dataSave);
                 }
@@ -254,7 +253,7 @@ class C_pengiriman_brg
         $pengiriman_id = $data['id'];
         $datapengiriman = $this->model->getPengirimanData($pengiriman_id);
         $datapengirimandetail = $this->model->getPengirimanDataDetail($pengiriman_id);
-
+        
         $content = '<html>';
         $content .= '<header>';
         $content .= '<style>';
@@ -332,10 +331,10 @@ class C_pengiriman_brg
         $content .= '</tr>';
         foreach ($datapengirimandetail as $key => $val) {
             $content .= '<tr>';
-            $content .= '<td style="text-align:left; border-left:1px solid; border-right:1px solid; padding: 5px;">'.$val['barang_nama'].'</td>';
+            $content .= '<td style="text-align:left; border-left:1px solid; border-right:1px solid; padding: 5px;">'.$val['m_barang_nama'].'</td>';
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px;">'.number_format($val['pengirimandet_harga']).'</td>';
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 10%;">'.number_format($val['pengirimandet_qty']).'</td>';
-            $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 8%;">'.$val['satuan_nama'].'</td>';
+            $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 8%;">'.$val['m_satuan_nama'].'</td>';
             $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 8%;"></td>';
             $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 8%;"></td>';
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px;">'.number_format($val['pengirimandet_total']).'</td>';
@@ -441,6 +440,12 @@ class C_pengiriman_brg
         $pegawai = $this->model->getPegawai($search, 'helper', $tanggal);
         echo json_encode($pegawai);
     }
+
+    public function getBahanBaku($data)
+    {
+        $data = $this->model->getBahanBaku($data['barang_id']);
+        echo json_encode($data);
+    }
 }
 
 $pengiriman = new C_pengiriman_brg($conn, $conn2, $config);
@@ -479,6 +484,9 @@ switch ($action) {
         break;
     case 'getpeghelper':
         $pengiriman->getPegHelper($_GET);
+        break;
+    case 'getbahanbaku':
+        $pengiriman->getBahanBaku($_POST);
         break;
     default:
         $pengiriman->Pengiriman();

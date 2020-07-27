@@ -207,10 +207,13 @@ class M_pengiriman_brg
                     m_barang.m_satuan_id AS m_barangsatuan_id,
                     t_pengiriman_detail.m_satuan_id,
                     m_satuan.satuan_nama,
+                    t_pengiriman_detail.m_bahanbakubrg_id,
                     COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
                     (t_pengiriman_detail.pengirimandet_harga/COALESCE(m_satuan_konversi.satkonv_nilai, 1)) AS hargaet_harga,
                     t_pengiriman_detail.pengirimandet_harga,
                     t_pengiriman_detail.pengirimandet_ppn,
+                    CASE WHEN t_pengiriman_detail.pengirimandet_ppn > 0 THEN 'Y'
+                        ELSE 'N' END AS hargakontrakdet_ppn,
                     t_pengiriman_detail.pengirimandet_qty,
                     t_pengiriman_detail.pengirimandet_subtotal,
                     t_pengiriman_detail.pengirimandet_subtotal,
@@ -236,14 +239,17 @@ class M_pengiriman_brg
                 'pengirimandet_id' => $val['pengirimandet_id'],
                 't_pengiriman_id' => $val['t_pengiriman_id'],
                 'm_barang_id' => $val['m_barang_id'],
-                'barang_nama' => $val['barang_nama'],
+                'm_barang_nama' => $val['barang_nama'],
                 'm_barangsatuan_id' => $val['m_barangsatuan_id'],
                 'm_satuan_id' => $val['m_satuan_id'],
-                'satuan_nama' => $val['satuan_nama'],
+                'm_satuan_nama' => $val['satuan_nama'],
                 'hargaet_harga' => $val['hargaet_harga'],
                 'pengirimandet_harga' => $val['pengirimandet_harga'],
                 'pengirimandet_ppn' => $val['pengirimandet_ppn'],
+                'hargakontrak' => $val['pengirimandet_harga'] / $val['satkonv_nilai'],
+                'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'],
                 'satkonv_nilai' => $val['satkonv_nilai'],
+                'm_bahanbakubrg_id' => $val['m_bahanbakubrg_id'],
                 'pengirimandet_qty' => $val['pengirimandet_qty'],
                 'pengirimandet_subtotal' => $val['pengirimandet_subtotal'],
                 'pengirimandet_potongan' => $val['pengirimandet_potongan'],
@@ -448,6 +454,40 @@ class M_pengiriman_brg
             array_push($pegawai, $result);
         }
         return $pegawai;
+    }
+
+    public function getBahanBaku($barang_id)
+    {
+        $sql = "SELECT 
+                    bahanbrg_id, 
+                    m_brg_id, 
+                    m_barang_id, 
+                    m_barang.barang_nama, 
+                    m_barang.m_satuan_id,
+                    m_satuan.satuan_nama,
+                    bahanbrg_qty, 
+                    bahanbrg_ketika
+                FROM m_bahanbrg
+                LEFT JOIN m_barang ON m_barang.barang_id = m_bahanbrg.m_barang_id
+                LEFT JOIN m_satuan ON m_satuan.satuan_id = m_barang.m_satuan_id
+                WHERE m_bahanbrg.bahanbrg_aktif = 'Y'
+                AND m_bahanbrg.m_brg_id = $barang_id AND bahanbrg_ketika = 'kirim'";
+        
+        $qbarang = $this->conn2->query($sql);
+        $rbarang = array();
+        while ($val = $qbarang->fetch_array()) {
+            $rbarang[] = array(
+                'bahanbrg_id' => $val['bahanbrg_id'],
+                'm_barang_id' => $val['m_barang_id'],
+                'm_barang_nama' => $val['barang_nama'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'satuan_nama' => $val['satuan_nama'],
+                'bahanbrg_qty' => $val['bahanbrg_qty'],
+                'bahanbrg_ketika' => $val['bahanbrg_ketika'],
+            );
+        }
+
+        return $rbarang;
     }
 
 }
