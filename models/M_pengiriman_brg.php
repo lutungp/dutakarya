@@ -44,13 +44,16 @@ class M_pengiriman_brg
         return $result;
     }
 
-    public function getRekanan($search)
+    public function getRekanan($search, $jenis = 'pelanggan')
     {
         $sql = "SELECT
                 m_rekanan.rekanan_id AS id,
                 m_rekanan.rekanan_kode,
                 CONCAT('[', m_rekanan.rekanan_kode, '] ', m_rekanan.rekanan_nama) AS text
             FROM m_rekanan WHERE rekanan_aktif = 'Y'";
+        if ($jenis <> 'all') {
+            $sql .= " AND rekanan_jenis = '$jenis '";
+        }
         if ($search <> '') {
             $sql .= " AND m_rekanan.rekanan_nama LIKE '%".$search."%' ";
         }
@@ -456,7 +459,7 @@ class M_pengiriman_brg
         return $pegawai;
     }
 
-    public function getBahanBaku($barang_id)
+    public function getBahanBaku($barang_id, $ketika = 'kirim')
     {
         $sql = "SELECT 
                     bahanbrg_id, 
@@ -471,7 +474,7 @@ class M_pengiriman_brg
                 LEFT JOIN m_barang ON m_barang.barang_id = m_bahanbrg.m_barang_id
                 LEFT JOIN m_satuan ON m_satuan.satuan_id = m_barang.m_satuan_id
                 WHERE m_bahanbrg.bahanbrg_aktif = 'Y'
-                AND m_bahanbrg.m_brg_id = $barang_id AND bahanbrg_ketika = 'kirim'";
+                AND m_bahanbrg.m_brg_id = $barang_id AND bahanbrg_ketika = '$ketika'";
         
         $qbarang = $this->conn2->query($sql);
         $rbarang = array();

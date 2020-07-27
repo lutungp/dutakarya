@@ -273,7 +273,7 @@
 
         $("#m_rekanan_id").select2({
             ajax: {
-                url: '<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=getrekanan',
+                url: '<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=getrekanan&jenis=all',
                 type: "get",
                 dataType: 'json',
                 delay: 250,

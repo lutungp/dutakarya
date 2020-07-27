@@ -54,7 +54,8 @@ class C_pengiriman_brg
     public function getRekanan($data)
     {
         $search = isset($data['searchTerm']) ? $data['searchTerm'] : '';
-        $result = $this->model->getRekanan($search);
+        $jenis = isset($data['jenis']) ? $data['jenis'] : 'pelanggan';
+        $result = $this->model->getRekanan($search, $jenis);
         echo json_encode($result);
     }
 
@@ -174,10 +175,63 @@ class C_pengiriman_brg
                     $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
                                 $datastock['barangtrans_jml'], $datastock['barangtrans_konv'], $datastock['barangtrans_awal'], $datastock['barangtrans_masuk'], $datastock['barangtrans_keluar'], $datastock['barangtrans_akhir'], $barangtrans_status, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     query_create($this->conn2, 't_barangtrans', $fieldTransSave, $dataTransSave);
+
+                    /* bahan produksi galon kosong dikembalikan */
+                    $bahanproduksi = $this->model->getBahanBaku($val['m_barang_id'], 'produksi');
+                    foreach ($bahanproduksi as $key => $valbb) {
+                        $barangtrans_awal = $this->model->getStokAkhir($valbb['m_barang_id'], $data['pengiriman_tgl']);
+                        $barangtrans_masuk  = 0;
+                        $barangtrans_keluar = 0;
+                        $barangtrans_jenis = '';
+                        $barangtrans_status = '';
+                        $barangtrans_akhir = 0;
+                        if ($qty > $qtyold) {
+                            $barangtrans_keluar = ($qty - $qtyold) * $valbb['bahanbrg_qty'];
+                            $barangtrans_jenis = 'PENGIRIMAN BRG';
+                            $barangtrans_status = 'MASUK';
+                            $barangtrans_akhir = ($barangtrans_awal + $barangtrans_keluar) * $valbb['bahanbrg_qty'];
+                        } else if ($qty < $qtyold) {
+                            $barangtrans_masuk = ($qtyold - $qty) * $valbb['bahanbrg_qty'];
+                            $barangtrans_jenis = 'PENGURANGAN PENGIRIMAN BRG';
+                            $barangtrans_status = 'KELUAR';
+                            $barangtrans_akhir = ($barangtrans_awal - $barangtrans_masuk) * $valbb['bahanbrg_qty'];
+                        }
+                        $datastock = array(
+                            't_trans_id'      => $pengiriman_id,
+                            't_transdet_id'   => $pengirimandet_id,
+                            'barangtrans_jenis' => $barangtrans_jenis,
+                            'barangtrans_no'  => $pengiriman_no,
+                            'barangtrans_tgl' => $pengiriman_tgl,
+                            'm_barang_id'  => $valbb['m_barang_id'],
+                            'm_barangsatuan_id' => $valbb['m_satuan_id'],
+                            'm_satuan_id' => $valbb['m_satuan_id'],
+                            'barangtrans_jml' => $val['satkonv_nilai']*$val['pengirimandet_qty']*$valbb['bahanbrg_qty'],
+                            'barangtrans_konv' => 1,
+                            'barangtrans_awal' => $barangtrans_awal,
+                            'barangtrans_masuk' => $barangtrans_masuk,
+                            'barangtrans_keluar' => $barangtrans_keluar,
+                            'barangtrans_akhir' => $barangtrans_akhir,
+                            'barangtrans_status' => $barangtrans_status
+                        );
+                        if (strtotime($pengiriman_tgl) < strtotime(date('Y-m-d'))) {
+                            /* jika melakukan backdate */
+                            $fieldBackDate = ['barangtrans_awal', 'barangtrans_akhir'];
+
+                            $field = " barangtrans_awal=barangtrans_awal+(($barangtrans_masuk-$barangtrans_keluar)),  barangtrans_akhir=barangtrans_akhir+(($barangtrans_masuk-$barangtrans_keluar))";
+                            $where = "WHERE barangtrans_tgl >= '" . $pengiriman_tgl . "' AND barangtrans_created_date < now() AND m_barang_id = " . $datastock['m_barang_id'];
+                            query_update($this->conn2, 't_barangtrans', $field, $where);
+                        }
+
+                        $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 
+                                    'barangtrans_jml', 'barangtrans_konv', 'barangtrans_awal', 'barangtrans_masuk', 'barangtrans_keluar', 'barangtrans_akhir', 'barangtrans_status', 'barangtrans_created_by', 'barangtrans_created_date'];
+                        $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
+                                    $datastock['barangtrans_jml'], $datastock['barangtrans_konv'], $datastock['barangtrans_awal'], $datastock['barangtrans_masuk'], $datastock['barangtrans_keluar'], $datastock['barangtrans_akhir'], $barangtrans_status, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                        query_create($this->conn2, 't_barangtrans', $fieldTransSave, $dataTransSave);
+                    }
                 }
             }
         }
-        
+
         $return["code"] = "202";
 
         if ($pengiriman_id > 0) {
@@ -243,6 +297,43 @@ class C_pengiriman_brg
             $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
                          $datastock['barangtrans_jml'], $datastock['barangtrans_konv'], $datastock['barangtrans_awal'], $datastock['barangtrans_masuk'], $datastock['barangtrans_akhir'], $datastock['barangtrans_status'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
             query_create($this->conn2, 't_barangtrans', $fieldTransSave, $dataTransSave);
+
+             /* bahan produksi galon kosong dikembalikan */
+             $bahanproduksi = $this->model->getBahanBaku($val['m_barang_id'], 'produksi');
+             foreach ($bahanproduksi as $key => $valbb) {
+                 $barangtrans_awal = $this->model->getStokAkhir($valbb['m_barang_id'], $pengiriman_tgl);
+                 $barangtrans_keluar = ($val['satkonv_nilai'] * $val['pengirimandet_qty']) * $valbb['bahanbrg_qty'];
+                 $datastock = array(
+                     't_trans_id'      => $val['t_pengiriman_id'],
+                     't_transdet_id'   =>  $val['pengirimandet_id'],
+                     'barangtrans_jenis' => 'BTL PENGIRIMAN BRG',
+                     'barangtrans_no'  => $pengiriman_no,
+                     'barangtrans_tgl' => $pengiriman_tgl,
+                     'm_barang_id'  => $valbb['m_barang_id'],
+                     'm_barangsatuan_id' => $valbb['m_satuan_id'],
+                     'm_satuan_id' => $valbb['m_satuan_id'],
+                     'barangtrans_jml' => $val['satkonv_nilai']*$val['pengirimandet_qty'],
+                     'barangtrans_konv' => 1,
+                     'barangtrans_awal' => $barangtrans_awal,
+                     'barangtrans_masuk' => 0,
+                     'barangtrans_keluar' => $barangtrans_keluar,
+                     'barangtrans_akhir' => $barangtrans_awal-$barangtrans_keluar,
+                     'barangtrans_status' => 'KELUAR'
+                 );
+                 if (strtotime($pengiriman_tgl) < strtotime(date('Y-m-d'))) {
+                    /* jika melakukan backdate */
+                    $fieldBackDate = ['barangtrans_awal', 'barangtrans_akhir'];
+    
+                    $field = " barangtrans_awal=barangtrans_awal+$barangtrans_keluar,  barangtrans_akhir=barangtrans_akhir+$barangtrans_keluar ";
+                    $where = "WHERE barangtrans_tgl >= '" . $pengiriman_tgl . "' AND barangtrans_created_date < now() AND m_barang_id = " . $datastock['m_barang_id'];
+                    query_update($this->conn2, 't_barangtrans', $field, $where);
+                }
+                $fieldTransSave = ['barangtrans_no', 'barangtrans_tgl', 'barangtrans_jenis', 't_trans_id', 't_transdet_id', 'm_barang_id', 'm_barangsatuan_id', 'm_satuan_id', 
+                             'barangtrans_jml', 'barangtrans_konv', 'barangtrans_awal', 'barangtrans_masuk', 'barangtrans_akhir', 'barangtrans_status', 'barangtrans_created_by', 'barangtrans_created_date'];
+                $dataTransSave = [$datastock['barangtrans_no'], $datastock['barangtrans_tgl'], $datastock['barangtrans_jenis'], $datastock['t_trans_id'], $datastock['t_transdet_id'], $datastock['m_barang_id'], $datastock['m_barangsatuan_id'], $datastock['m_satuan_id'], 
+                             $datastock['barangtrans_jml'], $datastock['barangtrans_konv'], $datastock['barangtrans_awal'], $datastock['barangtrans_masuk'], $datastock['barangtrans_akhir'], $datastock['barangtrans_status'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                query_create($this->conn2, 't_barangtrans', $fieldTransSave, $dataTransSave);
+             }
         }
     }
 

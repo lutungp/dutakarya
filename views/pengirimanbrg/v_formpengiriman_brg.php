@@ -33,6 +33,7 @@
             row["m_barang_id"] = 0;
             row["m_barang_nama"] = '';
             row["m_barangsatuan_id"] = 0,
+            row["m_bahanbakubrg_id"] = 0,
             row["hargakontrak"] = 0;
             row['pengirimandet_harga'] = 0;
             row['hargakontrakdet_ppn'] = 'N';

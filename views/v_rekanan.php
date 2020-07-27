@@ -7,13 +7,13 @@
     $(document).ready(function () {
         var url = "<?php echo BASE_URL ?>/controllers/C_rekanan.php?action=getrekanan";
         // prepare the data
-        var source =
-        {
+        var source = {
             datatype: "json",
             datafields: [
                 { name: 'rekanan_id', type: 'int' },
                 { name: 'rekanan_kode', type: 'string' },
                 { name: 'rekanan_nama', type: 'string' },
+                { name: 'rekanan_jenis', type: 'string' },
                 { name: 'rekanan_telp', type: 'string' },
                 { name: 'rekanan_alamat', type: 'string' },
                 { name: 'rekanan_email', type: 'string' },
@@ -69,6 +69,7 @@
             columns: [
                 { text: 'Kode Rekanan', datafield: 'rekanan_kode'},
                 { text: 'Nama Rekanan', datafield: 'rekanan_nama'},
+                { text: 'Jenis', datafield: 'rekanan_jenis'},
                 { text: 'Rekanan Aktif', datafield: 'rekanan_aktif', filterable: false},
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
@@ -84,6 +85,9 @@
                         $("#rekanan_telp").val(dataRecord.rekanan_telp);
                         $("#rekanan_email").val(dataRecord.rekanan_email);
                         $("#rekanan_alamat").val(dataRecord.rekanan_alamat);
+                        $("#rekanan_jenis").data('select2').trigger('select', {
+                            data: {"id": dataRecord.rekanan_jenis, "text": dataRecord.rekanan_jenis }
+                        });
                     }
                 },
                 { text: 'Delete', datafield: 'Delete', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
@@ -122,6 +126,8 @@
                 }
             ]
         });
+
+        $('.select2').select2();
     });
 </script>
 
@@ -164,6 +170,13 @@
                                             <input type="text" id="rekanan_nama" name="rekanan_nama" class="form-control" require>
                                         </div>
                                         <div class="form-group">
+                                            <label for="rekanan_jenis">Jenis</label>
+                                            <select class="select2" id="rekanan_jenis" id="rekanan_nama">
+                                                <option value="pabrik">pabrik</option>
+                                                <option value="pelanggan">pelanggan</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="rekanan_telp">Telp</label>
                                             <input type="phone" id="rekanan_telp" name="rekanan_telp" class="form-control">
                                         </div>
@@ -197,6 +210,7 @@
             rekanan_nama : $("#rekanan_nama").val(),
             rekanan_telp : $("#rekanan_telp").val(),
             rekanan_email : $("#rekanan_email").val(),
+            rekanan_jenis : $("#rekanan_jenis").val(),
             rekanan_alamat : $("#rekanan_alamat").val(),
         };
 

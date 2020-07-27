@@ -47,7 +47,7 @@ class M_penerimaan_brg
                 m_rekanan.rekanan_id AS id,
                 m_rekanan.rekanan_kode,
                 m_rekanan.rekanan_nama AS text
-            FROM m_rekanan WHERE rekanan_aktif = 'Y'";
+            FROM m_rekanan WHERE rekanan_aktif = 'Y' AND rekanan_jenis = 'pabrik'";
         if ($search <> '') {
             $sql .= " AND m_rekanan.rekanan_nama LIKE '%".$search."%' ";
         }

@@ -412,7 +412,7 @@
             localdata:  databahanbrg,
             datafields: [
                 { name: 'bahanbrg_id', type: 'int'},
-                { name: 'm_barang_nama', value: 'm_barang_id', values: { source: bahanAdapter.records, value: 'barang_id', name: 'barang_nama' } },
+                { name: 'm_barang_nama', value: 'm_barang_nama', values: { source: bahanAdapter.records, value: 'barang_id', name: 'barang_nama' } },
                 { name: 'm_barang_id', type: 'int'},
                 { name: 'bahanbrg_qty', type: 'float'},
                 { name: 'bahanbrg_ketika', type: 'string'},
