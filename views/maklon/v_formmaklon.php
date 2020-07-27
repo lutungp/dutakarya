@@ -582,18 +582,19 @@
             $("#m_rekanan_id").data('select2').trigger('select', {
                 data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
             });
-            $("#m_pegdriver_id").data('select2').trigger('select', {
-                data: {"id":dat.pegdriver_id, "text": dat.pegdriver_nama }
-            });
-            $("#m_peghelper_id").data('select2').trigger('select', {
-                data: {"id":dat.peghelper_id, "text": dat.peghelper_nama }
-            });
+            // $("#m_pegdriver_id").data('select2').trigger('select', {
+            //     data: {"id":dat.pegdriver_id, "text": dat.pegdriver_nama }
+            // });
+            // $("#m_peghelper_id").data('select2').trigger('select', {
+            //     data: {"id":dat.peghelper_id, "text": dat.peghelper_nama }
+            // });
             $("#m_rekanan_id").prop("disabled", true);
             $('#batal').removeAttr('disabled');
-            if (dat.t_penagihan_no !== '') {
-                var penagihanstr = dat.t_penagihan_no == null || dat.t_penagihan_no == '' ? '' : ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no;
-                swal("Info!", "No. maklon " + dat.maklon_no + penagihanstr, "warning");
-            }
+            console.log('disabled')
+            // if (dat.t_penagihan_no !== '') {
+            //     var penagihanstr = dat.t_penagihan_no == null || dat.t_penagihan_no == '' ? '' : ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no;
+            //     swal("Info!", "No. maklon " + dat.maklon_no + penagihanstr, "warning");
+            // }
         }
 
         $('#batal').on('click', function () {

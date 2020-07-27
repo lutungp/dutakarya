@@ -252,8 +252,7 @@ class M_maklon
                     m_barang.m_satuan_id AS satuanutama,
                     t_maklondet.m_satuan_id,
                     COALESCE(m_satuan_konversi.satkonv_nilai, 1) AS satkonv_nilai,
-                    t_maklondet.maklondet_qty,
-                    t_maklondet.t_returdet_qty
+                    t_maklondet.maklondet_qty
                 FROM t_maklondet 
                 LEFT JOIN m_barang ON m_barang.barang_id = t_maklondet.m_barang_id
                 LEFT JOIN m_satuan_konversi ON m_satuan_konversi.m_satuan_id = t_maklondet.m_satuan_id AND m_satuan_konversi.m_barang_id = t_maklondet.m_barang_id 
@@ -274,8 +273,7 @@ class M_maklon
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satuanutama' => $val['satuanutama'],
                 'maklondet_qty' => $val['maklondet_qty'],
-                'satkonv_nilai' => $val['satkonv_nilai'],
-                't_returdet_qty' => $val['t_returdet_qty']
+                'satkonv_nilai' => $val['satkonv_nilai']
             );
         }
 
