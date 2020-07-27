@@ -343,4 +343,38 @@ class M_returpengiriman
         return $rpengiriman;
     }
 
+    public function getBahanBaku($barang_id, $ketika = 'kirim')
+    {
+        $sql = "SELECT 
+                    bahanbrg_id, 
+                    m_brg_id, 
+                    m_barang_id, 
+                    m_barang.barang_nama, 
+                    m_barang.m_satuan_id,
+                    m_satuan.satuan_nama,
+                    bahanbrg_qty, 
+                    bahanbrg_ketika
+                FROM m_bahanbrg
+                LEFT JOIN m_barang ON m_barang.barang_id = m_bahanbrg.m_barang_id
+                LEFT JOIN m_satuan ON m_satuan.satuan_id = m_barang.m_satuan_id
+                WHERE m_bahanbrg.bahanbrg_aktif = 'Y'
+                AND m_bahanbrg.m_brg_id = $barang_id AND bahanbrg_ketika = '$ketika'";
+        
+        $qbarang = $this->conn2->query($sql);
+        $rbarang = array();
+        while ($val = $qbarang->fetch_array()) {
+            $rbarang[] = array(
+                'bahanbrg_id' => $val['bahanbrg_id'],
+                'm_barang_id' => $val['m_barang_id'],
+                'm_barang_nama' => $val['barang_nama'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'satuan_nama' => $val['satuan_nama'],
+                'bahanbrg_qty' => $val['bahanbrg_qty'],
+                'bahanbrg_ketika' => $val['bahanbrg_ketika'],
+            );
+        }
+
+        return $rbarang;
+    }
+
 }
