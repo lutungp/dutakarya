@@ -62,7 +62,9 @@
                     t_pengirimandet_id : element.t_pengirimandet_id,
                     m_barang_id : element.m_barang_id,
                     m_barang_nama : element.m_barang_nama,
+                    m_bahanbakubrg_id : element.m_bahanbakubrg_id,
                     m_barangsatuan_id : element.m_barangsatuan_id,
+                    m_bahanbakubrg_id : element.m_bahanbakubrg_id,
                     m_satuanpengiriman_id : element.m_satuanpengiriman_id,
                     m_satuanpengiriman_nama : element.m_satuanpengiriman_nama,
                     kirimsatkonv_nilai : element.kirimsatkonv_nilai,
@@ -86,7 +88,8 @@
                     { name: 'satuankonv'},
                     { name: 'm_barang_id', value: 'm_barang_id' },
                     { name: 'm_barang_nama', value: 'm_barang_nama' },
-                    { name: 'm_barangsatuan_id', value: 'm_barangsatuan_id' },
+                    { name: 'm_barangsatuan_id', value: 'm_barangsatuan_id', type : 'int' },
+                    { name: 'm_bahanbakubrg_id', value: 'm_bahanbakubrg_id', type : 'int' },
                     { name: 'm_satuanpengiriman_id', value: 'm_satuanpengiriman_id' },
                     { name: 'm_satuanpengiriman_nama', value: 'm_satuanpengiriman_nama' },
                     { name: 'kirimsatkonv_nilai', value : 'kirimsatkonv_nilai'},
@@ -95,12 +98,9 @@
                     { name: 'm_satuan_id', value: 'm_satuan_id', values: { source: satuanAdapter.records, value: 'value', name: 'label' } },
                     { name: 'returdet_qtyold', type: 'float'},
                     { name: 'returdet_qty', type: 'float'},
-                ],
-                deleterow: function (rowid, commit) {
-                    commit(true);
-                }
+                ]
             };
-
+            
             var returAdapter = new $.jqx.dataAdapter(returGridSource);
             $("#returGrid").jqxGrid({
                 width: "100%",
@@ -203,9 +203,18 @@
                     { text: 'Qty Retur', datafield: 'returdet_qty', cellsalign: 'right', columntype: 'numberinput',
                         createeditor: function (row, value, editor) {
                             editor.jqxNumberInput({ decimalDigits: 0 });
+                            let gridrecords = $('#returGrid').jqxGrid('getrows');
+                            let currentrecord = gridrecords[row];
                             editor.on('keyup', function (event) {
                                 var recorddata = $('#returGrid').jqxGrid('getrenderedrowdata', row);
                                 var val = event.target.value||0;
+                                /* mengisi qty bahan baku */
+                                let bbakuidx = gridrecords.findIndex(x => x.m_bahanbakubrg_id === parseInt(currentrecord.m_barang_id));
+                                if (bbakuidx) {
+                                    let bbkurec = $('#returGrid').jqxGrid('getrenderedrowdata', bbakuidx);
+                                    var qtybbaku = parseInt(bbkurec.satkonv_nilai) * val;
+                                    $("#returGrid").jqxGrid('setcellvalue', bbakuidx, "returdet_qty", qtybbaku);
+                                }
                             });
                         }
                     },
@@ -297,6 +306,7 @@
                     't_retur_id' : $('#retur_id').val(),
                     't_pengirimandet_id' : rec.t_pengirimandet_id,
                     'm_barang_id' : rec.m_barang_id,
+                    'm_bahanbakubrg_id' : rec.m_bahanbakubrg_id,
                     'm_barangsatuan_id' : parseInt(rec.m_barangsatuan_id),
                     'm_satuan_id' : parseInt(m_satuan_id[0].value),
                     'satkonv_nilai' : rec.satkonv_nilai,
@@ -346,6 +356,7 @@
                     't_pengirimandet_id' : rec.t_pengirimandet_id,
                     'm_barang_id' : rec.m_barang_id,
                     'm_barangsatuan_id' : parseInt(rec.m_barangsatuan_id),
+                    'm_bahanbakubrg_id' : rec.m_bahanbakubrg_id,
                     'm_satuan_id' : parseInt(m_satuan_id[0].value),
                     'satkonv_nilai' : rec.satkonv_nilai,
                     'returdet_qtyold' : rec.returdet_qtyold,
@@ -427,6 +438,7 @@
                         t_pengirimandet_id : element.pengirimandet_id,
                         m_barang_id : element.m_barang_id,
                         m_barang_nama : element.barang_nama,
+                        m_bahanbakubrg_id : element.m_bahanbakubrg_id,
                         m_barangsatuan_id : element.m_barangsatuan_id,
                         m_satuanpengiriman_id : element.m_satuan_id,
                         m_satuanpengiriman_nama : element.satuan_nama,
