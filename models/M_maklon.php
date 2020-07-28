@@ -22,7 +22,8 @@ class M_maklon
                     m_rekanan_id,
                     m_rekanan.rekanan_nama,
                     m_user.user_nama,
-                    t_maklon.maklon_created_date
+                    t_maklon.maklon_created_date,
+                    t_maklon.t_hutang_no
                 FROM t_maklon
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_maklon.m_rekanan_id
                 LEFT JOIN m_user ON m_user.user_id = t_maklon.maklon_created_by
@@ -34,6 +35,7 @@ class M_maklon
                 'maklon_id' => $val['maklon_id'],
                 'maklon_no' => $val['maklon_no'],
                 'maklon_tgl' => $val['maklon_tgl'],
+                't_hutang_no' => $val['t_hutang_no'],
                 'm_rekanan_id' => $val['m_rekanan_id'],
                 'rekanan_nama' => $val['rekanan_nama'],
                 'user_nama' => $val['user_nama'],
@@ -160,7 +162,9 @@ class M_maklon
                     m_rekanan.rekanan_kode,
                     m_rekanan.rekanan_nama,
                     m_rekanan.rekanan_alamat,
-                    m_user.user_nama
+                    m_user.user_nama,
+                    t_maklon.t_hutang_id,
+                    COALESCE(t_maklon.t_hutang_no, '') AS t_hutang_no
                 FROM t_maklon
                 LEFT JOIN m_rekanan ON m_rekanan.rekanan_id = t_maklon.m_rekanan_id
                 LEFT JOIN m_user ON m_user.user_id = t_maklon.maklon_created_by
@@ -173,6 +177,8 @@ class M_maklon
         $rmaklon = new stdClass();
         $rmaklon->maklon_id = $row->maklon_id;
         $rmaklon->maklon_no = $row->maklon_no;
+        $rmaklon->t_hutang_id = $row->t_hutang_id;
+        $rmaklon->t_hutang_no = $row->t_hutang_no;
         $rmaklon->maklon_tgl = $row->maklon_tgl;
         $rmaklon->m_rekanan_id = $row->m_rekanan_id;
         $rmaklon->rekanan_kode = $row->rekanan_kode;

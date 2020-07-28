@@ -35,27 +35,14 @@
             };
             var hutang_id = datahutang == null ? 0 : datahutang.datahutang.hutang_id;
             if (hutang_id < 1) {
-                $.post("<?php echo BASE_URL ?>/controllers/C_hutang.php?action=gethutangdet", data, function(result){
+                $.post("<?php echo BASE_URL ?>/controllers/C_hutang.php?action=getmaklondet", data, function(result){
                     var res = JSON.parse(result);
                     if (res.length > 0) {
                         res.forEach(element => {
-                            var datarow = {
-                                hutangdet_id : 0,
-                                t_hutang_id : 0,
-                                t_hutangdet_id : element.hutangdet_id,
-                                hutangdet_noa : element.hutangdet_no,
-                                hutangdet_no : element.hutangdet_no,
-                                hutangdet_tgl : element.hutangdet_tgl,
-                                m_rekanan_id : element.m_rekanan_id,
-                                hutangdet_tagihan : element.hutangdet_total,
-                                hutangdet_total : element.hutangdet_total,
-                                hutangdet_bayarold : 0,
-                                hutangdet_bayar : 0,
-                            };
-                            $("#hutangGrid").jqxGrid('addrow', null, datarow);
+                            $("#hutangGrid").jqxGrid('addrow', null, element);
                         });
-                        $("#hutangGrid").jqxGrid('selectcell', 0, 'hutangdet_no');
-                        $("#hutangGrid").jqxGrid('focus');
+                    //     $("#hutangGrid").jqxGrid('selectcell', 0, 'hutangdet_no');
+                    //     $("#hutangGrid").jqxGrid('focus');
                     }
                 });
             }
@@ -81,12 +68,20 @@
             datafields: [
                 { name: 'hutangdet_id', type: 'int'},
                 { name: 't_hutang_id', type: 'int'},
-                { name: 't_hutangdet_id', type: 'int'},
+                { name: 't_maklon_id', type: 'int'},
+                { name: 'maklon_no', type: 'string'},
+                { name: 'maklon_noa', type: 'string'},
+                { name: 'maklon_tgl', type: 'date'},
+                { name: 't_maklondet_id', type: 'int'},
+                { name: 'm_barang_id', type: 'int'},
+                { name: 'barang_nama', type: 'string'},
+                { name: 'm_satuan_id', type: 'int'},
+                { name: 'satuan_nama', type: 'string'},
+                { name: 't_maklondet_qty', type: 'double'},
+                { name: 't_maklondet_subtotal', type: 'double'},
+                { name: 't_maklondet_ppn', type: 'double'},
                 { name: 'hutangdet_noa', type: 'string'},
-                { name: 'hutangdet_no', type: 'string'},
-                { name: 'hutangdet_tgl', type: 'date'},
                 { name: 'hutangdet_tagihan', type: 'double'},
-                { name: 'hutangdet_total', type: 'double'},
                 { name: 'hutangdet_bayarold', type: 'double'},
                 { name: 'hutangdet_bayar', type: 'double'},
             ],
@@ -116,14 +111,21 @@
                     if (columnheader == 'Tagihan') {
                         if (eventkey.keyCode == 86 && eventkey.ctrlKey == true) {
                             let recorddata = $('#hutangGrid').jqxGrid('getrenderedrowdata', event.args.rowindex);
-                            $("#hutangGrid").jqxGrid('setcellvalue', event.args.rowindex, "hutangdet_total", recorddata.hutangdet_tagihan);
+                            $("#hutangGrid").jqxGrid('setcellvalue', event.args.rowindex, "hutangdet_bayar", recorddata.hutangdet_tagihan);
                             return true;
                         }
                     }
-                    if (columnheader == 'No. hutangdet') {
+                    if (columnheader == 'No. Maklon') {
                         if (eventkey.keyCode == 86 && eventkey.ctrlKey == true) {
                             let recorddata = $('#hutangGrid').jqxGrid('getrenderedrowdata', event.args.rowindex);
-                            $("#hutangGrid").jqxGrid('setcellvalue', event.args.rowindex, "hutangdet_no", recorddata.hutangdet_noa);
+                            $("#hutangGrid").jqxGrid('setcellvalue', event.args.rowindex, "maklon_no", recorddata.maklon_noa);
+                            return true;
+                        }
+                    }
+                    if (columnheader == 'Barang') {
+                        if (eventkey.keyCode == 86 && eventkey.ctrlKey == true) {
+                            let recorddata = $('#hutangGrid').jqxGrid('getrenderedrowdata', event.args.rowindex);
+                            $("#hutangGrid").jqxGrid('setcellvalue', event.args.rowindex, "barang_nama", recorddata.barang_namaa);
                             return true;
                         }
                     }
@@ -131,12 +133,12 @@
             },
             columns: [
                 {
-                    text: 'No. hutangdet', datafield: 'hutangdet_no', displayfield: 'hutangdet_no', editable : false, width : 250,
+                    text: 'No. Maklon', datafield: 'maklon_no', displayfield: 'maklon_no', editable : false, width : 250,
                     cellsrenderer : function (row, column, value) {
                         var recorddata = $('#hutangGrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
-                        html += recorddata.hutangdet_no + "</br>";
-                        html += moment(recorddata.hutangdet_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');
+                        html += recorddata.maklon_no + "</br>";
+                        html += moment(recorddata.maklon_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');
                         html += "</div>";
                         return html;
                     },
@@ -145,8 +147,18 @@
                         return renderstring;
                     }
                 },
+                {
+                    text: 'Barang', datafield: 'barang_nama', displayfield: 'barang_nama', editable : false, width : 250,
+                    cellsrenderer : function (row, column, value) {
+                        var recorddata = $('#hutangGrid').jqxGrid('getrenderedrowdata', row);
+                        var html = "<div style='padding: 5px;'>";
+                        html += recorddata.barang_nama + " " + recorddata.t_maklondet_qty + " " + recorddata.satuan_nama;
+                        html += "</div>";
+                        return html;
+                    }
+                },
                 { 
-                    text: 'Tagihan', datafield: 'hutangdet_total', displayfield: 'hutangdet_total', editable : false, cellsalign : 'right', columntype: 'numberinput',
+                    text: 'Tagihan', datafield: 'hutangdet_tagihan', displayfield: 'hutangdet_tagihan', editable : false, cellsalign : 'right', columntype: 'numberinput',
                     // cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
@@ -154,7 +166,6 @@
                         var subtotal = 0;
                         $.each(aggregates, function (key, value) {
                             subtotal = parseFloat(subtotal) + parseFloat(value);
-                            // var name = key == 'sum' ? 'Sum' : 'Avg';
                             renderstring += '<div style="padding:5px;font-size:16px;"><b>' + subtotal.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</b></div>';
                         });
                         renderstring += "</div>";
@@ -163,14 +174,12 @@
                 },
                 { 
                     text: 'Pembayaran', datafield: 'hutangdet_bayar', displayfield: 'hutangdet_bayar', editable : true, cellsalign : 'right', columntype: 'numberinput',
-                    // cellsformat: 'F',
                     aggregates: ['sum'],
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
                         var subtotal = 0;
                         $.each(aggregates, function (key, value) {
                             subtotal = parseFloat(subtotal) + parseFloat(value);
-                            // var name = key == 'sum' ? 'Sum' : 'Avg';
                             renderstring += '<div style="padding:5px;font-size:16px;"><b>' + subtotal.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</b></div>';
                         });
                         renderstring += "</div>";
@@ -255,14 +264,22 @@
                     rows.push({
                         hutangdet_id : rec.hutangdet_id,
                         t_hutang_id : rec.t_hutang_id,
-                        t_hutangdet_id : rec.t_hutangdet_id,
+                        t_maklon_id : rec.t_maklon_id,
+                        maklon_no : rec.maklon_no,
+                        maklon_noa : rec.maklon_noa,
+                        maklon_tgl : rec.maklon_tgl,
+                        t_maklondet_id : rec.t_maklondet_id,
+                        m_barang_id : rec.m_barang_id,
+                        barang_nama : rec.barang_nama,
+                        m_satuan_id : rec.m_satuan_id,
+                        satuan_nama : rec.satuan_nama,
+                        t_maklondet_qty : parseFloat(rec.t_maklondet_qty),
+                        t_maklondet_subtotal : parseFloat(rec.t_maklondet_subtotal),
+                        t_maklondet_ppn : parseFloat(rec.t_maklondet_ppn),
                         hutangdet_noa : rec.hutangdet_noa,
-                        hutangdet_no : rec.hutangdet_no,
-                        hutangdet_tgl : rec.hutangdet_tgl,
-                        hutangdet_tagihan : rec.hutangdet_tagihan,
-                        hutangdet_total : rec.hutangdet_total,
-                        hutangdet_bayarold : rec.hutangdet_bayarold,
-                        hutangdet_bayar : rec.hutangdet_bayar,
+                        hutangdet_tagihan : parseFloat(rec.hutangdet_tagihan),
+                        hutangdet_bayarold : parseFloat(rec.hutangdet_bayarold),
+                        hutangdet_bayar : parseFloat(rec.hutangdet_bayar),
                     });
                     totalbayar = totalbayar + parseFloat(rec.hutangdet_bayar);
                 }
@@ -272,7 +289,7 @@
                 swal("Info!", "Pembayaran belum diisi sama", "error");
                 return false;
             }
-
+            
             $.ajax({
                 url: "<?php echo BASE_URL ?>/controllers/C_hutang.php?action=submit",
                 type: "post",

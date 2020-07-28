@@ -419,13 +419,13 @@
                                     <input type="text" class="form-control" id="maklon_no" name="maklon_no" readonly>
                                 </div>
                                 <?php 
-                                $t_penagihan_no = isset($data->datamaklon->t_penagihan_no) ? $data->datamaklon->t_penagihan_no : '';
-                                if ($t_penagihan_no <> '') {
+                                $t_hutang_no = isset($data->datamaklon->t_hutang_no) ? $data->datamaklon->t_hutang_no : '';
+                                if ($t_hutang_no <> '') {
                                     ?>
                                     <div class="form-group">
-                                        <label for="penagihan_no">No. Penagihan</label>
-                                        <input type="hidden" id="penagihan_id" name="penagihan_id">
-                                        <input type="text" class="form-control" id="penagihan_no" name="penagihan_no" value="<?php echo $data->datamaklon->t_penagihan_no ?>" readonly>
+                                        <label for="hutang_no">No. hutang</label>
+                                        <input type="hidden" id="hutang_id" name="hutang_id">
+                                        <input type="text" class="form-control" id="hutang_no" name="hutang_no" value="<?php echo $data->datamaklon->t_hutang_no ?>" readonly>
                                     </div>
                                 <?php } ?>
                             </div>
@@ -458,13 +458,13 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <?php 
-                        $t_penagihan_no = isset($data->datamaklon->t_penagihan_no) ? $data->datamaklon->t_penagihan_no : '';
-                        if ($delete <> '' &&  $t_penagihan_no == '') { ?>
+                        <?php
+                        $t_hutang_no = isset($data->datamaklon->t_hutang_no) ? $data->datamaklon->t_hutang_no : '';
+                        if ($delete <> '' &&  $t_hutang_no == '') { ?>
                         <button type="button" id="batal" class="btn btn-danger btn-sm" disabled>Batal</button>
                         <?php } ?>
                         <?php 
-                        if ((($create <> '' && isset($data->maklon_id) == 0) || ($update <> '' && $data->maklon_id > 0) && $t_penagihan_no == '')) { ?>
+                        if ((($create <> '' && isset($data->maklon_id) == 0) || ($update <> '' && $data->maklon_id > 0) && $t_hutang_no == '')) { ?>
                         <button type="submit" id="simpan" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
                         <!-- <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button> -->
@@ -590,11 +590,10 @@
             // });
             $("#m_rekanan_id").prop("disabled", true);
             $('#batal').removeAttr('disabled');
-            console.log('disabled')
-            // if (dat.t_penagihan_no !== '') {
-            //     var penagihanstr = dat.t_penagihan_no == null || dat.t_penagihan_no == '' ? '' : ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no;
-            //     swal("Info!", "No. maklon " + dat.maklon_no + penagihanstr, "warning");
-            // }
+            if (dat.t_hutang_no !== '') {
+                var hutangstr = dat.t_hutang_no == null || dat.t_hutang_no == '' ? '' : ", sudah dibuat hutang dengan No. hutang " + dat.t_hutang_no;
+                swal("Info!", "No. Maklon " + dat.maklon_no + hutangstr, "warning");
+            }
         }
 
         $('#batal').on('click', function () {

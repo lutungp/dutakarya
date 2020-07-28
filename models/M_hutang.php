@@ -65,4 +65,57 @@ class M_hutang
         }
         return $rekanan;
     }
+
+    public function getMaklondet($rekanan_id, $tanggal)
+    {
+        $sql = "SELECT
+                    t_maklondet.maklondet_id,
+                    t_maklondet.t_maklon_id,
+                    t_maklon.maklon_no,
+                    t_maklon.maklon_tgl,
+                    t_maklondet.m_barang_id,
+                    m_barang.barang_nama,
+                    t_maklondet.m_satuan_id,
+                    m_satuan.satuan_nama,
+                    t_maklondet.maklondet_qty,
+                    t_maklondet.maklondet_harga,
+                    t_maklondet.maklondet_subtotal,
+                    t_maklondet.maklondet_ppn,
+                    t_maklondet.maklondet_total-t_maklondet.t_hutanglunasdet_bayar AS maklondet_total
+                FROM t_maklondet
+                INNER JOIN t_maklon ON t_maklon.maklon_id = t_maklondet.t_maklon_id
+                INNER JOIN m_barang ON m_barang.barang_id = t_maklondet.m_barang_id
+                INNER JOIN m_satuan ON m_satuan.satuan_id = t_maklondet.m_satuan_id
+                WHERE t_maklondet.maklondet_aktif = 'Y'
+                AND t_maklon.m_rekanan_id = $rekanan_id AND t_maklon.maklon_tgl <= '$tanggal' 
+                AND t_maklondet.maklondet_total > COALESCE(t_maklondet.t_hutanglunasdet_bayar, 0)
+                AND t_maklondet.m_bahanbakubrg_id = 0";
+        
+        $qmaklon = $this->conn2->query($sql);
+        $result = array();
+        while ($val = $qmaklon->fetch_array()) {
+            $result[] = array(
+                'hutangdet_id' => 0,
+                't_hutang_id'  => 0,
+                't_maklon_id'  => $val['t_maklon_id'],
+                'maklon_no'    => $val['maklon_no'],
+                'maklon_noa' => $val['maklon_no'],
+                'maklon_tgl'   => $val['maklon_tgl'],
+                't_maklondet_id' => $val['maklondet_id'],
+                'm_barang_id' => $val['m_barang_id'],
+                'barang_nama' => $val['barang_nama'],
+                'barang_namaa' => $val['barang_nama'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'satuan_nama' => $val['satuan_nama'],
+                't_maklondet_qty' => $val['maklondet_qty'],
+                't_maklondet_subtotal' => $val['maklondet_subtotal'],
+                't_maklondet_ppn' => $val['maklondet_ppn'],
+                'hutangdet_tagihan' => $val['maklondet_subtotal']+$val['maklondet_ppn'],
+                'hutangdet_bayarold' => 0,
+                'hutangdet_bayar' => 0,
+            );
+        }
+
+        return $result;
+    }
 }

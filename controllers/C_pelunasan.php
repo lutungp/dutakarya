@@ -76,7 +76,7 @@ class C_pelunasan
             $where = "WHERE pelunasan_id = " . $data['pelunasan_id'];
             $action = query_update($this->conn2, 't_pelunasan', $field, $where);
         } else {
-            $pelunasan_no = getPenomoran($this->conn2, 'KW', 't_pelunasan', 'pelunasan_id', 'pelunasan_no', $pelunasan_tgl);
+            $pelunasan_no = getPenomoran($this->conn2, 'PL', 't_pelunasan', 'pelunasan_id', 'pelunasan_no', $pelunasan_tgl);
             $fieldSave = ['pelunasan_no', 'pelunasan_tgl', 'm_rekanan_id', 'pelunasan_created_by', 'pelunasan_created_date'];
             $dataSave = [$pelunasan_no, $pelunasan_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
             $pelunasan_id = query_create($this->conn2, 't_pelunasan', $fieldSave, $dataSave);
