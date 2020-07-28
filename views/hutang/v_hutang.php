@@ -4,21 +4,21 @@
 ?>
 <script type="text/javascript">
     $(document).ready(function () {
-        var url = "<?php echo BASE_URL ?>/controllers/C_pelunasan.php?action=getpelunasan";
+        var url = "<?php echo BASE_URL ?>/controllers/C_hutang.php?action=gethutang";
         // prepare the data
         var source =
         {
             datatype: "json",
             datafields: [
-                { name: 'pelunasan_id', type: 'int' },
-                { name: 'pelunasan_no', type: 'string' },
-                { name: 'pelunasan_tgl', type: 'date' },
+                { name: 'hutang_id', type: 'int' },
+                { name: 'hutang_no', type: 'string' },
+                { name: 'hutang_tgl', type: 'date' },
                 { name: 'm_rekanan_id', type: 'int' },
                 { name: 'rekanan_nama', type: 'string' },
                 { name: 'user_nama', type: 'string' },
-                { name: 'pelunasan_created_date', type: 'date' },
+                { name: 'hutang_created_date', type: 'date' },
             ],
-            id: 'pelunasan_id',
+            id: 'hutang_id',
             url: url
         };
         var addfilter = function () {
@@ -56,11 +56,11 @@
             },
             autoshowfiltericon: true,
             columns: [
-                { text: 'No. Pelunasan', datafield: 'pelunasan_no', width : 180, cellsalign: 'center'},
-                { text: 'Tgl. Transaksi', datafield: 'pelunasan_tgl', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 150},
+                { text: 'No. Hutang', datafield: 'hutang_no', width : 180, cellsalign: 'center'},
+                { text: 'Tgl. Transaksi', datafield: 'hutang_tgl', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 150},
                 { text: 'Rekanan', datafield: 'rekanan_nama'},
                 { text: 'Dibuat Oleh', datafield: 'user_nama', width : 150},
-                { text: 'Dibuat Tanggal', datafield: 'pelunasan_created_date', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 150},
+                { text: 'Dibuat Tanggal', datafield: 'hutang_created_date', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 150},
                 <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
                     cellsrenderer: function () {
@@ -69,7 +69,7 @@
                         editrow = row;
                         var dataRecord = $("#grid").jqxGrid('getrowdata', editrow);
                         $("#grid").offset();
-                        window.location.href='<?php echo BASE_URL ?>/controllers/C_pelunasan.php?action=formtransaksi&id='+dataRecord.pelunasan_id;
+                        window.location.href='<?php echo BASE_URL ?>/controllers/C_hutang.php?action=formtransaksi&id='+dataRecord.hutang_id;
                     }
                 },
                 <?php } ?>
@@ -95,6 +95,6 @@
 </section>
 <script>
     function addtransaksi() {
-        window.location.href='<?php echo BASE_URL ?>/controllers/C_pelunasan.php?action=formtransaksi';
+        window.location.href='<?php echo BASE_URL ?>/controllers/C_hutang.php?action=formtransaksi';
     }
 </script>

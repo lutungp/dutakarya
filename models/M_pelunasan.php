@@ -22,11 +22,11 @@ class M_pelunasan
                     t_pelunasan.m_rekanan_id,
                     m_rekanan.rekanan_nama,
                     t_pelunasan.pelunasan_created_date,
-                    m_user.user_nama 
+                    m_user.user_nama
                 FROM
                     t_pelunasan
                     INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_pelunasan.m_rekanan_id
-                    INNER JOIN m_user ON m_user.user_id = t_pelunasan.pelunasan_created_by 
+                    INNER JOIN m_user ON m_user.user_id = t_pelunasan.pelunasan_created_by
                 WHERE t_pelunasan.pelunasan_aktif = 'Y' ORDER BY t_pelunasan.pelunasan_created_date DESC";
 
         $qpelunasan = $this->conn2->query($sql);

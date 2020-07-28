@@ -492,5 +492,4 @@ class M_pengiriman_brg
 
         return $rbarang;
     }
-
 }
