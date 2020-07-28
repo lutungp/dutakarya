@@ -121,6 +121,7 @@ class C_hutang
                 }
 
                 /* update maklon status maklon */
+                $hutangdet_bayar = $val['hutangdet_bayar'] - $val['hutangdet_bayarold'];
                 $hutangArr[] = array(
                     'hutang_id' => $hutang_id,
                     'hutang_no' => $hutang_no,
@@ -128,7 +129,7 @@ class C_hutang
                     't_maklon_id' => $val['t_maklon_id'],
                     't_maklondet_id' => $val['t_maklondet_id'],
                     'operator' => $val['hutangdet_bayarold'] < $val['hutangdet_bayar'] ? '+' : '-',
-                    'hutangdet_bayar' => $val['hutangdet_bayar']
+                    'hutangdet_bayar' => $hutangdet_bayar > 0 ? $hutangdet_bayar : (-1) * $hutangdet_bayar
                 );
             }
             $this->updateStatusMaklon($hutangArr);
@@ -136,7 +137,7 @@ class C_hutang
 
         if ($action) {
             $result['code'] = 200;
-            $result['id'] = $pelunasan_id;
+            $result['id'] = $hutang_id;
         } else {
             $result['code'] = 202;
         }
@@ -160,6 +161,52 @@ class C_hutang
             query_update($this->conn2, 't_maklondet', $field, $where);
         }
     }
+
+    public function batal($data)
+    {
+        $hutang_id = $data['hutang_id'];
+        $fieldSave = ['hutang_aktif', 'hutang_void_by', 'hutang_void_date', 'hutang_void_alasan'];
+        $dataSave = ['N', $_SESSION["USER_ID"], date("Y-m-d H:i:s"), $data['alasan']];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+        $where = "WHERE hutang_id = " . $hutang_id;
+        $action = query_update($this->conn2, 't_hutang_lunas', $field, $where);
+
+        $fieldSave = ['t_hutanglunasdet_bayar'];
+        foreach ($data['rows'] as $key => $valpenagihan) {
+            $dataSave = ['t_hutanglunasdet_bayar-'.$valpenagihan['hutangdet_bayar']];
+            $field = '';
+            foreach ($fieldSave as $key => $value) {
+                $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+            $where = "WHERE maklondet_id = " . $valpenagihan['t_maklondet_id'];
+            query_update($this->conn2, 't_maklondet', $field, $where);
+        }
+
+        $fieldSave = ['hutangdet_aktif'];
+        $dataSave = ['N'];
+        $field = "";
+        foreach ($fieldSave as $key => $value) {
+            $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
+            if (!preg_match("/revised/i", $value)) {
+                $field .= "$value = '$dataSave[$key]'" . $regex . " ";
+            } else {
+                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            }
+        }
+        $where = "WHERE t_hutang_id = " . $hutang_id;
+        $action = query_update($this->conn2, 't_hutang_lunasdet', $field, $where);
+        $result['code'] = 200;
+        echo json_encode($result);
+    }
 }
 
 $hutang = new C_hutang($conn, $conn2, $config);
@@ -181,9 +228,9 @@ switch ($action) {
     case 'getmaklondet':
         $hutang->getMaklondet($_POST);
         break;
-    // case 'getbarang':
-    //     $hutang->getBarang();
-    //     break;
+    case 'batal':
+        $hutang->batal($_POST);
+        break;
     default:
         templateAdmin($conn2, '../views/hutang/v_hutang.php', NULL, 'KEUANGAN', 'PELUNASAN HUTANG');
     break;

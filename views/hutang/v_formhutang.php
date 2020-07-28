@@ -133,7 +133,7 @@
             },
             columns: [
                 {
-                    text: 'No. Maklon', datafield: 'maklon_no', displayfield: 'maklon_no', editable : false, width : 250,
+                    text: 'No. Maklon', datafield: 'maklon_no', displayfield: 'maklon_no', editable : false, width :200,
                     cellsrenderer : function (row, column, value) {
                         var recorddata = $('#hutangGrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
@@ -148,7 +148,7 @@
                     }
                 },
                 {
-                    text: 'Barang', datafield: 'barang_nama', displayfield: 'barang_nama', editable : false, width : 250,
+                    text: 'Barang', datafield: 'barang_nama', displayfield: 'barang_nama', editable : false,
                     cellsrenderer : function (row, column, value) {
                         var recorddata = $('#hutangGrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
@@ -160,7 +160,7 @@
                 { 
                     text: 'Tagihan', datafield: 'hutangdet_tagihan', displayfield: 'hutangdet_tagihan', editable : false, cellsalign : 'right', columntype: 'numberinput',
                     // cellsformat: 'F',
-                    aggregates: ['sum'],
+                    aggregates: ['sum'], width :200,
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
                         var subtotal = 0;
@@ -174,7 +174,7 @@
                 },
                 { 
                     text: 'Pembayaran', datafield: 'hutangdet_bayar', displayfield: 'hutangdet_bayar', editable : true, cellsalign : 'right', columntype: 'numberinput',
-                    aggregates: ['sum'],
+                    aggregates: ['sum'],width :200,
                     aggregatesrenderer: function (aggregates, column, element) {
                         var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
                         var subtotal = 0;
@@ -233,7 +233,7 @@
                         <?php if (($create <> '' && isset($data->hutang_id) == 0) || ($update <> '' && $data->hutang_id > 0)) { ?>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
-                        <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button>
+                        <!-- <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button> -->
                     </div>
                 </form>
             </div>
@@ -304,7 +304,7 @@
                 success : function (res) {
                     res = JSON.parse(res);
                     if (res['code'] == 200) {
-                        window.open('<?php echo BASE_URL;?>/controllers/C_hutang.php?action=exportpdf&id=' + res['id']);
+                        // window.open('<?php //echo BASE_URL;?>/controllers/C_hutang.php?action=exportpdf&id=' + res['id']);
                         resetForm();
                         swal("Info!", "Hutang Berhasil disimpan", "success");
                     } else {
@@ -318,16 +318,19 @@
             var rows = [];
             var griddata = $('#hutangGrid').jqxGrid('getdatainformation');
             if(griddata.rowscount == 0) {
-                swal("Info!", "Pembatalan Gagal disimpan, detail hutangdet masih kosong, refresh halaman terlebih dahulu", "warning");
+                swal("Info!", "Pembatalan Gagal disimpan, detail pelunasan masih kosong, refresh halaman terlebih dahulu", "warning");
                 return false;
             }
             for (var i = 0; i < griddata.rowscount; i++){
                 var rec = $('#hutangGrid').jqxGrid('getrenderedrowdata', i);
+                console.log(rec)
                 rows.push({
-                    t_hutangdet_id : rec.t_hutangdet_id,
-                    hutangdet_bayar : rec.hutangdet_bayar
-                }); 
+                    t_maklon_id: rec.t_maklon_id,
+                    t_maklondet_id: rec.t_maklondet_id,
+                    hutangdet_bayar: rec.hutangdet_bayarold,
+                });
             }
+
             swal({
                 title: "Batalkan hutang " + $('#hutang_no').val(),
                 text: "Alasan dihapus :",
