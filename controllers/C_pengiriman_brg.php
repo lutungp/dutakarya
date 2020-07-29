@@ -245,7 +245,7 @@ class C_pengiriman_brg
     public function nonaktifdetail($data, $pengiriman_no, $pengiriman_tgl)
     {
         $pengirimandet_idArr = array();
-        for ($i=0; $i < count($data); $i++) { 
+        for ($i=0; $i < count($data); $i++) {
             array_push($pengirimandet_idArr, $data[$i]['pengirimandet_id']);
         }
         $pengirimandet_id = implode(',', $pengirimandet_idArr);
