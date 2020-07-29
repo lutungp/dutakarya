@@ -142,6 +142,30 @@ class M_hutang
         return $rhutang;
     }
 
+    public function getDataHutang2($hutang_id)
+    {
+        $sql = "SELECT
+                    t_hutang_lunas.hutang_id,
+                    t_hutang_lunas.hutang_no,
+                    t_hutang_lunas.hutang_tgl,
+                    t_hutang_lunas.m_rekanan_id,
+                    m_rekanan.rekanan_kode,
+                    m_rekanan.rekanan_nama,
+                    m_rekanan.rekanan_alamat,
+                    t_hutang_lunas.hutang_created_date,
+                    m_user.user_nama 
+                FROM
+                    t_hutang_lunas
+                    INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_hutang_lunas.m_rekanan_id
+                    INNER JOIN m_user ON m_user.user_id = t_hutang_lunas.hutang_created_by 
+                WHERE t_hutang_lunas.hutang_id = $hutang_id ";
+        
+        $qhutang = $this->conn2->query($sql);
+        $rhutang = $qhutang->fetch_object();
+
+        return $rhutang;
+    }
+
     public function getDataHutangDetail($hutang_id)
     {
         $sql = "SELECT 

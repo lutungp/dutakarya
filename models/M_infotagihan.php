@@ -19,7 +19,7 @@ class M_infotagihan
                 m_rekanan.rekanan_id,
                 m_rekanan.rekanan_kode,
                 m_rekanan.rekanan_nama
-            FROM m_rekanan WHERE rekanan_aktif = 'Y'";
+            FROM m_rekanan WHERE rekanan_aktif = 'Y' AND m_rekanan.rekanan_jenis = 'pelanggan'";
 
         $qrekanan = $this->conn2->query($sql);
         $rekanan = [];
@@ -40,7 +40,8 @@ class M_infotagihan
                     t_penagihan.penagihan_no,
                     t_penagihan.penagihan_tgl,
                     t_penagihan.m_rekanan_id,
-                    m_rekanan.rekanan_nama,
+                    CONCAT('<b>[', m_rekanan.rekanan_kode, ']</b> ', m_rekanan.rekanan_nama) AS rekanan_nama,
+                    m_rekanan.rekanan_alamat,
                     SUM(t_penagihan_detail.penagihandet_ppn) AS penagihandet_ppn,
                     SUM(t_penagihan_detail.penagihandet_subtotal) AS penagihandet_subtotal,
                     SUM(t_penagihan_detail.penagihandet_potongan) AS penagihandet_potongan,
@@ -60,8 +61,10 @@ class M_infotagihan
                     t_penagihan.penagihan_no,
                     t_penagihan.penagihan_tgl,
                     t_penagihan.m_rekanan_id,
-                    m_rekanan.rekanan_nama";
-
+                    m_rekanan.rekanan_nama,
+                    m_rekanan.rekanan_kode,
+                    m_rekanan.rekanan_alamat";
+        
         $qpenagihan = $this->conn2->query($sql);
         $rpenagihan = array();
         while ($val = $qpenagihan->fetch_array()) {
@@ -71,6 +74,7 @@ class M_infotagihan
                 'penagihan_tgl' => $val['penagihan_tgl'],
                 'm_rekanan_id' => $val['m_rekanan_id'],
                 'rekanan_nama' => $val['rekanan_nama'],
+                'rekanan_alamat' => $val['rekanan_alamat'],
                 'penagihandet_ppn' => $val['penagihandet_ppn'],
                 'penagihandet_subtotal' => $val['penagihandet_subtotal'],
                 'penagihandet_potongan' => $val['penagihandet_potongan'],
@@ -86,22 +90,23 @@ class M_infotagihan
     {
         $sql = "SELECT 
                     t_pengiriman.pengiriman_id,
-                    t_pengiriman.pengiriman_no,
-                    t_pengiriman.pengiriman_tgl,
+                    COALESCE(t_pengiriman.pengiriman_no, '') AS pengiriman_no,
+                    COALESCE(t_pengiriman.pengiriman_tgl, '') AS pengiriman_tgl,
                     t_pengiriman.m_rekanan_id,
-                    m_rekanan.rekanan_nama,
+                    CONCAT('<b>[', m_rekanan.rekanan_kode, ']</b> ', m_rekanan.rekanan_nama) AS rekanan_nama,
+                    m_rekanan.rekanan_alamat,
                     t_pengiriman_detail.m_barang_id,
                     m_barang.barang_nama,
                     m_satuan.satuan_nama,
                     t_pengiriman_detail.pengirimandet_qty,
-                    t_penagihan.penagihan_no,
-                    t_penagihan.penagihan_tgl
+                    COALESCE(t_penagihan.penagihan_no, '') AS penagihan_no,
+                    COALESCE(t_penagihan.penagihan_tgl, '') AS penagihan_tgl
                 FROM t_pengiriman
                 INNER JOIN t_pengiriman_detail ON t_pengiriman_detail.t_pengiriman_id = t_pengiriman.pengiriman_id
                 INNER JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
                 INNER JOIN m_satuan ON m_satuan.satuan_id = t_pengiriman_detail.m_satuan_id
                 INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
-                INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_pengiriman.t_penagihan_id
+                LEFT JOIN t_penagihan ON t_penagihan.penagihan_id = t_pengiriman.t_penagihan_id
                 WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y'";
         if ($rekananArr <> '') {
             $sql .= " AND m_rekanan.rekanan_id IN (".$rekananArr.") ";
@@ -118,10 +123,11 @@ class M_infotagihan
             $sql .= " AND t_penagihan.penagihan_id > 0 ";
         }
         if ($tagih == 'N') {
-            $sql .= " AND t_penagihan.penagihan_id < 1 ";
+            $sql .= " AND (t_penagihan.penagihan_id < 1 OR t_penagihan.penagihan_id IS NULL) ";
         }
-
+        
         $sql .=  "ORDER BY t_pengiriman.pengiriman_tgl ASC ";
+        
         $qbarang = $this->conn2->query($sql);
         $rbarang = array();
         if ($qbarang) {
@@ -132,6 +138,7 @@ class M_infotagihan
                     'pengiriman_tgl' => $val['pengiriman_tgl'],
                     'm_rekanan_id' => $val['m_rekanan_id'],
                     'rekanan_nama' => $val['rekanan_nama'],
+                    'rekanan_alamat' => $val['rekanan_alamat'],
                     'm_barang_id' => $val['m_barang_id'],
                     'barang_nama' => $val['barang_nama'],
                     'satuan_nama' => $val['satuan_nama'],

@@ -233,7 +233,7 @@
                         <?php if (($create <> '' && isset($data->hutang_id) == 0) || ($update <> '' && $data->hutang_id > 0)) { ?>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
-                        <!-- <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button> -->
+                        <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;" onclick="cetak()">Cetak</button>
                     </div>
                 </form>
             </div>
@@ -304,7 +304,7 @@
                 success : function (res) {
                     res = JSON.parse(res);
                     if (res['code'] == 200) {
-                        // window.open('<?php //echo BASE_URL;?>/controllers/C_hutang.php?action=exportpdf&id=' + res['id']);
+                        window.open('<?php echo BASE_URL;?>/controllers/C_hutang.php?action=exportpdf&id=' + res['id']);
                         resetForm();
                         swal("Info!", "Hutang Berhasil disimpan", "success");
                     } else {

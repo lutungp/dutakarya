@@ -3,9 +3,9 @@
 include '../config/database.php';
 include '../config/config.php';
 include '../config/helpers.php';
-include '../models/M_infotagihan.php';
+include '../models/M_infohutang.php';
 
-class C_infotagihan
+class C_infohutang
 {
     public $conn = false;
     public $conn2 = false;
@@ -14,7 +14,7 @@ class C_infotagihan
     {
         $this->conn = $conn;
         $this->conn2 = $conn2;
-        $this->model = new M_infotagihan($conn, $conn2, $config);
+        $this->model = new M_infohutang($conn, $conn2, $config);
     }
 
     public function getRekanan()
@@ -23,21 +23,21 @@ class C_infotagihan
         echo json_encode($data);
     }
 
-    public function getPenagihan($tanggal, $data)
+    public function getHutangLunas($tanggal, $data)
     {
         $rekananArr = isset($data['rekananArr']) ? implode(',', $data['rekananArr']) : '';
         $tanggal = $tanggal <> '' ? $tanggal : explode(' - ', $data['tanggal']);
-        $data = $this->model->getPenagihan($tanggal, $rekananArr);
+        $data = $this->model->getHutangLunas($tanggal, $rekananArr);
         echo json_encode($data);
     }
 
-    public function getPengiriman($tanggal, $data)
+    public function getMaklon($tanggal, $data)
     {
         $rekananArr = isset($data['rekananArr']) ? implode(',', $data['rekananArr']) : '';
         $barangArr = isset($data['barangArr']) ? implode(',', $data['barangArr']) : '';
         $tanggal = $tanggal <> '' ? $tanggal : explode(' - ', $data['tanggal']);
         $tagih = isset($data['tagih']) ? $data['tagih'] : '';
-        $data = $this->model->getPengiriman($tanggal, $rekananArr, $barangArr, $tagih);
+        $data = $this->model->getMaklon($tanggal, $rekananArr, $barangArr, $tagih);
         echo json_encode($data);
     }
 
@@ -48,25 +48,25 @@ class C_infotagihan
     }
 }
 
-$infotagihan = new C_infotagihan($conn, $conn2, $config);
+$infohutang = new C_infohutang($conn, $conn2, $config);
 $data = $_GET;
 $action = isset($data["action"]) ? $data["action"] : "";
 switch ($action) {
     case 'getrekanan':
-        $infotagihan->getRekanan();
+        $infohutang->getRekanan();
         break;
-    case 'getpenagihan':
+    case 'gethutanglunas':
         $tanggal = isset($_GET['tanggal']);
-        $infotagihan->getPenagihan($tanggal, $_POST);
+        $infohutang->getHutangLunas($tanggal, $_POST);
         break;
-    case 'getpengiriman':
+    case 'getmaklon':
         $tanggal = isset($_GET['tanggal']);
-        $infotagihan->getPengiriman($tanggal, $_POST);
+        $infohutang->getMaklon($tanggal, $_POST);
         break;
     case 'getbarang':
-        $infotagihan->getBarang();
+        $infohutang->getBarang();
         break;
     default:
-        templateAdmin($conn2, '../views/info/v_infotagihan.php', NULL, "INFO", "INFO PIUTANG");
+        templateAdmin($conn2, '../views/info/v_infohutang.php', NULL, "INFO", "INFO HUTANG");
         break;
 }

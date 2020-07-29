@@ -17,7 +17,7 @@
                 rekananArr.push(elem.value)
             });
             $.ajax({
-                url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getpenagihan",
+                url: "<?php echo BASE_URL ?>/controllers/C_infohutang.php?action=gethutanglunas",
                 type: "post",
                 datatype : 'json',
                 data: {
@@ -29,17 +29,12 @@
                     $("#grid").jqxGrid('clear');
                     res.forEach(element => {
                         let datarow = {
-                            penagihan_id : element.penagihan_id,
-                            penagihan_no : element.penagihan_no,
-                            penagihan_tgl : element.penagihan_tgl,
-                            m_rekanan_id : element.m_rekanan_id,
+                            hutang_no : element.hutang_no,
+                            hutang_tgl : element.hutang_tgl,
                             rekanan_nama : element.rekanan_nama,
                             rekanan_alamat : element.rekanan_alamat,
-                            penagihandet_ppn : element.penagihandet_ppn,
-                            penagihandet_subtotal : element.penagihandet_subtotal,
-                            penagihandet_potongan : element.penagihandet_potongan,
-                            penagihandet_total : element.penagihandet_total,
-                            t_pelunasandet_bayar : element.t_pelunasandet_bayar
+                            hutangdet_tagihan : element.hutangdet_tagihan,
+                            hutangdet_bayar : element.hutangdet_bayar,
                         };
                         $("#grid").jqxGrid('addrow', null, datarow);
                     });
@@ -50,19 +45,14 @@
         var gridSource ={
             datatype: "json",
             datafields: [
-                { name: 'penagihan_id', type: 'int' },
-                { name: 'penagihan_no', type: 'string' },
-                { name: 'penagihan_tgl', type: 'date' },
-                { name: 'm_rekanan_id', type: 'int' },
+                { name: 'hutang_no', type: 'string' },
+                { name: 'hutang_tgl', type: 'date' },
                 { name: 'rekanan_nama', type: 'string' },
                 { name: 'rekanan_alamat', type: 'string' },
-                { name: 'penagihandet_ppn', type: 'float' },
-                { name: 'penagihandet_subtotal', type: 'number' },
-                { name: 'penagihandet_potongan', type: 'number' },
-                { name: 'penagihandet_total', type: 'number' },
-                { name: 't_pelunasandet_bayar', type: 'number' }
+                { name: 'hutangdet_tagihan', type: 'number' },
+                { name: 'hutangdet_bayar', type: 'number' },
             ],
-            url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getpenagihan&tanggal=" + tanggal
+            url: "<?php echo BASE_URL ?>/controllers/C_infohutang.php?action=gethutanglunas&tanggal=" + tanggal
         };
 
         var gridAdapter = new $.jqx.dataAdapter(gridSource);
@@ -92,7 +82,7 @@
                         { name: 'rekanan_nama' }
                     ],
                     id: 'id',
-                    url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getrekanan",
+                    url: "<?php echo BASE_URL ?>/controllers/C_infohutang.php?action=getrekanan",
                     async: false
                 };
                 var rekananAdapter = new $.jqx.dataAdapter(rekananSource);
@@ -103,21 +93,14 @@
                     var rekanan = $("#rekananfilter").jqxDropDownList('getCheckedItems');
                     applyfilter(tanggal, rekanan);
                 });
-
-                // $("#excelExport").jqxButton({ width: 120, height: 28 });
-                // $("#excelExport").click(function () {
-                //     $("#grid").jqxGrid('exportdata', 'xlsx', 'jqxGrid');           
-                // });
             },
             columns: [
-                { text: 'No. Penagihan', datafield: 'penagihan_no', columntype: 'textbox', width : 110, cellsalign : 'center' },
-                { text: 'Tanggal', datafield: 'penagihan_tgl',  cellsalign: 'center',  cellsformat: 'dd-MM-yyyy', width : 110 },
+                { text: 'No. Hutang', datafield: 'hutang_no', columntype: 'textbox', width : 110, cellsalign : 'center', },
+                { text: 'Tanggal', datafield: 'hutang_tgl',  cellsalign: 'center',  cellsformat: 'dd-MM-yyyy', width : 110 },
                 { text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left' },
                 { text: 'Alamat', datafield: 'rekanan_alamat',  cellsalign: 'left' },
-                { text: 'Subtotal', datafield: 'penagihandet_subtotal',  cellsalign: 'right', cellsformat : 'F', width : 100 },
-                { text: 'Potongan', datafield: 'penagihandet_potongan',  cellsalign: 'right', cellsformat : 'F', width : 100 },
-                { text: 'Total', datafield: 'penagihandet_total',  cellsalign: 'right', cellsformat : 'F', width : 100 },
-                { text: 'Dibayar', datafield: 't_pelunasandet_bayar',  cellsalign: 'right', cellsformat : 'F', width : 100 },
+                { text: 'Subtotal', datafield: 'hutangdet_tagihan',  cellsalign: 'right', cellsformat : 'F', width : 100 },
+                { text: 'Dibayar', datafield: 'hutangdet_bayar',  cellsalign: 'right', cellsformat : 'F', width : 100 },
             ]
         });
     }
@@ -133,7 +116,7 @@
                 barangArr2.push(elem.value)
             });
             $.ajax({
-                url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getpengiriman",
+                url: "<?php echo BASE_URL ?>/controllers/C_infohutang.php?action=getmaklon",
                 type: "post",
                 datatype : 'json',
                 data: {
@@ -144,24 +127,22 @@
                 },
                 success : function (res) {
                     res = JSON.parse(res);
-                    $("#jadwalkirimgrid").jqxGrid('clear');
+                    $("#jadwalmaklongrid").jqxGrid('clear');
                     res.forEach(element => {
                         let datarow = {
-                            pengiriman_id : element.pengiriman_id,
-                            pengiriman_no : element.pengiriman_no,
-                            pengiriman_tgl : element.pengiriman_tgl,
-                            penagihan_no : element.penagihan_no,
-                            penagihan_tgl : element.penagihan_tgl,
-                            m_rekanan_id : element.m_rekanan_id,
+                            maklon_no : element.maklon_no,
+                            maklon_tgl : element.maklon_tgl,
+                            hutang_no : element.hutang_no,
+                            hutang_tgl : element.hutang_tgl,
+                            maklon_no : element.maklon_no,
+                            maklon_tgl : element.maklon_tgl,
                             rekanan_nama : element.rekanan_nama,
                             rekanan_alamat : element.rekanan_alamat,
-                            m_barang_id : element.m_barang_id,
                             barang_nama : element.barang_nama,
                             satuan_nama : element.satuan_nama,
-                            pengirimandet_qty : element.pengirimandet_qty,
+                            maklondet_qty : element.maklondet_qty,
                         };
-                        console.log(datarow)
-                        $("#jadwalkirimgrid").jqxGrid('addrow', null, datarow);
+                        $("#jadwalmaklongrid").jqxGrid('addrow', null, datarow);
                     });
                 }
             });
@@ -170,31 +151,30 @@
         var gridSource2 ={
             datatype: "json",
             datafields: [
-                { name: 'pengiriman_id', type: 'int' },
-                { name: 'pengiriman_no', type: 'string' },
-                { name: 'pengiriman_tgl', type: 'date' },
-                { name: 'penagihan_no', type: 'string' },
-                { name: 'penagihan_tgl', type: 'date' },
-                { name: 'm_rekanan_id', type: 'int' },
+                { name: 'maklon_no', type: 'string' },
+                { name: 'maklon_tgl', type: 'date' },
+                { name: 'maklon_no', type: 'string' },
+                { name: 'maklon_tgl', type: 'date' },
                 { name: 'rekanan_nama', type: 'string' },
                 { name: 'rekanan_alamat', type: 'string' },
-                { name: 'm_barang_id', type: 'int' },
                 { name: 'barang_nama', type: 'string' },
                 { name: 'satuan_nama', type: 'string' },
-                { name: 'pengirimandet_qty', type: 'float' },
+                { name: 'maklondet_qty', type: 'float' },
+                { name: 'hutang_no', type: 'string' },
+                { name: 'hutang_tgl', type: 'date' },
             ],
-            url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getpengiriman&tanggal=" + tanggal
+            url: "<?php echo BASE_URL ?>/controllers/C_infohutang.php?action=getmaklon&tanggal=" + tanggal
         };
 
-        var gridAdapter = new $.jqx.dataAdapter(gridSource2);
+        var gridAdapter2 = new $.jqx.dataAdapter(gridSource2);
         var tagih = [
-            { 'penagihan' : '', 'penagihan_text' : 'Semua'},
-            { 'penagihan' : 'N', 'penagihan_text' : 'Belum ditagih'},
-            { 'penagihan' : 'Y', 'penagihan_text' : 'Sudah ditagih'}
+            { 'penagihan' : '', 'maklon_text' : 'Semua'},
+            { 'penagihan' : 'N', 'maklon_text' : 'Belum dibayar'},
+            { 'penagihan' : 'Y', 'maklon_text' : 'Sudah dibayar'}
         ];
-        $("#jadwalkirimgrid").jqxGrid({
+        $("#jadwalmaklongrid").jqxGrid({
             width: '100%',
-            source: gridAdapter,
+            source: gridAdapter2,
             autoheight : true,
             altrows: true,
             autorowheight : true,
@@ -222,7 +202,7 @@
                         { name: 'rekanan_nama' }
                     ],
                     id: 'id',
-                    url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getrekanan",
+                    url: "<?php echo BASE_URL ?>/controllers/C_infohutang.php?action=getrekanan",
                     async: false
                 };
                 var rekananAdapter2 = new $.jqx.dataAdapter(rekananSource2);
@@ -233,11 +213,11 @@
                         { name: 'barang_id' },
                         { name: 'barang_nama' }
                     ],
-                    url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getbarang",
+                    url: "<?php echo BASE_URL ?>/controllers/C_infohutang.php?action=getbarang",
                 };
                 var barangAdapter = new $.jqx.dataAdapter(barangSource2);
                 $("#barangfilter2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 200, height: 28,});
-                $("#tagih2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: tagih, displayMember: "penagihan_text", valueMember: "penagihan", width: 120, height: 28,});
+                $("#tagih2").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: tagih, displayMember: "maklon_text", valueMember: "penagihan", width: 120, height: 28,});
 
                 $("#applyfilter2").jqxButton({ template: "primary", width: 80, height: 28 });
                 $("#applyfilter2").on('click', function() {
@@ -248,31 +228,28 @@
                     applyfilter2(tanggal, rekanan, barang, tagih);
                 });
 
-                // $("#excelExport").jqxButton({ width: 120, height: 28 });
-                // $("#excelExport").click(function () {
-                //     $("#grid").jqxGrid('exportdata', 'xlsx', 'jqxGrid');
-                // });
             },
             columns: [
                 { 
-                    text: 'No. Pengiriman', datafield: 'pengiriman_no', columntype: 'textbox', width : 170, cellsalign : 'center',
+                    text: 'No. Maklon', datafield: 'maklon_no', columntype: 'textbox', width : 170, cellsalign : 'center',
                     cellsrenderer : function (row, column, value) {
-                        var recorddata = $('#jadwalkirimgrid').jqxGrid('getrenderedrowdata', row);
+                        var recorddata = $('#jadwalmaklongrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
-                        html += recorddata.pengiriman_no + "</br>";
-                        html += moment(recorddata.pengiriman_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');
+                        html += recorddata.maklon_no + "</br>";
+                        html += moment(recorddata.maklon_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');
                         html += "</div>";
                         return html;
                     },
                 },
                 { 
-                    text: 'No. Penagihan', datafield: 'penagihan_no', columntype: 'textbox', width : 170, cellsalign : 'center',
+                    text: 'No. Pelunasan', datafield: 'hutang_no', columntype: 'textbox', width : 170, cellsalign : 'center',
                     cellsrenderer : function (row, column, value) {
-                        var recorddata = $('#jadwalkirimgrid').jqxGrid('getrenderedrowdata', row);
+                        var recorddata = $('#jadwalmaklongrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
-                        html += recorddata.penagihan_no + "</br>";
-                        if (recorddata.penagihan_tgl !== '') {
-                            html += moment(recorddata.penagihan_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');    
+                        console.log(recorddata);
+                        html += recorddata.hutang_no + "</br>";
+                        if (recorddata.hutang_tgl !== '') {
+                            html += moment(recorddata.hutang_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');    
                         }
                         html += "</div>";
                         return html;
@@ -281,7 +258,7 @@
                 { 
                     text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left',
                     cellsrenderer : function (row, column, value) {
-                        var recorddata = $('#jadwalkirimgrid').jqxGrid('getrenderedrowdata', row);
+                        var recorddata = $('#jadwalmaklongrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
                         html += recorddata.rekanan_nama + "</br>";
                         html += 'Alamat : ' + recorddata.rekanan_alamat + "</br>";
@@ -290,9 +267,18 @@
                     },
                 },
                 // { text: 'Alamat', datafield: 'rekanan_alamat',  cellsalign: 'left' },
-                { text: 'Nama Barang', datafield: 'barang_nama',  cellsalign: 'left' },
+                { 
+                    text: 'Nama Barang', datafield: 'barang_nama',  cellsalign: 'left',
+                    cellsrenderer : function (row, column, value) {
+                        var recorddata = $('#jadwalmaklongrid').jqxGrid('getrenderedrowdata', row);
+                        var html = "<div style='padding: 5px;'>";
+                        html += recorddata.barang_nama + "</br>";
+                        html += "</div>";
+                        return html;
+                    },
+                },
                 { text: 'Satuan', datafield: 'satuan_nama',  cellsalign: 'left', width : 120 },
-                { text: 'Qty', datafield: 'pengirimandet_qty',  cellsalign: 'right', width : 120 },
+                { text: 'Qty', datafield: 'maklondet_qty',  cellsalign: 'right', width : 120 },
             ]
         });
     }
@@ -313,7 +299,7 @@
             <div class="card">
                 <div class="card-body default">
                     <div></div>
-                    <div id="jadwalkirimgrid"></div>
+                    <div id="jadwalmaklongrid"></div>
                 </div>
             </div>
         </div>
