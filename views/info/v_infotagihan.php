@@ -71,6 +71,8 @@
             source: gridAdapter,
             altrows: true,
             showtoolbar: true,
+            showstatusbar: true,
+            showaggregates: true,
             rendertoolbar: function (toolbar) {
                 var me = this;
                 var container = $("<div style='overflow: hidden; position: relative; margin: 2px;' class='row'></div>");
@@ -114,10 +116,52 @@
                 { text: 'Tanggal', datafield: 'penagihan_tgl',  cellsalign: 'center',  cellsformat: 'dd-MM-yyyy', width : 110 },
                 { text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left' },
                 { text: 'Alamat', datafield: 'rekanan_alamat',  cellsalign: 'left' },
-                { text: 'Subtotal', datafield: 'penagihandet_subtotal',  cellsalign: 'right', cellsformat : 'F', width : 100 },
+                { 
+                    text: 'Subtotal', datafield: 'penagihandet_subtotal',  cellsalign: 'right', cellsformat : 'F', width : 100,
+                    aggregates: ['sum'],
+                    aggregatesrenderer: function (aggregates, column, element) {
+                        var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
+                        var subtotal = 0;
+                        $.each(aggregates, function (key, value) {
+                            subtotal = parseFloat(subtotal) + parseFloat(value);
+                            // var name = key == 'sum' ? 'Sum' : 'Avg';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                        });
+                        renderstring += "</div>";
+                        return renderstring;
+                    }
+                },
                 { text: 'Potongan', datafield: 'penagihandet_potongan',  cellsalign: 'right', cellsformat : 'F', width : 100 },
-                { text: 'Total', datafield: 'penagihandet_total',  cellsalign: 'right', cellsformat : 'F', width : 100 },
-                { text: 'Dibayar', datafield: 't_pelunasandet_bayar',  cellsalign: 'right', cellsformat : 'F', width : 100 },
+                { 
+                    text: 'Total', datafield: 'penagihandet_total',  cellsalign: 'right', cellsformat : 'F', width : 100,
+                    aggregates: ['sum'],
+                    aggregatesrenderer: function (aggregates, column, element) {
+                        var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
+                        var subtotal = 0;
+                        $.each(aggregates, function (key, value) {
+                            subtotal = parseFloat(subtotal) + parseFloat(value);
+                            // var name = key == 'sum' ? 'Sum' : 'Avg';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                        });
+                        renderstring += "</div>";
+                        return renderstring;
+                    }
+                },
+                { 
+                    text: 'Dibayar', datafield: 't_pelunasandet_bayar',  cellsalign: 'right', cellsformat : 'F', width : 100,
+                    aggregates: ['sum'],
+                    aggregatesrenderer: function (aggregates, column, element) {
+                        var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
+                        var subtotal = 0;
+                        $.each(aggregates, function (key, value) {
+                            subtotal = parseFloat(subtotal) + parseFloat(value);
+                            // var name = key == 'sum' ? 'Sum' : 'Avg';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                        });
+                        renderstring += "</div>";
+                        return renderstring;
+                    }
+                },
             ]
         });
     }
@@ -160,7 +204,7 @@
                             satuan_nama : element.satuan_nama,
                             pengirimandet_qty : element.pengirimandet_qty,
                         };
-                        console.log(datarow)
+                        
                         $("#jadwalkirimgrid").jqxGrid('addrow', null, datarow);
                     });
                 }
@@ -199,6 +243,8 @@
             altrows: true,
             autorowheight : true,
             showtoolbar: true,
+            showstatusbar: true,
+            showaggregates: true,
             rendertoolbar: function (toolbar) {
                 var me = this;
                 var container = $("<div style='overflow: hidden; position: relative; margin: 2px;' class='row'></div>");

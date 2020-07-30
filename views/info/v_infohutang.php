@@ -61,6 +61,8 @@
             source: gridAdapter,
             altrows: true,
             showtoolbar: true,
+            showstatusbar: true,
+            showaggregates: true,
             rendertoolbar: function (toolbar) {
                 var me = this;
                 var container = $("<div style='overflow: hidden; position: relative; margin: 2px;' class='row'></div>");
@@ -100,7 +102,21 @@
                 { text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left' },
                 { text: 'Alamat', datafield: 'rekanan_alamat',  cellsalign: 'left' },
                 { text: 'Subtotal', datafield: 'hutangdet_tagihan',  cellsalign: 'right', cellsformat : 'F', width : 100 },
-                { text: 'Dibayar', datafield: 'hutangdet_bayar',  cellsalign: 'right', cellsformat : 'F', width : 100 },
+                { 
+                    text: 'Dibayar', datafield: 'hutangdet_bayar',  cellsalign: 'right', cellsformat : 'F', width : 100, 
+                    aggregates: ['sum'],
+                    aggregatesrenderer: function (aggregates, column, element) {
+                        var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
+                        var subtotal = 0;
+                        $.each(aggregates, function (key, value) {
+                            subtotal = parseFloat(subtotal) + parseFloat(value);
+                            // var name = key == 'sum' ? 'Sum' : 'Avg';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                        });
+                        renderstring += "</div>";
+                        return renderstring;
+                    }
+                },
             ]
         });
     }
@@ -141,6 +157,8 @@
                             barang_nama : element.barang_nama,
                             satuan_nama : element.satuan_nama,
                             maklondet_qty : element.maklondet_qty,
+                            maklondet_total : element.maklondet_total,
+                            t_hutanglunasdet_bayar : element.t_hutanglunasdet_bayar
                         };
                         $("#jadwalmaklongrid").jqxGrid('addrow', null, datarow);
                     });
@@ -175,10 +193,12 @@
         $("#jadwalmaklongrid").jqxGrid({
             width: '100%',
             source: gridAdapter2,
-            autoheight : true,
             altrows: true,
+            autoheight : true,
             autorowheight : true,
             showtoolbar: true,
+            showstatusbar: true,
+            showaggregates: true,
             rendertoolbar: function (toolbar) {
                 var me = this;
                 var container = $("<div style='overflow: hidden; position: relative; margin: 2px;' class='row'></div>");
@@ -246,7 +266,6 @@
                     cellsrenderer : function (row, column, value) {
                         var recorddata = $('#jadwalmaklongrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
-                        console.log(recorddata);
                         html += recorddata.hutang_no + "</br>";
                         if (recorddata.hutang_tgl !== '') {
                             html += moment(recorddata.hutang_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');    
@@ -279,6 +298,36 @@
                 },
                 { text: 'Satuan', datafield: 'satuan_nama',  cellsalign: 'left', width : 120 },
                 { text: 'Qty', datafield: 'maklondet_qty',  cellsalign: 'right', width : 120 },
+                { 
+                    text: 'Tagihan', datafield: 'maklondet_total',  cellsalign: 'right', width : 120, cellformat : 'F',
+                    aggregates: ['sum'],
+                    aggregatesrenderer: function (aggregates, column, element) {
+                        var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
+                        var subtotal = 0;
+                        $.each(aggregates, function (key, value) {
+                            subtotal = parseFloat(subtotal) + parseFloat(value);
+                            // var name = key == 'sum' ? 'Sum' : 'Avg';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                        });
+                        renderstring += "</div>";
+                        return renderstring;
+                    }
+                },
+                { 
+                    text: 'Terbayar', datafield: 't_hutanglunasdet_bayar',  cellsalign: 'right', width : 120, cellformat : 'F',
+                    aggregates: ['sum'],
+                    aggregatesrenderer: function (aggregates, column, element) {
+                        var renderstring = "<div class='jqx-widget-content jqx-widget-content-office' style='float: left; width: 100%; height: 100%; '>";
+                        var subtotal = 0;
+                        $.each(aggregates, function (key, value) {
+                            subtotal = parseFloat(subtotal) + parseFloat(value);
+                            // var name = key == 'sum' ? 'Sum' : 'Avg';
+                            renderstring += '<div style="padding:5px;font-size:16px;"><b>' + value + '</b></div>';
+                        });
+                        renderstring += "</div>";
+                        return renderstring;
+                    }
+                },
             ]
         });
     }

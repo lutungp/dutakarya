@@ -105,7 +105,9 @@ class M_infohutang
                     m_satuan.satuan_nama,
                     t_maklondet.maklondet_qty,
                     COALESCE(t_hutang_lunas.hutang_no, '') AS hutang_no,
-                    COALESCE(t_hutang_lunas.hutang_tgl, '') AS hutang_tgl
+                    COALESCE(t_hutang_lunas.hutang_tgl, '') AS hutang_tgl,
+                    t_maklondet.maklondet_total,
+                    t_maklondet.t_hutanglunasdet_bayar
                 FROM t_maklon
                 INNER JOIN t_maklondet ON t_maklondet.t_maklon_id = t_maklon.maklon_id
                 INNER JOIN m_barang ON m_barang.barang_id = t_maklondet.m_barang_id
@@ -146,7 +148,9 @@ class M_infohutang
                     'satuan_nama' => $val['satuan_nama'],
                     'maklondet_qty' => $val['maklondet_qty'],
                     'hutang_no' => $val['hutang_no'],
-                    'hutang_tgl' => $val['hutang_tgl']
+                    'hutang_tgl' => $val['hutang_tgl'],
+                    'maklondet_total' => $val['maklondet_total'],
+                    't_hutanglunasdet_bayar' => $val['t_hutanglunasdet_bayar']
                 );
             }
         }
