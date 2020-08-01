@@ -110,7 +110,7 @@ class C_stockopname
                     $where = "WHERE stockopnamedet_id = " . $val['stockopnamedet_id'];
                     query_update($this->conn2, 't_stockopnamedet', $field, $where);
                 } else {
-                    $fieldSave = ['t_stockopname_id', 'm_barang_id', 'm_satuan_id', 'stockopnamedet_qty', 'stockopnamedet_created_by', 'stockopnamedet_created_date'];
+                    $fieldSave = ['t_stockopname_id', 'm_barang_id', 'm_satuan_id', 't_barangtrans_akhir', 'stockopnamedet_qty', 'stockopnamedet_created_by', 'stockopnamedet_created_date'];
                     $dataSave = [$stockopname_id, $val['m_barang_id'], $val['m_satuan_id'], $val['t_barangtrans_akhir'], $val['stockopnamedet_qty'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     $stockopnamedet_id = query_create($this->conn2, 't_stockopnamedet', $fieldSave, $dataSave);
                 }

@@ -35,7 +35,7 @@
             var penagihan_id = datapenagihan == null ? 0 : datapenagihan.datapenagihan.penagihan_id;
             if (penagihan_id < 1) {
                 $.post("<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=getpengiriman", data, function(result){
-                    var res = JSON.parse(result);
+                    let res = JSON.parse(result);
                     if (res.length > 0) {
                         res.forEach(element => {
                             var datarow = {
@@ -60,13 +60,49 @@
                                 penagihandet_potongan : element.pengirimandet_potongan,
                                 penagihandet_total : element.pengirimandet_total-(element.t_returdet_qty*element.pengirimandet_harga),
                                 t_returdet_qty : element.t_returdet_qty,
+                                penagihandet_jenis : ''
                             };
-                            console.log(datarow)
+                            
                             $("#penagihanGrid").jqxGrid('addrow', null, datarow);
                         });   
                     }
                 });
             }
+
+            $.post("<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=getsewa", data, function(result){
+                let res = JSON.parse(result);
+                if (res.length > 0) {
+                    res.forEach(element => {
+                        let hargakontrakdet_ppn = element.hargakontrakdet_ppn == 'Y' ? element.hargakontrakdet_harga*10/100 : 0;
+                        var datarow = {
+                            penagihandet_id : 0,
+                            t_penagihan_id : 0,
+                            m_rekanan_id : data.m_rekanan_id,
+                            t_pengiriman_id : 0,
+                            pengiriman_no : '',
+                            pengiriman_tgl : '',
+                            t_pengirimandet_id :0 ,
+                            m_barang_id : element.m_barang_id,
+                            barang_nama : element.barang_nama,
+                            m_barangsatuan_id : element.m_satuan_id,
+                            m_barangsatuan_nama : element.satuan_nama,
+                            m_satuan_id : element.m_satuan_id,
+                            satkonv_nilai : element.satuan_nama,
+                            penagihandet_qty : 1,
+                            penagihandet_qtyreal : 1,
+                            penagihandet_harga : element.hargakontrakdet_harga,
+                            penagihandet_subtotal : element.hargakontrakdet_harga,
+                            penagihandet_ppn : hargakontrakdet_ppn,
+                            penagihandet_potongan : 0,
+                            penagihandet_total : element.hargakontrakdet_harga + hargakontrakdet_ppn,
+                            t_returdet_qty : 0,
+                            penagihandet_jenis : 'sewa'
+                        };
+                        
+                        $("#penagihanGrid").jqxGrid('addrow', null, datarow);
+                    });   
+                }
+            });
         });
 
         
@@ -108,6 +144,7 @@
                 penagihandet_potongan : element.penagihandet_potongan,
                 penagihandet_total : element.penagihandet_total,
                 t_returdet_qty : element.t_returdet_qty,
+                penagihandet_jenis : ''
             };
             datapenagihandet.push(datdet);
         }
@@ -136,6 +173,7 @@
                 { name: 'penagihandet_potongan', type: 'float'},
                 { name: 'penagihandet_total', type: 'float'},
                 { name: 't_returdet_qty', type: 'float'},
+                { name: 'penagihandet_jenis', type: 'string'},
             ],
         };
 
@@ -179,7 +217,7 @@
                         var recorddata = $('#penagihanGrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
                         html += recorddata.pengiriman_no + "</br>";
-                        html += moment(recorddata.pengiriman_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');
+                        html += recorddata.pengiriman_tgl != '' ? moment(recorddata.pengiriman_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY') : '';
                         html += "</div>";
                         return html;
                     },
@@ -357,6 +395,7 @@
                     penagihandet_potongan : parseFloat(rec.penagihandet_potongan),
                     penagihandet_total : parseFloat(rec.penagihandet_total),
                     t_returdet_qty : parseFloat(rec.t_returdet_qty),
+                    penagihandet_jenis : re.penagihandet_jenis
                 }); 
             }
             $.ajax({

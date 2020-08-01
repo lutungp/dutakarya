@@ -107,7 +107,8 @@ class M_infotagihan
                 INNER JOIN m_satuan ON m_satuan.satuan_id = t_pengiriman_detail.m_satuan_id
                 INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_pengiriman.m_rekanan_id
                 LEFT JOIN t_penagihan ON t_penagihan.penagihan_id = t_pengiriman.t_penagihan_id
-                WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y'";
+                WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y'
+				AND t_pengiriman_detail.m_bahanbakubrg_id = 0";
         if ($rekananArr <> '') {
             $sql .= " AND m_rekanan.rekanan_id IN (".$rekananArr.") ";
         }

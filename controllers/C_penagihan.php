@@ -54,6 +54,19 @@ class C_penagihan
         echo json_encode($data);
     }
 
+    public function getSewa($data)
+    {
+        $m_rekanan_id = $data['m_rekanan_id'];
+        $penagihan_tgl = $data['penagihan_tgl'];
+        $day = date('N', strtotime($penagihan_tgl));
+        $week = getWeeks($penagihan_tgl, $day) - 1;
+        $month = intval(date('m', strtotime($penagihan_tgl)));
+        $year = intval(date('Y', strtotime($penagihan_tgl)));
+        $data = $this->model->getSewa($m_rekanan_id, $month, $year, $penagihan_tgl);
+
+        echo json_encode($data);
+    }
+
     public function submit($data)
     {
         $penagihan_id = $data['penagihan_id'];
@@ -352,6 +365,9 @@ switch ($action) {
         break;
     case 'getpengiriman':
         $penagihan->getPengiriman($_POST);
+        break;
+    case 'getsewa':
+        $penagihan->getSewa($_POST);
         break;
     case 'getpenagihan':
         $penagihan->getPenagihan();

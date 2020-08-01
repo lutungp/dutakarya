@@ -68,11 +68,14 @@ class C_kontrakrekanan
         if (isset($data['rows'])) {
             foreach ($data['rows'] as $key => $val) {
                 $hargakontrakdet_id = $val['hargakontrakdet_id'];
+                $hargakontrakdet_sewa = $val['hargakontrakdet_sewa'] == 'true' ? 'Y' : 'N';
+                $hargakontrakdet_brgrusak = $val['hargakontrakdet_brgrusak'] == 'true' ? 'Y' : 'N';
                 $hargakontrakdet_ppn = $val['hargakontrakdet_ppn'] == 'true' ? 'Y' : 'N';
-                
                 if ($hargakontrakdet_id > 0) {
-                    $fieldSave = ['t_hargakontrak_id', 'm_rekanan_id', 'm_barang_id', 'm_satuan_id', 'hargakontrakdet_tgl', 'hargakontrakdet_harga', 'hargakontrakdet_ppn', 'hargakontrakdet_updated_by', 'hargakontrakdet_updated_date', 'hargakontrakdet_revised'];
-                    $dataSave = [$hargakontrak_id, $m_rekanan_id, $val['m_barang_id'], $val['m_satuan_id'], $hargakontrak_tgl, $val['hargakontrakdet_harga'], $hargakontrakdet_ppn,  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'hargakontrakdet_revised+1'];
+                    $fieldSave = ['t_hargakontrak_id', 'm_rekanan_id', 'm_barang_id', 'm_satuan_id', 'hargakontrakdet_tgl', 'hargakontrakdet_harga', 
+                                  'hargakontrakdet_ppn', 'hargakontrakdet_sewa', 'hargakontrakdet_brgrusak', 'hargakontrakdet_updated_by', 'hargakontrakdet_updated_date', 'hargakontrakdet_revised'];
+                    $dataSave = [$hargakontrak_id, $m_rekanan_id, $val['m_barang_id'], $val['m_satuan_id'], $hargakontrak_tgl, $val['hargakontrakdet_harga'], 
+                                 $hargakontrakdet_ppn, $hargakontrakdet_sewa, $hargakontrakdet_brgrusak, $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'hargakontrakdet_revised+1'];
                     $field = "";
                     foreach ($fieldSave as $key => $value) {
                         $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -85,8 +88,10 @@ class C_kontrakrekanan
                     $where = "WHERE hargakontrakdet_id = " . $val['hargakontrakdet_id'];
                     query_update($this->conn2, 't_hargakontrak_detail', $field, $where);
                 } else {
-                    $fieldSave = ['t_hargakontrak_id', 'm_rekanan_id', 'm_barang_id', 'm_satuan_id', 'hargakontrakdet_tgl', 'hargakontrakdet_harga', 'hargakontrakdet_ppn', 'hargakontrakdet_created_by', 'hargakontrakdet_created_date'];
-                    $dataSave = [$hargakontrak_id, $m_rekanan_id, $val['m_barang_id'], $val['m_satuan_id'], $hargakontrak_tgl, $val['hargakontrakdet_harga'], $hargakontrakdet_ppn,  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                    $fieldSave = ['t_hargakontrak_id', 'm_rekanan_id', 'm_barang_id', 'm_satuan_id', 'hargakontrakdet_tgl', 'hargakontrakdet_harga', 
+                                    'hargakontrakdet_ppn', 'hargakontrakdet_sewa', 'hargakontrakdet_brgrusak', 'hargakontrakdet_created_by', 'hargakontrakdet_created_date'];
+                    $dataSave = [$hargakontrak_id, $m_rekanan_id, $val['m_barang_id'], $val['m_satuan_id'], $hargakontrak_tgl, $val['hargakontrakdet_harga'], 
+                                    $hargakontrakdet_ppn, $hargakontrakdet_sewa, $hargakontrakdet_brgrusak, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     $hargakontrakdet_id = query_create($this->conn2, 't_hargakontrak_detail', $fieldSave, $dataSave);
                 }
             }

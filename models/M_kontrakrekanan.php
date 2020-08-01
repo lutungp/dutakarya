@@ -77,6 +77,8 @@ class M_kontrakrekanan
                     m_barang.m_satuan_id AS m_barangsatuan_id,
                     m_satuan.satuan_nama AS m_satuan_id,
                     m_satuan_konversi.satkonv_nilai,
+                    t_hargakontrak_detail.hargakontrakdet_sewa,
+                    t_hargakontrak_detail.hargakontrakdet_brgrusak,
                     t_hargakontrak_detail.hargakontrakdet_ppn,
                     t_hargakontrak_detail.hargakontrakdet_harga
                 FROM t_hargakontrak_detail
@@ -88,18 +90,20 @@ class M_kontrakrekanan
         $qkontrak = $this->conn2->query($sql);
         $rkontrak = array();
         while ($val = $qkontrak->fetch_array()) {
-        $rkontrak[] = array(
-            'hargakontrakdet_id' => $val['hargakontrakdet_id'],
-            't_hargakontrak_id' => $val['t_hargakontrak_id'],
-            'hargakontrakdet_tgl' => $val['hargakontrakdet_tgl'],
-            'm_rekanan_id' => $val['m_rekanan_id'],
-            'm_barang_id' => $val['m_barang_id'],
-            'm_barangsatuan_id' => $val['m_barangsatuan_id'],
-            'm_satuan_id' => $val['m_satuan_id'],
-            'satkonv_nilai' => $val['satkonv_nilai'],
-            'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'] == 'Y' ? true : false,
-            'hargakontrakdet_harga' => $val['hargakontrakdet_harga'],
-        );
+            $rkontrak[] = array(
+                'hargakontrakdet_id' => $val['hargakontrakdet_id'],
+                't_hargakontrak_id' => $val['t_hargakontrak_id'],
+                'hargakontrakdet_tgl' => $val['hargakontrakdet_tgl'],
+                'm_rekanan_id' => $val['m_rekanan_id'],
+                'm_barang_id' => $val['m_barang_id'],
+                'm_barangsatuan_id' => $val['m_barangsatuan_id'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'satkonv_nilai' => $val['satkonv_nilai'],
+                'hargakontrakdet_sewa' => $val['hargakontrakdet_sewa'] == 'Y' ? true : false,
+                'hargakontrakdet_brgrusak' => $val['hargakontrakdet_brgrusak'] == 'Y' ? true : false,
+                'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'] == 'Y' ? true : false,
+                'hargakontrakdet_harga' => $val['hargakontrakdet_harga'],
+            );
         }
 
         return $rkontrak;

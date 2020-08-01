@@ -68,11 +68,12 @@ class C_pengiriman_brg
     public function simpanPengiriman($data)
     {
         $pengiriman_tgl = date('Y-m-d', strtotime($data['pengiriman_tgl']));
-        $pengiriman_id = $data['pengiriman_id'];
-        $pengiriman_no = $data['pengiriman_no'];
+        $pengiriman_id = $data['pengiriman_id'] > 0 ? $data['pengiriman_id'] : 0;
+        $pengiriman_no = $data['pengiriman_no'] > 0 ? $data['pengiriman_no'] : 0;
+		$rit = $data['rit'] > 0 ? $data['rit'] : 1;
         if ($pengiriman_id > 0) {
             $fieldSave = ['pengiriman_tgl', 'm_pegdriver_id', 'm_peghelper_id', 'm_rekanan_id', 'rit', 'pengiriman_updated_by', 'pengiriman_updated_date', 'pengiriman_revised'];
-            $dataSave = [$pengiriman_tgl, $data['m_pegdriver_id'], $data['m_peghelper_id'], $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengiriman_revised+1'];
+            $dataSave = [$pengiriman_tgl, $data['m_pegdriver_id'], $data['m_peghelper_id'], $data['m_rekanan_id'], $rit, $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'pengiriman_revised+1'];
             $field = "";
             foreach ($fieldSave as $key => $value) {
                 $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -87,7 +88,7 @@ class C_pengiriman_brg
         } else {
             $pengiriman_no = getPenomoran($this->conn2, 'KM', 't_pengiriman', 'pengiriman_id', 'pengiriman_no', $pengiriman_tgl);
             $fieldSave = ['pengiriman_no', 'pengiriman_tgl', 'm_pegdriver_id', 'm_peghelper_id', 'm_rekanan_id', 'rit', 'pengiriman_created_by', 'pengiriman_created_date'];
-            $dataSave = [$pengiriman_no, $pengiriman_tgl, $data['m_pegdriver_id'], $data['m_peghelper_id'], $data['m_rekanan_id'], $data['rit'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+            $dataSave = [$pengiriman_no, $pengiriman_tgl, $data['m_pegdriver_id'], $data['m_peghelper_id'], $data['m_rekanan_id'], $rit, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
             $pengiriman_id = query_create($this->conn2, 't_pengiriman', $fieldSave, $dataSave);
         }
         /* nonaktif detail terlebih dahulu */

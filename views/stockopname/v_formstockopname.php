@@ -270,7 +270,7 @@
                     'hapusdetail' : hapusdetail
                 },
                 success : function (res) {
-                    res - JSON.parse(res)
+                    res = JSON.parse(res)
                     if (res['code'] == 200) {
                         resetForm();
                         swal("Info!", "stockopname Berhasil disimpan", "success");

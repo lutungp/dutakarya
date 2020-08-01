@@ -63,12 +63,15 @@
                     m_barangsatuan_id : element.m_barangsatuan_id,
                     m_satuan_id : element.m_satuan_id,
                     satkonv_nilai : element.satkonv_nilai,
+                    hargakontrakdet_sewa : element.hargakontrakdet_sewa,
+                    hargakontrakdet_brgrusak : element.hargakontrakdet_brgrusak,
                     hargakontrakdet_ppn : element.hargakontrakdet_ppn,
                     hargakontrakdet_harga : element.hargakontrakdet_harga,
                     satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==element.m_barang_id))
                 };
                 hargakontrakdet.push(datdet);
             }
+            console.log(hargakontrakdet)
             var hargakontrakGridSource = {
                 datatype: "array",
                 localdata:  hargakontrakdet,
@@ -80,22 +83,11 @@
                     { name: 'm_barangsatuan_id', type: 'int'},
                     { name: 'm_satuan_id'},
                     { name: 'satkonv_nilai'},
+                    { name: 'hargakontrakdet_sewa', type: 'boolean'},
+                    { name: 'hargakontrakdet_brgrusak', type: 'boolean'},
                     { name: 'hargakontrakdet_ppn', type: 'boolean'},
                     { name: 'hargakontrakdet_harga', type: 'float'},
                 ],
-                addrow: function (rowid, rowdata, position, commit) {
-                    // synchronize with the server - send insert command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
-                    commit(true);
-                },
-                deleterow: function (rowid, commit) {
-                    // synchronize with the server - send delete command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    commit(true);
-                }
             };
 
             var generaterow = function (i) {
@@ -107,6 +99,8 @@
                     m_barangsatuan_id : 0,
                     m_satuan_id : '',
                     satkonv_nilai : 0,
+                    hargakontrakdet_sewa : false,
+                    hargakontrakdet_brgrusak : false,
                     hargakontrakdet_ppn : false,
                     hargakontrakdet_harga : 0,
                 };
@@ -206,7 +200,9 @@
                         },
                     },
                     { text: 'Harga', datafield: 'hargakontrakdet_harga', cellsalign: 'right', width : 200 },
-                    { text: 'PPN', datafield: 'hargakontrakdet_ppn', threestatecheckbox: false, columntype: 'checkbox', width: 70 },
+                    { text: 'Sewa Bulanan', datafield: 'hargakontrakdet_sewa', threestatecheckbox: false, columntype: 'checkbox', width: 90 },
+                    { text: 'Ganti Rugi', datafield: 'hargakontrakdet_brgrusak', threestatecheckbox: false, columntype: 'checkbox', width: 90 },
+                    { text: 'PPN', datafield: 'hargakontrakdet_ppn', threestatecheckbox: false, columntype: 'checkbox', width: 90 },
                 ]
             });
         });
@@ -316,6 +312,8 @@
                     m_barangsatuan_id : parseInt(m_barang_id[0].satuan_id||0),
                     m_satuan_id : parseInt(m_satuan_id[0].value||0),
                     satkonv_nilai : parseFloat(satkonv_nilai),
+                    hargakontrakdet_sewa : rec.hargakontrakdet_sewa,
+                    hargakontrakdet_brgrusak : rec.hargakontrakdet_brgrusak,
                     hargakontrakdet_ppn : rec.hargakontrakdet_ppn,
                     hargakontrakdet_harga : parseFloat(rec.hargakontrakdet_harga),
                 }); 

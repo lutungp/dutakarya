@@ -478,13 +478,16 @@
                 pengirimandet_id : 0,
                 t_pengiriman_id : 0,
                 satuankonv : JSON.stringify(satKonv.filter(p=>parseInt(p.m_barang_id)==record.m_barang_id)),
-                m_barang_id : record.barang_nama,
+				m_barang_id : record.m_barang_id,
+                m_barang_nama : record.barang_nama,
                 m_barangsatuan_id : record.m_satuan_id,
+				m_bahanbakubrg_id : 0,
                 hargakontrak : record.hargakontrak,
                 hargakontrakdet_ppn : record.hargakontrakdet_ppn,
                 pengirimandet_ppn : ppn,
                 pengirimandet_harga : record.hargakontrak,
-                m_satuan_id : record.satuan_nama,
+				m_satuan_id : record.m_satuan_id,
+                m_satuan_nama : record.satuan_nama,
                 satkonv_nilai : 1,
                 pengirimandet_qtyold : 0,
                 pengirimandet_qty : qty,
@@ -495,8 +498,42 @@
             };
             
             $("#pengirimanGrid").jqxGrid('addrow', null, datarow);
-            $("#ModalJadwal").modal('toggle');
+			var pengiriman_tgl = $('#pengiriman_tgl').val()
+            var data = {
+				barang_id : record.m_barang_id,
+				tanggal : moment(pengiriman_tgl, "DD-MM-YYYY").format("YYYY-MM-DD"),
+				m_rekanan_id : $("#m_rekanan_id").val()
+			};
+			$.post("<?php echo BASE_URL ?>/controllers/C_pengiriman_brg.php?action=getbahanbaku", data, function(result){
+				let res = JSON.parse(result);
+				res.forEach(element => {
+					var dataw = {
+						hargakontrak: 0,
+						hargakontrakdet_ppn: "N",
+						m_barang_id: parseInt(element.m_barang_id),
+						m_barang_nama: element.m_barang_nama,
+						m_barangsatuan_id: parseInt(element.m_satuan_id),
+						m_bahanbakubrg_id: parseInt(record.m_barang_id),
+						m_satuan_id: parseInt(element.m_satuan_id),
+						m_satuan_nama: element.satuan_nama,
+						pengirimandet_harga: 0,
+						pengirimandet_id: 0,
+						pengirimandet_potongan: 0,
+						pengirimandet_ppn: 0,
+						pengirimandet_qty: qty,
+						pengirimandet_qtyold: 0,
+						pengirimandet_subtotal: 0,
+						pengirimandet_total: 0,
+						satkonv_nilai: 1*element.bahanbrg_qty,
+						satuankonv: [],
+						t_pengiriman_id: "",
+						t_returdet_qty: 0,
+					}
+					$("#pengirimanGrid").jqxGrid('addrow', null, dataw);
+				});
+			});
             settotal();
+			$("#ModalJadwal").modal('toggle');
         });
     }
 </script>
@@ -666,7 +703,7 @@
             var griddata = $('#pengirimanGrid').jqxGrid('getdatainformation');
             var rows = [];
 
-            if ($('#m_rekanan_id').val() < 1) {
+            if ($('#m_rekanan_id').val() < 1 || $('#m_pegdriver_id').val() < 1 || $('#m_peghelper_id').val() < 1) {
                 swal("Info!", "Inputan belum lengkap", "error");
                 return false;
             }
@@ -824,6 +861,10 @@
         $('#pengiriman_no').val('');
         $('#m_rekanan_id').val('');
         $('#m_rekanan_id').trigger('change');
+		$('#m_pegdriver_id').val('');
+        $('#m_pegdriver_id').trigger('change');
+		$('#m_peghelper_id').val('');
+        $('#m_peghelper_id').trigger('change');
         $('#pengiriman_tgl').val(moment(now, 'YYYY-MM-DD').format('DD-MM-YYYY'));
         $("#pengirimanGrid").jqxGrid('clear');
     }

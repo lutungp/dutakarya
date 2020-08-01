@@ -149,7 +149,7 @@
             datatype: "array",
             datafields: [
                 { name: 'label', type: 'string' },
-                { name: 'value', type: 'string' }
+                { name: 'value', type: 'int' }
             ],
             localdata: driverArr
         };
@@ -161,7 +161,7 @@
             datatype: "array",
             datafields: [
                 { name: 'label', type: 'string' },
-                { name: 'value', type: 'string' }
+                { name: 'value', type: 'int' }
             ],
             localdata: helperArr
         };
@@ -174,9 +174,9 @@
             localdata:  datajadwaldet,
             datafields: [
                 { name: 'jadwal_id', type: 'int'},
-                { name: 'm_pegdriver_nama', value: 'm_pegdriver_id', values: { source: driverAdapter.records, value: 'pegawai_id', name: 'pegawai_nama' }},
+                { name: 'm_pegdriver_nama', value: 'm_pegdriver_nama', values: { source: driverAdapter.records, value: 'pegawai_id', name: 'pegawai_nama' }},
                 { name: 'm_pegdriver_id', type: 'int'},
-                { name: 'm_peghelper_nama', value: 'm_peghelper_id', values: { source: helperAdapter.records, value: 'pegawai_id', name: 'pegawai_nama' }},
+                { name: 'm_peghelper_nama', value: 'm_peghelper_nama', values: { source: helperAdapter.records, value: 'pegawai_id', name: 'pegawai_nama' }},
                 { name: 'm_peghelper_id', type: 'int'},
                 { name: 'm_rekanan_id', type: 'int'},
                 { name: 'bulan', type: 'int'},

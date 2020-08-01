@@ -85,7 +85,9 @@ class M_jadwalkirim
                 }
             }
         }
-        usort($rkirim, fn($a, $b) => strcmp($a['hari'], $b['hari']));
+		usort($rkirim, function($a, $b) {
+			return $a['hari'] <=> $b['hari'];
+		});
         return  $rkirim;
     }
 
