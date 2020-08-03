@@ -100,8 +100,8 @@ class C_penagihan
             foreach ($data['rows'] as $key => $val) {
                 $penagihandet_id = $val['penagihandet_id'];
                 if ($penagihandet_id > 0) {
-                    $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_harga', 'penagihandet_subtotal', 'penagihandet_ppn', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_updated_by', 'penagihandet_updated_date', 'penagihandet_revised'];
-                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_harga'], $val['penagihandet_subtotal'], $val['penagihandet_ppn'], $val['penagihandet_potongan'], $val['penagihandet_total'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penagihandet_revised+1'];
+                    $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_harga', 'penagihandet_subtotal', 'penagihandet_ppn', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_jenis', 'penagihandet_updated_by', 'penagihandet_updated_date', 'penagihandet_revised'];
+                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_harga'], $val['penagihandet_subtotal'], $val['penagihandet_ppn'], $val['penagihandet_potongan'], $val['penagihandet_total'], $val['penagihandet_jenis'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penagihandet_revised+1'];
                     $field = "";
                     foreach ($fieldSave as $key => $value) {
                         $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
@@ -114,11 +114,10 @@ class C_penagihan
                     $where = "WHERE penagihandet_id = " . $val['penagihandet_id'];
                     query_update($this->conn2, 't_penagihan_detail', $field, $where);
                 } else {
-                    $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_harga', 'penagihandet_subtotal', 'penagihandet_ppn', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_created_by', 'penagihandet_created_date'];
-                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_harga'], $val['penagihandet_subtotal'], $val['penagihandet_ppn'], $val['penagihandet_potongan'], $val['penagihandet_total'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                    $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_harga', 'penagihandet_subtotal', 'penagihandet_ppn', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_jenis', 'penagihandet_created_by', 'penagihandet_created_date'];
+                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_harga'], $val['penagihandet_subtotal'], $val['penagihandet_ppn'], $val['penagihandet_potongan'], $val['penagihandet_total'], $val['penagihandet_jenis'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                     $action = query_create($this->conn2, 't_penagihan_detail', $fieldSave, $dataSave);
                 }
-
 
                 /* update pengiriman status penagihan */
                 array_push($pengiriman_idArr, $val['t_pengiriman_id']);

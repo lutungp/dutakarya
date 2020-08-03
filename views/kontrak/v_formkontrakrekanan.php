@@ -63,6 +63,7 @@
                     m_barangsatuan_id : element.m_barangsatuan_id,
                     m_satuan_id : element.m_satuan_id,
                     satkonv_nilai : element.satkonv_nilai,
+                    hargakontrakdet_jmlsewa : element.hargakontrakdet_jmlsewa,
                     hargakontrakdet_sewa : element.hargakontrakdet_sewa,
                     hargakontrakdet_brgrusak : element.hargakontrakdet_brgrusak,
                     hargakontrakdet_ppn : element.hargakontrakdet_ppn,
@@ -83,6 +84,7 @@
                     { name: 'm_barangsatuan_id', type: 'int'},
                     { name: 'm_satuan_id'},
                     { name: 'satkonv_nilai'},
+                    { name: 'hargakontrakdet_jmlsewa', type: 'float'},
                     { name: 'hargakontrakdet_sewa', type: 'boolean'},
                     { name: 'hargakontrakdet_brgrusak', type: 'boolean'},
                     { name: 'hargakontrakdet_ppn', type: 'boolean'},
@@ -99,6 +101,7 @@
                     m_barangsatuan_id : 0,
                     m_satuan_id : '',
                     satkonv_nilai : 0,
+                    hargakontrakdet_jmlsewa : 0,
                     hargakontrakdet_sewa : false,
                     hargakontrakdet_brgrusak : false,
                     hargakontrakdet_ppn : false,
@@ -200,6 +203,7 @@
                         },
                     },
                     { text: 'Harga', datafield: 'hargakontrakdet_harga', cellsalign: 'right', width : 200 },
+                    // { text: 'Jml Sewa', datafield: 'hargakontrakdet_jmlsewa', cellsalign: 'right', width : 200 },
                     { text: 'Sewa Bulanan', datafield: 'hargakontrakdet_sewa', threestatecheckbox: false, columntype: 'checkbox', width: 90 },
                     { text: 'Ganti Rugi', datafield: 'hargakontrakdet_brgrusak', threestatecheckbox: false, columntype: 'checkbox', width: 90 },
                     { text: 'PPN', datafield: 'hargakontrakdet_ppn', threestatecheckbox: false, columntype: 'checkbox', width: 90 },
@@ -254,7 +258,7 @@
                         <?php if (($create <> '' && $hargakontrak_id == 0) || ($update <> '' && $hargakontrak_id > 0)) { ?>
                         <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
-                        <button type="submit" class="btn btn-default btn-sm float-right" style="margin-right: 5px;">Cetak</button>
+                        <!-- <button type="submit" class="btn btn-default btn-sm float-right" style="margin-right: 5px;">Cetak</button> -->
                     </div>
                 </form>
             </div>
@@ -312,6 +316,7 @@
                     m_barangsatuan_id : parseInt(m_barang_id[0].satuan_id||0),
                     m_satuan_id : parseInt(m_satuan_id[0].value||0),
                     satkonv_nilai : parseFloat(satkonv_nilai),
+                    hargakontrakdet_jmlsewa : parseFloat(rec.hargakontrakdet_jmlsewa),
                     hargakontrakdet_sewa : rec.hargakontrakdet_sewa,
                     hargakontrakdet_brgrusak : rec.hargakontrakdet_brgrusak,
                     hargakontrakdet_ppn : rec.hargakontrakdet_ppn,

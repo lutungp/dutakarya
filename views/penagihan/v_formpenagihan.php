@@ -78,25 +78,25 @@
                             penagihandet_id : 0,
                             t_penagihan_id : 0,
                             m_rekanan_id : data.m_rekanan_id,
-                            t_pengiriman_id : 0,
-                            pengiriman_no : '',
-                            pengiriman_tgl : '',
-                            t_pengirimandet_id :0 ,
+                            t_pengiriman_id : element.pengiriman_id,
+                            pengiriman_no : element.pengiriman_no,
+                            pengiriman_tgl : element.pengiriman_tgl,
+                            t_pengirimandet_id : element.pengirimandet_id,
                             m_barang_id : element.m_barang_id,
-                            barang_nama : element.barang_nama,
+                            barang_nama : 'Sewa ' + element.barang_nama,
                             m_barangsatuan_id : element.m_satuan_id,
                             m_barangsatuan_nama : element.satuan_nama,
                             m_satuan_id : element.m_satuan_id,
                             satkonv_nilai : element.satuan_nama,
-                            penagihandet_qty : 1,
-                            penagihandet_qtyreal : 1,
+                            penagihandet_qty : element.jmlsewa,
+                            penagihandet_qtyreal : element.jmlsewa,
                             penagihandet_harga : element.hargakontrakdet_harga,
-                            penagihandet_subtotal : element.hargakontrakdet_harga,
-                            penagihandet_ppn : hargakontrakdet_ppn,
+                            penagihandet_subtotal : element.jmlsewa*element.hargakontrakdet_harga,
+                            penagihandet_ppn : element.jmlsewa*hargakontrakdet_ppn,
                             penagihandet_potongan : 0,
-                            penagihandet_total : element.hargakontrakdet_harga + hargakontrakdet_ppn,
+                            penagihandet_total : element.jmlsewa*(element.hargakontrakdet_harga + hargakontrakdet_ppn),
                             t_returdet_qty : 0,
-                            penagihandet_jenis : 'sewa'
+                            penagihandet_jenis : 'sewa',
                         };
                         
                         $("#penagihanGrid").jqxGrid('addrow', null, datarow);
@@ -144,7 +144,7 @@
                 penagihandet_potongan : element.penagihandet_potongan,
                 penagihandet_total : element.penagihandet_total,
                 t_returdet_qty : element.t_returdet_qty,
-                penagihandet_jenis : ''
+                penagihandet_jenis : element.penagihandet_jenis
             };
             datapenagihandet.push(datdet);
         }
@@ -173,7 +173,7 @@
                 { name: 'penagihandet_potongan', type: 'float'},
                 { name: 'penagihandet_total', type: 'float'},
                 { name: 't_returdet_qty', type: 'float'},
-                { name: 'penagihandet_jenis', type: 'string'},
+                { name: 'penagihandet_jenis', type: 'string'}
             ],
         };
 
@@ -395,7 +395,7 @@
                     penagihandet_potongan : parseFloat(rec.penagihandet_potongan),
                     penagihandet_total : parseFloat(rec.penagihandet_total),
                     t_returdet_qty : parseFloat(rec.t_returdet_qty),
-                    penagihandet_jenis : re.penagihandet_jenis
+                    penagihandet_jenis : rec.penagihandet_jenis
                 }); 
             }
             $.ajax({

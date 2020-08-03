@@ -78,6 +78,7 @@ class M_kontrakrekanan
                     m_satuan.satuan_nama AS m_satuan_id,
                     m_satuan_konversi.satkonv_nilai,
                     t_hargakontrak_detail.hargakontrakdet_sewa,
+                    t_hargakontrak_detail.hargakontrakdet_jmlsewa,
                     t_hargakontrak_detail.hargakontrakdet_brgrusak,
                     t_hargakontrak_detail.hargakontrakdet_ppn,
                     t_hargakontrak_detail.hargakontrakdet_harga
@@ -99,6 +100,7 @@ class M_kontrakrekanan
                 'm_barangsatuan_id' => $val['m_barangsatuan_id'],
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satkonv_nilai' => $val['satkonv_nilai'],
+                'hargakontrakdet_jmlsewa' => $val['hargakontrakdet_jmlsewa'],
                 'hargakontrakdet_sewa' => $val['hargakontrakdet_sewa'] == 'Y' ? true : false,
                 'hargakontrakdet_brgrusak' => $val['hargakontrakdet_brgrusak'] == 'Y' ? true : false,
                 'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'] == 'Y' ? true : false,

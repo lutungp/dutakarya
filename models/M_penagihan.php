@@ -67,7 +67,7 @@ class M_penagihan
                 JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
                 JOIN m_satuan satuanutama ON satuanutama.satuan_id = m_barang.m_satuan_id
                 WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y' AND t_pengiriman.pengiriman_tgl <= '$penagihan_tgl'
-				AND t_pengiriman_detail.m_bahanbakubrg_id = 0
+				AND t_pengiriman_detail.m_bahanbakubrg_id = 0 AND t_pengiriman_detail.pengirimandet_total > 0
                 AND t_pengiriman.m_rekanan_id = $m_rekanan_id AND (t_penagihan_no IS NULL OR t_penagihan_no = '') ORDER BY t_pengiriman.pengiriman_created_date ASC";
         $qkirim = $this->conn2->query($sql);
         $rkirim = array();
@@ -166,7 +166,9 @@ class M_penagihan
                     t_pengiriman.pengiriman_tgl,
                     t_penagihan_detail.t_pengirimandet_id,
                     t_pengiriman_detail.m_barang_id,
-                    m_barang.barang_nama,
+                    CASE WHEN t_penagihan_detail.penagihandet_jenis = 'sewa' 
+                        THEN CONCAT('Sewa ', m_barang.barang_nama) 
+                        ELSE m_barang.barang_nama END AS barang_nama,
                     m_barang.m_satuan_id AS m_barangsatuan_id,
                     satuanutama.satuan_nama AS m_barangsatuan_nama,
                     t_pengiriman_detail.m_satuan_id,
@@ -225,6 +227,7 @@ class M_penagihan
     public function getSewa($rekanan_id, $bulan, $tahun, $penagihan_tgl)
     {
         $sqlsewa = "SELECT
+                        t_hargakontrak_detail.hargakontrakdet_tgl,
                         t_hargakontrak_detail.m_rekanan_id,
                         t_hargakontrak_detail.m_barang_id,
                         m_barang.barang_nama,
@@ -232,36 +235,47 @@ class M_penagihan
                         m_satuan.satuan_nama,
                         t_hargakontrak_detail.hargakontrakdet_harga,
                         t_hargakontrak_detail.hargakontrakdet_ppn,
-                        t_hargakontrak_detail.hargakontrakdet_sewa
+                        t_hargakontrak_detail.hargakontrakdet_sewa,
+                        pengiriman.pengiriman_id,
+                        pengiriman.pengirimandet_id,
+                        pengiriman.pengiriman_no,
+                        pengiriman.pengiriman_tgl,
+                        pengiriman.pengirimandet_qty AS jmlsewa
                     FROM
                         t_hargakontrak_detail
                     INNER JOIN t_hargakontrak ON t_hargakontrak.hargakontrak_id = t_hargakontrak_detail.t_hargakontrak_id
                     INNER JOIN m_barang ON m_barang.barang_id = t_hargakontrak_detail.m_barang_id
                     INNER JOIN m_satuan ON m_satuan.satuan_id = t_hargakontrak_detail.m_satuan_id
+                    INNER JOIN (
+                            SELECT 
+                                    t_pengiriman.pengiriman_id,
+                                    t_pengiriman_detail.pengirimandet_id,
+                                    t_pengiriman.pengiriman_no,
+                                    t_pengiriman.pengiriman_tgl,
+                                    t_pengiriman_detail.m_barang_id,
+                                    (t_pengiriman_detail.pengirimandet_qty - COALESCE(t_pengiriman_detail.t_returdet_qty, 0)) AS pengirimandet_qty
+                            FROM t_pengiriman
+                            INNER JOIN t_pengiriman_detail ON t_pengiriman_detail.t_pengiriman_id = t_pengiriman.pengiriman_id
+                            WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y'
+                            AND t_pengiriman.pengiriman_tgl <= '$penagihan_tgl'
+                    ) AS pengiriman ON pengiriman.m_barang_id = t_hargakontrak_detail.m_barang_id
                     WHERE
                         t_hargakontrak_detail.hargakontrakdet_aktif = 'Y'
                     AND t_hargakontrak_detail.hargakontrakdet_tgl <= '$penagihan_tgl'
                     AND t_hargakontrak_detail.m_rekanan_id = $rekanan_id
                     AND t_hargakontrak.hargakontrak_aktif = 'Y'
                     AND t_hargakontrak_detail.hargakontrakdet_sewa = 'Y'
-                    AND t_hargakontrak_detail.hargakontrakdet_id NOT IN (
+                    AND pengiriman.pengirimandet_id NOT IN (
                         SELECT
-                            t_penagihansewa.t_hargakontrakdet_id
-                        FROM
-                            t_penagihansewa
-                        INNER JOIN t_penagihan_detail ON t_penagihan_detail.penagihandet_id = t_penagihansewa.t_penagihandet_id
-                        INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_penagihan_detail.t_penagihan_id
-                        WHERE
-                            t_penagihansewa.penagihansewa_aktif = 'Y'
-                        AND t_penagihansewa.m_rekanan_id = $rekanan_id
-                        -- AND t_penagihansewa.bulan = $bulan
-                        -- AND t_penagihansewa.tahun = $tahun
-                        AND t_penagihan_detail.penagihandet_aktif = 'Y'
-                        AND t_penagihan.penagihan_aktif = 'Y'
-                        AND COALESCE (t_penagihansewa.penagihansewa_bayar, 0) < COALESCE (t_penagihansewa.penagihansewa_nilai, 0)
+                            t_penagihan_detail.t_pengirimandet_id
+                        FROM t_penagihan
+                        INNER JOIN t_penagihan_detail ON t_penagihan_detail.t_penagihan_id = t_penagihan.penagihan_id
+                        WHERE t_penagihan.penagihan_aktif = 'Y' AND t_penagihan_detail.penagihandet_aktif = 'Y' AND t_penagihan.penagihan_tgl = '$penagihan_tgl'
+                        AND t_penagihan.m_rekanan_id = $rekanan_id
                     )
                     ORDER BY
                         t_hargakontrak_detail.hargakontrakdet_tgl ASC ";
+
         $qsewa = $this->conn2->query($sqlsewa);
         $sewa = array();
         while ($val = $qsewa->fetch_array()) {
@@ -274,6 +288,11 @@ class M_penagihan
                 'hargakontrakdet_harga' => $val['hargakontrakdet_harga'],
                 'hargakontrakdet_ppn' => $val['hargakontrakdet_ppn'],
                 'hargakontrakdet_sewa' => $val['hargakontrakdet_sewa'],
+                'pengiriman_id' => $val['pengiriman_id'],
+                'pengirimandet_id' => $val['pengirimandet_id'],
+                'pengiriman_no' => $val['pengiriman_no'],
+                'pengiriman_tgl' => $val['pengiriman_tgl'],
+                'jmlsewa' => $val['jmlsewa'],
             );
         }
 
