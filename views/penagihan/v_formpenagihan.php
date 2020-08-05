@@ -83,7 +83,7 @@
                             pengiriman_tgl : element.pengiriman_tgl,
                             t_pengirimandet_id : element.pengirimandet_id,
                             m_barang_id : element.m_barang_id,
-                            barang_nama : 'Sewa ' + element.barang_nama,
+                            barang_nama : element.barang_nama,
                             m_barangsatuan_id : element.m_satuan_id,
                             m_barangsatuan_nama : element.satuan_nama,
                             m_satuan_id : element.m_satuan_id,
@@ -231,7 +231,9 @@
                         var recorddata = $('#penagihanGrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
                         html += value;
-                        html += " " + (recorddata.penagihandet_qtyreal - recorddata.t_returdet_qty) + " " + recorddata.m_barangsatuan_nama;
+                        if (recorddata.penagihandet_jenis !== 'sewa') {
+                            html += " " + (recorddata.penagihandet_qtyreal - recorddata.t_returdet_qty) + " " + recorddata.m_barangsatuan_nama;    
+                        }
                         html += "</div>";
                         return html;
                     },

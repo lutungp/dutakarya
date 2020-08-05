@@ -8,6 +8,7 @@
         var now = new Date();
         renderGrid(moment(now).format('YYYY-MM-DD'));
         renderGrid2(moment(now).format('YYYY-MM-DD'));
+        renderGrid3(moment(now).format('YYYY-MM-DD'));
     });
 
     function renderGrid(tanggal) {
@@ -342,6 +343,131 @@
             ]
         });
     }
+
+    function renderGrid3(tanggal) {
+        var gridSewaSource2 ={
+            datatype: "json",
+            datafields: [
+                { name: 'pengiriman_id', type: 'int' },
+                { name: 'pengiriman_no', type: 'string' },
+                { name: 'pengiriman_tgl', type: 'date' },
+                { name: 'penagihan_no', type: 'string' },
+                { name: 'penagihan_tgl', type: 'date' },
+                { name: 'rekanan_nama', type: 'string' },
+                { name: 'rekanan_alamat', type: 'string' },
+                { name: 'barang_nama', type: 'string' },
+                { name: 'satuan_nama', type: 'string' },
+                { name: 'pengirimandet_qty', type: 'float' },
+            ],
+            url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getsewa&tanggal=" + tanggal
+        };
+        var gridSewaAdapter = new $.jqx.dataAdapter(gridSewaSource2);
+        var tagih = [
+            { 'penagihan' : '', 'penagihan_text' : 'Semua'},
+            { 'penagihan' : 'N', 'penagihan_text' : 'Belum ditagih'},
+            { 'penagihan' : 'Y', 'penagihan_text' : 'Sudah ditagih'}
+        ];
+        $("#infobrgsewagrid").jqxGrid({
+            width: '100%',
+            source: gridSewaAdapter,
+            autoheight : true,
+            altrows: true,
+            autorowheight : true,
+            showtoolbar: true,
+            showstatusbar: true,
+            showaggregates: true,
+            rendertoolbar: function (toolbar) {
+                var me = this;
+                var container = $("<div style='overflow: hidden; position: relative; margin: 2px;' class='row'></div>");
+                toolbar.append(container);
+                container.append('<div id="datefilter3" style="margin: 2px;"></div>');
+                container.append('<div id="rekananfilter3" style="margin: 2px;"></div>');
+                container.append('<div id="barangfilter3" style="margin: 2px;"></div>');
+                container.append('<div id="tagih3" style="margin: 2px;"></div>');
+                container.append('<div style="margin: 2px;"><input type="button" id="applyfilter3" value="FILTER" /></div>');
+                // container.append('<div style="margin: 2px;"><input type="button" value="EXCEL" id="excelExport" /></div>');
+                $("#datefilter3").jqxDateTimeInput({ width: '170px', height: '28px', formatString: 'dd-MM-yyyy',  selectionMode: 'range'});
+                $('#datefilter3').on('change', function (event) {  
+                    var jsDate = event.args.date; 
+                    var type = event.args.type; // keyboard, mouse or null depending on how the date was selected.
+                    var dateselect = moment(jsDate).format('YYYY-MM-DD');
+                });
+                var rekananSource2 = {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'rekanan_id' },
+                        { name: 'rekanan_nama' }
+                    ],
+                    id: 'id',
+                    url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getrekanan",
+                    async: false
+                };
+                var rekananAdapter2 = new $.jqx.dataAdapter(rekananSource2);
+                $("#rekananfilter3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: rekananAdapter2, checkboxes: true, displayMember: "rekanan_nama", valueMember: "rekanan_id", width: 200, height: 28,});
+                var barangSource2 = {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'barang_id' },
+                        { name: 'barang_nama' }
+                    ],
+                    url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getbarang",
+                };
+                var barangAdapter = new $.jqx.dataAdapter(barangSource2);
+                $("#barangfilter3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 200, height: 28,});
+                $("#tagih3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: tagih, displayMember: "penagihan_text", valueMember: "penagihan", width: 120, height: 28,});
+
+                $("#applyfilter3").jqxButton({ template: "primary", width: 80, height: 28 });
+                // $("#applyfilter3").on('click', function() {
+                //     var tanggal = $("#datefilter3").val();
+                //     var rekanan = $("#rekananfilter3").jqxDropDownList('getCheckedItems');
+                //     var barang = $("#barangfilter3").jqxDropDownList('getCheckedItems');
+                //     var tagih = $("#tagih3").jqxDropDownList('val');
+                //     applyfilter3(tanggal, rekanan, barang, tagih);
+                // });
+            },
+            columns: [
+                { 
+                    text: 'No. Pengiriman', datafield: 'pengiriman_no', columntype: 'textbox', width : 170, cellsalign : 'center',
+                    cellsrenderer : function (row, column, value) {
+                        var recorddata = $('#infobrgsewagrid').jqxGrid('getrenderedrowdata', row);
+                        var html = "<div style='padding: 5px;'>";
+                        html += recorddata.pengiriman_no + "</br>";
+                        html += moment(recorddata.pengiriman_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');
+                        html += "</div>";
+                        return html;
+                    },
+                },
+                { 
+                    text: 'No. Penagihan', datafield: 'penagihan_no', columntype: 'textbox', width : 170, cellsalign : 'center',
+                    cellsrenderer : function (row, column, value) {
+                        var recorddata = $('#infobrgsewagrid').jqxGrid('getrenderedrowdata', row);
+                        var html = "<div style='padding: 5px;'>";
+                        html += recorddata.penagihan_no + "</br>";
+                        if (recorddata.penagihan_tgl !== '') {
+                            html += moment(recorddata.penagihan_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');    
+                        }
+                        html += "</div>";
+                        return html;
+                    },
+                },
+                { 
+                    text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left',
+                    cellsrenderer : function (row, column, value) {
+                        var recorddata = $('#infobrgsewagrid').jqxGrid('getrenderedrowdata', row);
+                        var html = "<div style='padding: 5px;'>";
+                        html += recorddata.rekanan_nama + "</br>";
+                        html += 'Alamat : ' + recorddata.rekanan_alamat + "</br>";
+                        html += "</div>";
+                        return html;
+                    },
+                },
+                // { text: 'Alamat', datafield: 'rekanan_alamat',  cellsalign: 'left' },
+                { text: 'Nama Barang', datafield: 'barang_nama',  cellsalign: 'left' },
+                { text: 'Satuan', datafield: 'satuan_nama',  cellsalign: 'left', width : 120 },
+                { text: 'Qty', datafield: 'pengirimandet_qty',  cellsalign: 'right', width : 120 },
+            ]
+        });
+    }
 </script>
 <section class="content">
     <div class="row">
@@ -360,6 +486,16 @@
                 <div class="card-body default">
                     <div></div>
                     <div id="jadwalkirimgrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body default">
+                    <div></div>
+                    <div id="infobrgsewagrid"></div>
                 </div>
             </div>
         </div>

@@ -46,6 +46,19 @@ class C_infotagihan
         $data = $this->model->getBarang();
         echo json_encode($data);
     }
+
+    public function getSewa($data)
+    {
+        $tanggal = isset($data['tanggal']) ? $data['tanggal'] : '';
+        if ($tanggal == '') {
+            $bulan = $data['bulan'];
+            $tahun = $data['tahun'];
+        } else {
+            $bulan = intval(date('m', strtotime($tanggal)));
+            $tahun = intval(date('Y', strtotime($tanggal)));
+        }
+        $result = $this->model->getSewa($bulan, $tahun);
+    }
 }
 
 $infotagihan = new C_infotagihan($conn, $conn2, $config);
@@ -65,6 +78,9 @@ switch ($action) {
         break;
     case 'getbarang':
         $infotagihan->getBarang();
+        break;
+    case 'getsewa':
+        $infotagihan->getSewa($_GET);
         break;
     default:
         templateAdmin($conn2, '../views/info/v_infotagihan.php', NULL, "INFO", "INFO PIUTANG");

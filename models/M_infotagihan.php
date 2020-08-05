@@ -167,4 +167,53 @@ class M_infotagihan
         return $rbarang;
     }
 
+    public function getSewa($bulan, $tahun)
+    {
+        $bulanIndo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $sql = "SELECT
+                    t_hargakontrak_detail.hargakontrakdet_tgl,
+                    t_hargakontrak_detail.m_rekanan_id,
+                    t_hargakontrak_detail.m_barang_id,
+                    m_barang.barang_nama,
+                    t_hargakontrak_detail.m_satuan_id,
+                    m_satuan.satuan_nama,
+                    t_hargakontrak_detail.hargakontrakdet_harga,
+                    t_hargakontrak_detail.hargakontrakdet_ppn,
+                    t_hargakontrak_detail.hargakontrakdet_sewa,
+                    pengiriman.pengiriman_id,
+                    pengiriman.pengirimandet_id,
+                    pengiriman.pengiriman_no,
+                    pengiriman.pengiriman_tgl,
+                    pengiriman.pengirimandet_qty AS jmlsewa
+                FROM
+                    t_hargakontrak_detail
+                INNER JOIN t_hargakontrak ON t_hargakontrak.hargakontrak_id = t_hargakontrak_detail.t_hargakontrak_id
+                INNER JOIN m_barang ON m_barang.barang_id = t_hargakontrak_detail.m_barang_id
+                INNER JOIN m_satuan ON m_satuan.satuan_id = t_hargakontrak_detail.m_satuan_id
+                INNER JOIN (
+                        SELECT 
+                                t_pengiriman.pengiriman_id,
+                                t_pengiriman_detail.pengirimandet_id,
+                                t_pengiriman.pengiriman_no,
+                                t_pengiriman.pengiriman_tgl,
+                                t_pengiriman_detail.m_barang_id,
+                                (t_pengiriman_detail.pengirimandet_qty - COALESCE(t_pengiriman_detail.t_returdet_qty, 0)) AS pengirimandet_qty
+                        FROM t_pengiriman
+                        INNER JOIN t_pengiriman_detail ON t_pengiriman_detail.t_pengiriman_id = t_pengiriman.pengiriman_id
+                        WHERE t_pengiriman.pengiriman_aktif = 'Y' AND t_pengiriman_detail.pengirimandet_aktif = 'Y'
+                        AND MONTH(t_pengiriman.pengiriman_tgl) <= $bulan
+                        AND YEAR(t_pengiriman.pengiriman_tgl) <= $tahun
+                ) AS pengiriman ON pengiriman.m_barang_id = t_hargakontrak_detail.m_barang_id
+                WHERE
+                    t_hargakontrak_detail.hargakontrakdet_aktif = 'Y'
+                AND MONTH(t_hargakontrak_detail.hargakontrakdet_tgl) <= $bulan
+                AND YEAR(t_hargakontrak_detail.hargakontrakdet_tgl) <= $tahun
+                
+                AND t_hargakontrak.hargakontrak_aktif = 'Y'
+                AND t_hargakontrak_detail.hargakontrakdet_sewa = 'Y'
+                ORDER BY
+                    t_hargakontrak_detail.hargakontrakdet_tgl ASC ";
+        
+    }
+
 }

@@ -73,7 +73,10 @@ class C_penagihan
         $penagihan_no = $data['penagihan_no'];
         $penagihan_tgl = $data['penagihan_tgl'];
         $m_rekanan_id = $data['m_rekanan_id'];
+        $bulan = intval(date('m', strtotime($penagihan_tgl)));
+        $tahun = intval(date('Y', strtotime($penagihan_tgl)));
         $action = false;
+        
         if ($penagihan_id > 0) {
             $fieldSave = ['penagihan_tgl', 'm_rekanan_id', 'penagihan_updated_by', 'penagihan_updated_date', 'penagihan_revised'];
             $dataSave = [$penagihan_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penagihan_revised+1'];
@@ -93,11 +96,15 @@ class C_penagihan
             $fieldSave = ['penagihan_no', 'penagihan_tgl', 'm_rekanan_id', 'penagihan_created_by', 'penagihan_created_date'];
             $dataSave = [$penagihan_no, $penagihan_tgl, $data['m_rekanan_id'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
             $penagihan_id = query_create($this->conn2, 't_penagihan', $fieldSave, $dataSave);
+            if ($penagihan_id > 0) {
+                $action = $penagihan_id;
+            }
         }
         
         if (isset($data['rows'])) {
             $pengiriman_idArr = [];
             foreach ($data['rows'] as $key => $val) {
+                $penagihandet_jenis = $val['penagihandet_jenis'];
                 $penagihandet_id = $val['penagihandet_id'];
                 if ($penagihandet_id > 0) {
                     $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_harga', 'penagihandet_subtotal', 'penagihandet_ppn', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_jenis', 'penagihandet_updated_by', 'penagihandet_updated_date', 'penagihandet_revised'];
@@ -113,10 +120,33 @@ class C_penagihan
                     }
                     $where = "WHERE penagihandet_id = " . $val['penagihandet_id'];
                     query_update($this->conn2, 't_penagihan_detail', $field, $where);
+                    $fieldSewaSave = ['m_rekanan_id', 't_penagihan_id', 't_penagihan_tgl', 't_penagihandet_id', 'm_barang_id', 'penagihansewa_qty', 'bulan',
+                                     'tahun', 'penagihansewa_nilai', 'penagihansewa_bayar', 'penagihansewa_updated_by', 'penagihansewa_updated_date', 'penagihansewa_revised'];
+                    $dataSewaSave = [$data['m_rekanan_id'], $penagihan_id, $penagihan_tgl, $penagihandet_id, $val['m_barang_id'], $val['penagihandet_qtyreal'], $bulan, 
+                                $tahun, $val['penagihandet_total'], 0, $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 'penagihansewa_revised+1'];
+                    $fieldsewa = '';
+                    foreach ($fieldSewaSave as $key => $value) {
+                        $regex = (integer)$key < count($fieldSewaSave)-1 ? "," : "";
+                        if (!preg_match("/revised/i", $value)) {
+                            $fieldsewa .= "$value = '$dataSewaSave[$key]'" . $regex . " ";
+                        } else {
+                            $fieldsewa .= "$value = $dataSewaSave[$key]" . $regex . " ";
+                        }
+                    }
+                    $where = "WHERE t_penagihandet_id = " . $val['penagihandet_id'];
+                    query_update($this->conn2, 't_penagihansewa', $fieldsewa, $where);
                 } else {
                     $fieldSave = ['t_penagihan_id', 't_pengiriman_id', 't_pengirimandet_id', 'penagihandet_harga', 'penagihandet_subtotal', 'penagihandet_ppn', 'penagihandet_potongan', 'penagihandet_total', 'penagihandet_jenis', 'penagihandet_created_by', 'penagihandet_created_date'];
-                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_harga'], $val['penagihandet_subtotal'], $val['penagihandet_ppn'], $val['penagihandet_potongan'], $val['penagihandet_total'], $val['penagihandet_jenis'],  $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
-                    $action = query_create($this->conn2, 't_penagihan_detail', $fieldSave, $dataSave);
+                    $dataSave = [$penagihan_id, $val['t_pengiriman_id'], $val['t_pengirimandet_id'], $val['penagihandet_harga'], $val['penagihandet_subtotal'], $val['penagihandet_ppn'], $val['penagihandet_potongan'], $val['penagihandet_total'], $val['penagihandet_jenis'], $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                    $penagihandet_id = query_create($this->conn2, 't_penagihan_detail', $fieldSave, $dataSave);
+
+                    if ($penagihandet_jenis == 'sewa') {
+                        $fieldSewaSave = ['m_rekanan_id', 't_penagihan_id', 't_penagihan_tgl', 't_penagihandet_id', 'm_barang_id', 'penagihansewa_qty', 'bulan',
+                                     'tahun', 'penagihansewa_nilai', 'penagihansewa_bayar', 'penagihansewa_created_by', 'penagihansewa_created_date'];
+                        $dataSewaSave = [$data['m_rekanan_id'], $penagihan_id, $penagihan_tgl, $penagihandet_id, $val['m_barang_id'], $val['penagihandet_qtyreal'], $bulan, 
+                                    $tahun, $val['penagihandet_total'], 0, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
+                        query_create($this->conn2, 't_penagihansewa', $fieldSewaSave, $dataSewaSave);
+                    }
                 }
 
                 /* update pengiriman status penagihan */
@@ -192,6 +222,10 @@ class C_penagihan
         $where = "WHERE pengiriman_id IN (" . $pengiriman_idArr . ")";
         query_update($this->conn2, 't_pengiriman', $field, $where);
 
+        $field = "penagihansewa_aktif = 'N'";
+        $where = "t_penagihan_id = " . $data['penagihan_id'];
+        query_update($this->conn2, 't_penagihansewa', $field, $where);
+
         if ($action > 0) {
             echo 200;
         } else {
@@ -205,7 +239,7 @@ class C_penagihan
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [220, 148.5]]);
         $penagihan_id = $data['id'];
         $datapenagihan = $this->model->getPenagihanData2($penagihan_id);
-        $datapenagihandetail = $this->model->getPenagihanDataDetail($penagihan_id);
+        $datapenagihandetail = $this->model->getPenagihanDataDetail2($penagihan_id);
         
         $content = '<html>';
         $content .= '<header>';
@@ -285,11 +319,16 @@ class C_penagihan
         $content .= '</tr>';
         $total = 0;
         $ppn = 0;
+        $bulanIndo = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         foreach ($datapenagihandetail as $key => $val) {
             $content .= '<tr>';
             $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.date('d-m-Y', strtotime($val['pengiriman_tgl'])).'</td>';
             $content .= '<td style="text-align:center; border-left:1px solid; border-right:1px solid; padding: 5px; width: 120px;">'.$val['pengiriman_no'].'</td>';
-            $content .= '<td style="text-align:left; border-left:1px solid; border-right:1px solid; padding: 5px; width: 220px;">'.$val['barang_nama'].'</td>';
+            if ($val['penagihandet_jenis'] =='sewa' ) {
+                $content .= '<td style="text-align:left; border-left:1px solid; border-right:1px solid; padding: 5px; width: 220px;">'.$val['barang_nama'].' '.$bulanIndo[$val['bulan']].' '. $val['tahun'] . '</td>';
+            } else {
+                $content .= '<td style="text-align:left; border-left:1px solid; border-right:1px solid; padding: 5px; width: 220px;">'.$val['barang_nama'].'</td>';
+            }
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 8%;">'.($val['penagihandet_qtyreal'] - $val['t_returdet_qty']).'</td>';
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.number_format($val['pengirimandet_harga']).'</td>';
             $content .= '<td style="text-align:right; border-left:1px solid; border-right:1px solid; padding: 5px; width: 100px;">'.number_format($val['pengirimandet_harga']*($val['penagihandet_qtyreal'] - $val['t_returdet_qty'])).'</td>';
