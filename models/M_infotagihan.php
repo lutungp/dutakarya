@@ -216,20 +216,24 @@ class M_infotagihan
                             AND YEAR(t_pengiriman.pengiriman_tgl) = $tahun
                         ) AS pengiriman ON pengiriman.m_barang_id = t_hargakontrak_detail.m_barang_id
                         LEFT JOIN (
-                        SELECT
-                            t_penagihansewa.m_barang_id,
-                            CONCAT( '[', group_concat( JSON_OBJECT( 'nopenagihan', t_penagihan.penagihan_no, 'bulan', MONTH ( t_penagihansewa.t_penagihan_tgl ), 'tahun', YEAR ( t_penagihansewa.t_penagihan_tgl ), 'nobayar', t_penagihansewa.t_pelunasan_no)), ']') AS t_penagihan_tgl 
-                        FROM
-                            t_penagihansewa
-                            INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_penagihansewa.t_penagihan_id
-                        WHERE
-                            t_penagihansewa.m_rekanan_id = $rekanan
-                            AND t_penagihansewa.m_barang_id = $barang
-                            AND t_penagihansewa.penagihansewa_aktif = 'Y' 
-                            AND t_penagihan.penagihan_aktif = 'Y' 
-                            AND YEAR(t_penagihan.penagihan_tgl) = $tahun
-                        GROUP BY
-                            t_penagihansewa.m_barang_id 
+                            SELECT
+                                t_penagihansewa.m_barang_id,
+                                CONCAT(
+                                    '[',
+                                    group_concat(
+                                    JSON_OBJECT( 'nopenagihan', t_penagihan.penagihan_no, 'bulan', t_penagihansewa.bulan, 'tahun', t_penagihansewa.tahun, 'nobayar', t_penagihansewa.t_pelunasan_no )),
+                                    ']' 
+                                ) AS t_penagihan_tgl 
+                            FROM
+                                t_penagihansewa
+                                INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_penagihansewa.t_penagihan_id 
+                            WHERE t_penagihansewa.penagihansewa_aktif = 'Y'
+                                AND t_penagihansewa.m_rekanan_id = $rekanan
+                                AND t_penagihansewa.m_barang_id = $barang
+                                AND t_penagihan.penagihan_aktif = 'Y' 
+                                AND t_penagihansewa.tahun = '2020'
+                            GROUP BY
+                                t_penagihansewa.m_barang_id
                         ) AS penagihansewa ON penagihansewa.m_barang_id = t_hargakontrak_detail.m_barang_id 
                     WHERE
                         t_hargakontrak_detail.hargakontrakdet_aktif = 'Y' 

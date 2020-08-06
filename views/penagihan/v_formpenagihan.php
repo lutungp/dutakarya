@@ -60,7 +60,9 @@
                                 penagihandet_potongan : element.pengirimandet_potongan,
                                 penagihandet_total : element.pengirimandet_total-(element.t_returdet_qty*element.pengirimandet_harga),
                                 t_returdet_qty : element.t_returdet_qty,
-                                penagihandet_jenis : ''
+                                penagihandet_jenis : '',
+                                bulan : '',
+                                tahun : '',
                             };
                             
                             $("#penagihanGrid").jqxGrid('addrow', null, datarow);
@@ -71,7 +73,7 @@
 
             $.post("<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=getsewa", data, function(result){
                 let res = JSON.parse(result);
-                if (res.length > 0) {
+                if (res.length > 0 && $('#penagihan_id').val() == 0) {
                     res.forEach(element => {
                         let hargakontrakdet_ppn = element.hargakontrakdet_ppn == 'Y' ? element.hargakontrakdet_harga*10/100 : 0;
                         var datarow = {
@@ -97,6 +99,8 @@
                             penagihandet_total : element.jmlsewa*(element.hargakontrakdet_harga + hargakontrakdet_ppn),
                             t_returdet_qty : 0,
                             penagihandet_jenis : 'sewa',
+                            bulan : element.bulan,
+                            tahun : element.tahun,
                         };
                         
                         $("#penagihanGrid").jqxGrid('addrow', null, datarow);
@@ -132,17 +136,18 @@
                 pengiriman_tgl : element.pengiriman_tgl,
                 t_pengirimandet_id : element.t_pengirimandet_id,
                 m_barang_id : element.m_barang_id,
-                barang_nama : element.barang_nama,
+                barang_nama : element.penagihandet_jenis == 'sewa' ? element.penagihandet_ket : element.barang_nama,
                 m_barangsatuan_id : element.m_barangsatuan_id,
                 m_barangsatuan_nama : element.m_barangsatuan_nama,
                 m_satuan_id : element.m_satuan_id,
-                satkonv_nilai : element.satkonv_nilai,
-                penagihandet_qty : element.penagihandet_qty,
-                penagihandet_qtyreal : element.penagihandet_qtyreal,
-                penagihandet_subtotal : element.penagihandet_subtotal,
-                penagihandet_ppn : element.penagihandet_ppn,
-                penagihandet_potongan : element.penagihandet_potongan,
-                penagihandet_total : element.penagihandet_total,
+                satkonv_nilai : parseFloat(element.satkonv_nilai),
+                penagihandet_qty : parseFloat(element.penagihandet_qty),
+                penagihandet_harga : parseFloat(element.penagihandet_harga),
+                penagihandet_qtyreal : parseFloat(element.penagihandet_qtyreal),
+                penagihandet_subtotal : parseFloat(element.penagihandet_subtotal),
+                penagihandet_ppn : parseFloat(element.penagihandet_ppn),
+                penagihandet_potongan : parseFloat(element.penagihandet_potongan),
+                penagihandet_total : parseFloat(element.penagihandet_total),
                 t_returdet_qty : element.t_returdet_qty,
                 penagihandet_jenis : element.penagihandet_jenis
             };
@@ -166,6 +171,7 @@
                 { name: 'm_barangsatuan_nama', type: 'string'},
                 { name: 'm_satuan_id', type: 'int'},
                 { name: 'satkonv_nilai', type: 'float'},
+                { name: 'penagihandet_harga', type: 'float'},
                 { name: 'penagihandet_qty', type: 'float'},
                 { name: 'penagihandet_qtyreal', type: 'float'},
                 { name: 'penagihandet_subtotal', type: 'float'},
@@ -231,9 +237,6 @@
                         var recorddata = $('#penagihanGrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
                         html += value;
-                        if (recorddata.penagihandet_jenis !== 'sewa') {
-                            html += " " + (recorddata.penagihandet_qtyreal - recorddata.t_returdet_qty) + " " + recorddata.m_barangsatuan_nama;    
-                        }
                         html += "</div>";
                         return html;
                     },
@@ -397,7 +400,9 @@
                     penagihandet_potongan : parseFloat(rec.penagihandet_potongan),
                     penagihandet_total : parseFloat(rec.penagihandet_total),
                     t_returdet_qty : parseFloat(rec.t_returdet_qty),
-                    penagihandet_jenis : rec.penagihandet_jenis
+                    penagihandet_jenis : rec.penagihandet_jenis,
+                    bulan : rec.bulan,
+                    tahun : rec.tahun,
                 }); 
             }
             $.ajax({

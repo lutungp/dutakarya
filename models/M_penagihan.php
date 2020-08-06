@@ -183,12 +183,14 @@ class M_penagihan
                     t_pengiriman_detail.m_satuan_id,
                     COALESCE ( m_satuan_konversi.satkonv_nilai, 1 ) AS satkonv_nilai,
                     t_pengiriman_detail.pengirimandet_harga,
+                    t_penagihan_detail.penagihandet_harga,
                     t_pengiriman_detail.pengirimandet_qty,
                     t_penagihan_detail.penagihandet_subtotal,
                     t_penagihan_detail.penagihandet_ppn,
                     t_penagihan_detail.penagihandet_potongan,
                     t_penagihan_detail.penagihandet_total,
-                    t_pengiriman_detail.t_returdet_qty ,
+                    t_pengiriman_detail.t_returdet_qty,
+                    t_penagihan_detail.penagihandet_ket,
                     t_penagihan_detail.penagihandet_jenis
                 FROM
                     t_penagihan_detail
@@ -221,6 +223,7 @@ class M_penagihan
                 'm_satuan_id' => $val['m_satuan_id'],
                 'satkonv_nilai' => $val['satkonv_nilai'],
                 'pengirimandet_harga' => $val['pengirimandet_harga'],
+                'penagihandet_harga' => $val['penagihandet_harga'],
                 'penagihandet_qty' => $val['pengirimandet_qty'],
                 'penagihandet_qtyreal' => $val['pengirimandet_qty'] * $val['satkonv_nilai'],
                 'penagihandet_subtotal' => $val['penagihandet_subtotal'],
@@ -228,7 +231,8 @@ class M_penagihan
                 'penagihandet_potongan' => $val['penagihandet_potongan'],
                 'penagihandet_total' => $val['penagihandet_total'],
                 't_returdet_qty' => $val['t_returdet_qty'],
-                'penagihandet_jenis' => $val['penagihandet_jenis']
+                'penagihandet_jenis' => $val['penagihandet_jenis'],
+                'penagihandet_ket' => $val['penagihandet_ket']
             );
         }
 
@@ -278,7 +282,7 @@ class M_penagihan
                     LEFT JOIN (
                         SELECT
                             t_penagihansewa.m_barang_id,
-                            CONCAT('[', group_concat(JSON_OBJECT('bulan', MONTH (t_penagihansewa.t_penagihan_tgl), 'tahun', YEAR (t_penagihansewa.t_penagihan_tgl))), ']') AS t_penagihan_tgl
+                            CONCAT( '[', group_concat( JSON_OBJECT( 'bulan', t_penagihansewa.bulan, 'tahun', t_penagihansewa.tahun)), ']' ) AS t_penagihan_tgl 
                         FROM t_penagihansewa
                         INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_penagihansewa.t_penagihan_id
                         WHERE t_penagihansewa.m_rekanan_id = $rekanan_id
@@ -294,7 +298,7 @@ class M_penagihan
                     AND t_hargakontrak_detail.hargakontrakdet_sewa = 'Y'
                     ORDER BY
                         t_hargakontrak_detail.hargakontrakdet_tgl ASC ";
-
+        
         $qsewa = $this->conn2->query($sqlsewa);
         $sewa = array();
         while ($val = $qsewa->fetch_array()) {
@@ -347,6 +351,8 @@ class M_penagihan
                             'pengiriman_no' => $val['pengiriman_no'],
                             'pengiriman_tgl' => $val['pengiriman_tgl'],
                             'jmlsewa' => $val['jmlsewa'],
+                            'bulan' => $i,
+                            'tahun' => $z
                         ); 
                     }
                 }
