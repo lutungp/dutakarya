@@ -114,7 +114,7 @@ class C_pelunasan
                     'pelunasandet_bayar' => $val['pelunasandet_bayar']
                 );
             }
-            $this->updateStatusPenagihan($penagihanArr);
+            $this->updateStatusPenagihan($penagihanArr, $pelunasan_no);
         }
 
         if ($action) {
@@ -127,18 +127,22 @@ class C_pelunasan
         echo json_encode($result);
     }
 
-    public function updateStatusPenagihan($penagihanArr)
+    public function updateStatusPenagihan($penagihanArr, $pelunasan_no)
     {
         $fieldSave = ['t_pelunasandet_bayar'];
         foreach ($penagihanArr as $key => $valpenagihan) {
             $dataSave = ['t_pelunasandet_bayar'.$valpenagihan['operator'].$valpenagihan['pelunasandet_bayar']];
             $field = '';
-            foreach ($fieldSave as $key => $value) {
-                $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
-                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            foreach ($fieldSave as $key2 => $value) {
+                $regex = (integer)$key2 < count($fieldSave)-1 ? "," : "";
+                $field .= "$value = $dataSave[$key2]" . $regex . " ";
             }
             $where = "WHERE penagihan_id = " . $valpenagihan['t_penagihan_id'];
             query_update($this->conn2, 't_penagihan', $field, $where);
+
+            $field = "penagihansewa_bayar='Y', t_pelunasan_no= '$pelunasan_no' ";
+            $where = "WHERE t_penagihan_id = " . $valpenagihan['t_penagihan_id'];
+            query_update($this->conn2, 't_penagihansewa', $field, $where);
         }
     }
 
@@ -177,12 +181,16 @@ class C_pelunasan
         foreach ($data['rows'] as $key => $valpenagihan) {
             $dataSave = ['t_pelunasandet_bayar-'.$valpenagihan['pelunasandet_bayar']];
             $field = '';
-            foreach ($fieldSave as $key => $value) {
-                $regex = (integer)$key < count($fieldSave)-1 ? "," : "";
-                $field .= "$value = $dataSave[$key]" . $regex . " ";
+            foreach ($fieldSave as $key1 => $value) {
+                $regex = (integer)$key1 < count($fieldSave)-1 ? "," : "";
+                $field .= "$value = $dataSave[$key1]" . $regex . " ";
             }
             $where = "WHERE penagihan_id = " . $valpenagihan['t_penagihan_id'];
             query_update($this->conn2, 't_penagihan', $field, $where);
+
+            $field = "penagihansewa_bayar='N', t_pelunasan_no=''";
+            $where = "WHERE t_penagihan_id = " . $valpenagihan['t_penagihan_id'];
+            query_update($this->conn2, 't_penagihansewa', $field, $where);
         }
 
         if ($action) {

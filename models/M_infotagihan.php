@@ -218,10 +218,10 @@ class M_infotagihan
                         LEFT JOIN (
                         SELECT
                             t_penagihansewa.m_barang_id,
-                            CONCAT( '[', group_concat( JSON_OBJECT( 'nopenagihan', t_penagihan.penagihan_no, 'bulan', MONTH ( t_penagihansewa.t_penagihan_tgl ), 'tahun', YEAR ( t_penagihansewa.t_penagihan_tgl ))), ']' ) AS t_penagihan_tgl 
+                            CONCAT( '[', group_concat( JSON_OBJECT( 'nopenagihan', t_penagihan.penagihan_no, 'bulan', MONTH ( t_penagihansewa.t_penagihan_tgl ), 'tahun', YEAR ( t_penagihansewa.t_penagihan_tgl ), 'nobayar', t_penagihansewa.t_pelunasan_no)), ']') AS t_penagihan_tgl 
                         FROM
                             t_penagihansewa
-                            INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_penagihansewa.t_penagihan_id 
+                            INNER JOIN t_penagihan ON t_penagihan.penagihan_id = t_penagihansewa.t_penagihan_id
                         WHERE
                             t_penagihansewa.m_rekanan_id = $rekanan
                             AND t_penagihansewa.m_barang_id = $barang
@@ -270,51 +270,43 @@ class M_infotagihan
             foreach ($sudahtagih as $keytagih => $valuetagih) {
                 switch ($valuetagih->bulan) {
                     case 1:
-                        $januari = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $januari = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 2:
-                        $februari = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $februari = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 3:
-                        $maret = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $maret = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 4:
-                        $april = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $april = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 5:
-                        $mei = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $mei = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 6:
-                        $juni = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $juni = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 7:
-                        $juli = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $juli = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 8:
-                        $agustus = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $agustus = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 9:
-                        $september = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $september = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 10:
-                        $oktober = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $oktober = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 11:
-                        $november = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $november = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                     case 12:
-                        $desember = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : ';
+                        $desember = 'Penagihan : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nopenagihan . '</b><br> Pembayaran : &nbsp;&nbsp;&nbsp;<b>' . $valuetagih->nobayar . '</b>';
                         break;
                 }
             }
-            // for ($i=1; $i <= $sudahtagih; $i++) { 
-                // echo $i;
-            // }
-
-            // for ($i=1; $i <= $bulanIndo2; $i++) {
-                // echo $bulanIndo2[$i];
-            // }
-
             $sewa[] = array(
                 'm_rekanan_id' => $val['m_rekanan_id'],
                 'rekanan_nama' => $val['rekanan_nama'],

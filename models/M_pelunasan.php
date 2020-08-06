@@ -58,6 +58,7 @@ class M_pelunasan
                 FROM t_penagihan
                 INNER JOIN t_penagihan_detail ON t_penagihan_detail.t_penagihan_id = t_penagihan.penagihan_id
                 WHERE t_penagihan_detail.penagihandet_aktif = 'Y' AND t_penagihan.penagihan_aktif = 'Y'
+                AND t_penagihan.m_rekanan_id = $m_rekanan_id
                 GROUP BY t_penagihan.penagihan_id, t_penagihan.penagihan_no, t_penagihan.penagihan_tgl, t_penagihan.m_rekanan_id, t_penagihan.t_pelunasandet_bayar
                 ORDER BY t_penagihan.penagihan_tgl ASC ";
         $qpenagihan = $this->conn2->query($sql);
