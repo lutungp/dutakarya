@@ -28,6 +28,7 @@ class C_pegawai
         $fieldSave = ["pegawai_nama", "pegawai_bagian", "pegawai_alamat", "pegawai_notelp", "pegawai_created_by", "pegawai_created_date", "pegawai_revised"];
         $dataSave = [$data["pegawai_nama"], $data["pegawai_bagian"], $data['pegawai_alamat'], $data['pegawai_notelp'], $_SESSION["USER_ID"], date("Y-m-d H:i:s"), 0];
         $action = query_create($this->conn2, 'm_pegawai', $fieldSave, $dataSave);
+        $this->saveJadwal($action, $data['rows']);
         if ($action > 0) {
             echo "200";
         } else {

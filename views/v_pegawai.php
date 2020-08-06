@@ -363,6 +363,76 @@
     function resetForm() {
         $("#pegawai_id").val(0);
         $("#pegawai_nama").val('');
+        $("#pegawai_bagian").val('');
+        $("#pegawai_notelp").val('');
+        $("#pegawai_alamat").val('');
+        var jadwalGridSource = {
+            datatype: "array",
+            localdata:  [
+                    {
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 1,
+                'hari_nama' : 'Senin',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 2,
+                'hari_nama' : 'Selasa',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 3,
+                'hari_nama' : 'Rabu',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 4,
+                'hari_nama' : 'Kamis',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 5,
+                'hari_nama' : "Jum'at",
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 6,
+                'hari_nama' : 'Sabtu',
+                'jadwalpeg_aktif' : false,
+            },{
+                'jadwalpeg_id' : 0,
+                'm_pegawai_id' : 0,
+                'hari' : 7,
+                'hari_nama' : 'Minggu',
+                'jadwalpeg_aktif' : false,
+            }],
+            datafields: [
+                { name: 'jadwalpeg_id', type: 'int'},
+                { name: 'hari_nama', type: 'string' },
+                { name: 'hari', type: 'string' },
+                { name: 'm_pegawai_id', type: 'int'},
+                { name: 'jadwalpeg_aktif', type: 'boolean'}
+            ]
+        };
+        var jadwalgridAdapter = new $.jqx.dataAdapter(jadwalGridSource);
+
+        $("#jadwalGrid").jqxGrid({
+            height : 300,
+            width : "100%",
+            source: jadwalgridAdapter,
+            selectionmode: 'singlecell',
+            editable: true,
+            columns: [
+                { text: 'Hari', datafield: 'hari_nama', displayfield: 'hari_nama' },
+                { text: 'Masuk', datafield: 'jadwalpeg_aktif', threestatecheckbox: false, columntype: 'checkbox', width: 70 },
+            ]
+        });
     }
 
     function addpegawai() {

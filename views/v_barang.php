@@ -440,7 +440,8 @@
                         var ketikasource = {
                             localdata: [
                                 { label : 'kirim', value : 'kirim' },
-                                { label : 'produksi', value : 'produksi' }
+                                { label : 'produksi', value : 'produksi' },
+                                { label : 'rusak', value : 'rusak' }
                             ],
                             datatype: "array"
                         };
