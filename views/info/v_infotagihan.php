@@ -344,22 +344,74 @@
         });
     }
 
-    function renderGrid3(tanggal) {
+    function renderGrid3() {
+        var applyfilter3 = function (tahun, rekanan, barang, tagih) {
+            $.ajax({
+                url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getsewa",
+                type: "post",
+                datatype : 'json',
+                data: {
+                    tahun : tahun,
+                    rekanan : rekanan,
+                    barang : barang,
+                    tagih : tagih
+                },
+                success : function (res) {
+                    res = JSON.parse(res);
+                    $("#infobrgsewagrid").jqxGrid('clear');
+                    res.forEach(element => {
+                        let datarow = {
+                            pengiriman_no : element.pengiriman_no,
+                            pengiriman_tgl : element.pengiriman_tgl,
+                            rekanan_nama : element.rekanan_nama,
+                            rekanan_alamat : element.rekanan_alamat,
+                            barang_nama : element.barang_nama,
+                            satuan_nama : element.satuan_nama,
+                            jmlsewa : element.jmlsewa,
+                            hargakontrakdet_harga : element.hargakontrakdet_harga,
+                            januari : element.januari,
+                            februari : element.februari,
+                            maret : element.maret,
+                            april : element.april,
+                            juni : element.juni,
+                            juli : element.juli,
+                            agustus : element.agustus,
+                            september : element.september,
+                            oktober : element.oktober,
+                            november : element.november,
+                            desember : element.desember,
+                        };
+                        
+                        $("#infobrgsewagrid").jqxGrid('addrow', null, datarow);
+                    });
+                }
+            });
+        };
+
         var gridSewaSource2 ={
             datatype: "json",
             datafields: [
-                { name: 'pengiriman_id', type: 'int' },
                 { name: 'pengiriman_no', type: 'string' },
                 { name: 'pengiriman_tgl', type: 'date' },
-                { name: 'penagihan_no', type: 'string' },
-                { name: 'penagihan_tgl', type: 'date' },
                 { name: 'rekanan_nama', type: 'string' },
                 { name: 'rekanan_alamat', type: 'string' },
                 { name: 'barang_nama', type: 'string' },
                 { name: 'satuan_nama', type: 'string' },
-                { name: 'pengirimandet_qty', type: 'float' },
+                { name: 'jmlsewa', type: 'float' },
+                { name: 'hargakontrakdet_harga', type: 'float' },
+                { name: 'januari', type: 'string' },
+                { name: 'februari', type: 'string' },
+                { name: 'maret', type: 'string' },
+                { name: 'april', type: 'string' },
+                { name: 'juni', type: 'string' },
+                { name: 'juli', type: 'string' },
+                { name: 'agustus', type: 'string' },
+                { name: 'september', type: 'string' },
+                { name: 'oktober', type: 'string' },
+                { name: 'november', type: 'string' },
+                { name: 'desember', type: 'string' }
             ],
-            url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getsewa&tanggal=" + tanggal
+            url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getsewa"
         };
         var gridSewaAdapter = new $.jqx.dataAdapter(gridSewaSource2);
         var tagih = [
@@ -367,6 +419,7 @@
             { 'penagihan' : 'N', 'penagihan_text' : 'Belum ditagih'},
             { 'penagihan' : 'Y', 'penagihan_text' : 'Sudah ditagih'}
         ];
+        var tahun = ['2020', '2021', '2022', '2023', '2024', '2025', '2027', '2028', '2029', '2030', '2031', '2032', '2033', '2034', '2035', '2036', '2037', '2038', '2039', '2040'];
         $("#infobrgsewagrid").jqxGrid({
             width: '100%',
             source: gridSewaAdapter,
@@ -380,18 +433,12 @@
                 var me = this;
                 var container = $("<div style='overflow: hidden; position: relative; margin: 2px;' class='row'></div>");
                 toolbar.append(container);
-                container.append('<div id="datefilter3" style="margin: 2px;"></div>');
+                container.append('<div id="tahunfilter3" style="margin: 2px;"></div>');
                 container.append('<div id="rekananfilter3" style="margin: 2px;"></div>');
                 container.append('<div id="barangfilter3" style="margin: 2px;"></div>');
                 container.append('<div id="tagih3" style="margin: 2px;"></div>');
                 container.append('<div style="margin: 2px;"><input type="button" id="applyfilter3" value="FILTER" /></div>');
-                // container.append('<div style="margin: 2px;"><input type="button" value="EXCEL" id="excelExport" /></div>');
-                $("#datefilter3").jqxDateTimeInput({ width: '170px', height: '28px', formatString: 'dd-MM-yyyy',  selectionMode: 'range'});
-                $('#datefilter3').on('change', function (event) {  
-                    var jsDate = event.args.date; 
-                    var type = event.args.type; // keyboard, mouse or null depending on how the date was selected.
-                    var dateselect = moment(jsDate).format('YYYY-MM-DD');
-                });
+                $("#tahunfilter3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: tahun, width: 100, height: 28,});
                 var rekananSource2 = {
                     datatype: "json",
                     datafields: [
@@ -403,7 +450,7 @@
                     async: false
                 };
                 var rekananAdapter2 = new $.jqx.dataAdapter(rekananSource2);
-                $("#rekananfilter3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: rekananAdapter2, checkboxes: true, displayMember: "rekanan_nama", valueMember: "rekanan_id", width: 200, height: 28,});
+                $("#rekananfilter3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: rekananAdapter2, displayMember: "rekanan_nama", valueMember: "rekanan_id", width: 200, height: 28,});
                 var barangSource2 = {
                     datatype: "json",
                     datafields: [
@@ -413,21 +460,21 @@
                     url: "<?php echo BASE_URL ?>/controllers/C_infotagihan.php?action=getbarang",
                 };
                 var barangAdapter = new $.jqx.dataAdapter(barangSource2);
-                $("#barangfilter3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter, checkboxes: true, displayMember: "barang_nama", valueMember: "barang_id", width: 200, height: 28,});
+                $("#barangfilter3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: barangAdapter, displayMember: "barang_nama", valueMember: "barang_id", width: 200, height: 28,});
                 $("#tagih3").jqxDropDownList({ selectedIndex: 0, autoOpen: true, source: tagih, displayMember: "penagihan_text", valueMember: "penagihan", width: 120, height: 28,});
 
                 $("#applyfilter3").jqxButton({ template: "primary", width: 80, height: 28 });
-                // $("#applyfilter3").on('click', function() {
-                //     var tanggal = $("#datefilter3").val();
-                //     var rekanan = $("#rekananfilter3").jqxDropDownList('getCheckedItems');
-                //     var barang = $("#barangfilter3").jqxDropDownList('getCheckedItems');
-                //     var tagih = $("#tagih3").jqxDropDownList('val');
-                //     applyfilter3(tanggal, rekanan, barang, tagih);
-                // });
+                $("#applyfilter3").on('click', function() {
+                    var tahun = $("#tahunfilter3").jqxDropDownList('val');
+                    var rekanan = $("#rekananfilter3").jqxDropDownList('val');
+                    var barang = $("#barangfilter3").jqxDropDownList('val');
+                    var tagih = $("#tagih3").jqxDropDownList('val');
+                    applyfilter3(tahun, rekanan, barang, tagih);
+                });
             },
             columns: [
                 { 
-                    text: 'No. Pengiriman', datafield: 'pengiriman_no', columntype: 'textbox', width : 170, cellsalign : 'center',
+                    text: 'No. Pengiriman', datafield: 'pengiriman_no', columntype: 'textbox', width : 120, cellsalign : 'center',
                     cellsrenderer : function (row, column, value) {
                         var recorddata = $('#infobrgsewagrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
@@ -438,20 +485,7 @@
                     },
                 },
                 { 
-                    text: 'No. Penagihan', datafield: 'penagihan_no', columntype: 'textbox', width : 170, cellsalign : 'center',
-                    cellsrenderer : function (row, column, value) {
-                        var recorddata = $('#infobrgsewagrid').jqxGrid('getrenderedrowdata', row);
-                        var html = "<div style='padding: 5px;'>";
-                        html += recorddata.penagihan_no + "</br>";
-                        if (recorddata.penagihan_tgl !== '') {
-                            html += moment(recorddata.penagihan_tgl, 'YYYY-MM-DD').format('DD-MM-YYYY');    
-                        }
-                        html += "</div>";
-                        return html;
-                    },
-                },
-                { 
-                    text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left',
+                    text: 'Rekanan', datafield: 'rekanan_nama',  cellsalign: 'left', width : 210,
                     cellsrenderer : function (row, column, value) {
                         var recorddata = $('#infobrgsewagrid').jqxGrid('getrenderedrowdata', row);
                         var html = "<div style='padding: 5px;'>";
@@ -462,9 +496,21 @@
                     },
                 },
                 // { text: 'Alamat', datafield: 'rekanan_alamat',  cellsalign: 'left' },
-                { text: 'Nama Barang', datafield: 'barang_nama',  cellsalign: 'left' },
-                { text: 'Satuan', datafield: 'satuan_nama',  cellsalign: 'left', width : 120 },
-                { text: 'Qty', datafield: 'pengirimandet_qty',  cellsalign: 'right', width : 120 },
+                { text: 'Nama Barang', datafield: 'barang_nama',  cellsalign: 'left', width : 120, },
+                { text: 'Satuan', datafield: 'satuan_nama',  cellsalign: 'left', width : 80 },
+                { text: 'Harga', datafield: 'hargakontrakdet_harga',  cellsalign: 'right', width : 90 },
+                { text: 'Qty', datafield: 'jmlsewa',  cellsalign: 'center', width : 50 },
+                { text: 'Januari', datafield: 'januari',  cellsalign: 'left', width : 120 },
+                { text: 'Februari', datafield: 'februari',  cellsalign: 'left', width : 120 },
+                { text: 'Maret', datafield: 'maret',  cellsalign: 'left', width : 120 },
+                { text: 'April', datafield: 'april',  cellsalign: 'left', width : 120 },
+                { text: 'Mei', datafield: 'juni',  cellsalign: 'left', width : 120 },
+                { text: 'Juli', datafield: 'juli',  cellsalign: 'left', width : 120 },
+                { text: 'Agustus', datafield: 'agustus',  cellsalign: 'left', width : 120 },
+                { text: 'September', datafield: 'september',  cellsalign: 'left', width : 120 },
+                { text: 'Oktober', datafield: 'oktober',  cellsalign: 'left', width : 120 },
+                { text: 'November', datafield: 'november',  cellsalign: 'left', width : 120 },
+                { text: 'Desember', datafield: 'desember',  cellsalign: 'left', width : 120 },
             ]
         });
     }
