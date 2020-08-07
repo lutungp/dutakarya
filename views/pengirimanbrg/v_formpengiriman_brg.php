@@ -150,20 +150,7 @@
                     { name: 'pengirimandet_potongan', type: 'float'},
                     { name: 'pengirimandet_total', type: 'float'},
                     { name: 't_returdet_qty', type: 'float'}
-                ],
-                addrow: function (rowid, rowdata, position, commit) {
-                    // synchronize with the server - send insert command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
-                    commit(true);
-                },
-                deleterow: function (rowid, commit) {
-                    // synchronize with the server - send delete command
-                    // call commit with parameter true if the synchronization with the server is successful 
-                    //and with parameter false if the synchronization failed.
-                    commit(true);
-                }
+                ]
             };
 
             var pengirimanAdapter = new $.jqx.dataAdapter(pengirimanGridSource);

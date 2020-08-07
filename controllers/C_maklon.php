@@ -133,12 +133,12 @@ class C_maklon
                     $barangtrans_akhir = 0;
                     if ($qty > $qtyold) {
                         $barangtrans_keluar = $qty - $qtyold;
-                        $barangtrans_jenis = 'maklon BRG';
+                        $barangtrans_jenis = 'MAKLON BRG';
                         $barangtrans_status = 'KELUAR';
                         $barangtrans_akhir = $barangtrans_awal - $barangtrans_keluar;
                     } else if ($qty < $qtyold) {
                         $barangtrans_masuk = $qtyold - $qty;
-                        $barangtrans_jenis = 'PENGURANGAN maklon BRG';
+                        $barangtrans_jenis = 'PENGURANGAN MAKLON BRG';
                         $barangtrans_status = 'MASUK';
                         $barangtrans_akhir = $barangtrans_awal + $barangtrans_masuk;
                     }
@@ -217,7 +217,7 @@ class C_maklon
             $datastock = array(
                 't_trans_id'      => $val['t_maklon_id'],
                 't_transdet_id'   => $val['maklondet_id'],
-                'barangtrans_jenis' => 'BTL maklon BRG',
+                'barangtrans_jenis' => 'BTL MAKLON BRG',
                 'barangtrans_no'  => $maklon_no,
                 'barangtrans_tgl' => $maklon_tgl,
                 'm_barang_id'  => $val['m_barang_id'],

@@ -186,10 +186,8 @@
         var penagihanAdapter = new $.jqx.dataAdapter(penagihanGridSource);
         $("#penagihanGrid").jqxGrid({
             width: "100%",
-            // height: "100%",
             autoheight : true,
             altrows: true,
-            // pageable : true,
             autorowheight : true,
             showstatusbar: true,
             statusbarheight: 50,
