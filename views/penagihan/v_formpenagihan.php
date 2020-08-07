@@ -107,6 +107,44 @@
                     });   
                 }
             });
+            
+            $.post("<?php echo BASE_URL ?>/controllers/C_penagihan.php?action=getgantirugi", data, function(result){
+                let res = JSON.parse(result);
+                if (res.length > 0 && $('#penagihan_id').val() == 0) {
+                    res.forEach(element => {
+                        console.log(element)
+                        let hargakontrakdet_ppn = element.hargakontrakdet_ppn == 'Y' ? element.hargakontrakdet_harga*10/100 : 0;
+                        var datarow = {
+                            penagihandet_id : element.penagihandet_id,
+                            t_penagihan_id : element.t_penagihan_id,
+                            m_rekanan_id : element.m_rekanan_id,
+                            t_pengiriman_id : element.t_pengiriman_id,
+                            pengiriman_no : element.pengiriman_no,
+                            pengiriman_tgl : element.pengiriman_tgl,
+                            t_pengirimandet_id : element.t_pengirimandet_id,
+                            m_barang_id : element.m_barang_id,
+                            barang_nama : element.barang_nama,
+                            m_barangsatuan_id : element.m_barangsatuan_id,
+                            m_barangsatuan_nama : element.m_barangsatuan_nama,
+                            m_satuan_id : element.m_satuan_id,
+                            satkonv_nilai : element.satkonv_nilai,
+                            penagihandet_qty : element.penagihandet_qty,
+                            penagihandet_qtyreal : element.penagihandet_qtyreal,
+                            penagihandet_harga : element.penagihandet_harga,
+                            penagihandet_subtotal : element.penagihandet_subtotal,
+                            penagihandet_ppn : element.penagihandet_ppn,
+                            penagihandet_potongan : element.penagihandet_potongan,
+                            penagihandet_total : element.penagihandet_total,
+                            t_returdet_qty : element.t_returdet_qty,
+                            penagihandet_jenis : element.penagihandet_jenis,
+                            bulan : element.bulan,
+                            tahun : element.tahun,
+                        };
+                        
+                        $("#penagihanGrid").jqxGrid('addrow', null, datarow);
+                    });   
+                }
+            });
         });
 
         

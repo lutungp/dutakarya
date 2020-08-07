@@ -152,7 +152,6 @@ class M_penagihan
         $row = $qpenagihan->fetch_object();
 
         $rpenagihan = new stdClass();
-        $rpenagihan->pengiriman_id = $row->pengiriman_id;
         $rpenagihan->penagihan_id = $row->penagihan_id;
         $rpenagihan->penagihan_no = $row->penagihan_no;
         $rpenagihan->penagihan_tgl = $row->penagihan_tgl;
@@ -170,14 +169,31 @@ class M_penagihan
                     t_penagihan_detail.penagihandet_id,
                     t_penagihan_detail.t_penagihan_id,
                     t_penagihan_detail.t_pengiriman_id,
-                    t_pengiriman.m_rekanan_id,
-                    t_pengiriman.pengiriman_no,
-                    t_pengiriman.pengiriman_tgl,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_barangrusak.m_rekanan_id ELSE t_pengiriman.m_rekanan_id 
+                    END AS m_rekanan_id,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_barangrusak.barangrusak_no ELSE t_pengiriman.pengiriman_no 
+                    END AS pengiriman_no,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_barangrusak.barangrusak_tgl ELSE t_pengiriman.pengiriman_tgl 
+                    END AS pengiriman_tgl,
                     t_penagihan_detail.t_pengirimandet_id,
-                    t_pengiriman_detail.m_barang_id,
-                    CASE WHEN t_penagihan_detail.penagihandet_jenis = 'sewa' 
-                        THEN CONCAT('Sewa ', m_barang.barang_nama) 
-                        ELSE m_barang.barang_nama END AS barang_nama,
+                    m_barang.barang_id AS m_barang_id,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'sewa' THEN
+                        CONCAT( 'Sewa ', m_barang.barang_nama )
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_penagihan_detail.penagihandet_ket
+                        ELSE m_barang.barang_nama 
+                    END AS barang_nama,
                     m_barang.m_satuan_id AS m_barangsatuan_id,
                     satuanutama.satuan_nama AS m_barangsatuan_nama,
                     t_pengiriman_detail.m_satuan_id,
@@ -191,20 +207,27 @@ class M_penagihan
                     t_penagihan_detail.penagihandet_total,
                     t_pengiriman_detail.t_returdet_qty,
                     t_penagihan_detail.penagihandet_ket,
-                    t_penagihan_detail.penagihandet_jenis
+                    t_penagihan_detail.penagihandet_jenis 
                 FROM
                     t_penagihan_detail
-                    INNER JOIN t_pengiriman ON t_pengiriman.pengiriman_id = t_penagihan_detail.t_pengiriman_id
-                    INNER JOIN t_pengiriman_detail ON t_pengiriman_detail.pengirimandet_id = t_penagihan_detail.t_pengirimandet_id
-                    INNER JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
-                    LEFT JOIN m_satuan_konversi ON ( m_satuan_konversi.m_satuan_id = t_pengiriman_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_pengiriman_detail.m_barang_id )
-                    INNER JOIN m_satuan satuanutama ON satuanutama.satuan_id = m_barang.m_satuan_id 
-                WHERE t_penagihan_detail.penagihandet_aktif = 'Y' ";
+                    LEFT JOIN t_pengiriman ON t_pengiriman.pengiriman_id = t_penagihan_detail.t_pengiriman_id
+                    LEFT JOIN t_pengiriman_detail ON t_pengiriman_detail.pengirimandet_id = t_penagihan_detail.t_pengirimandet_id
+                    LEFT JOIN t_barangrusak ON t_barangrusak.barangrusak_id = t_penagihan_detail.t_pengiriman_id
+                    LEFT JOIN t_barangrusakdet ON t_barangrusakdet.barangrusakdet_id = t_penagihan_detail.t_pengirimandet_id
+                    INNER JOIN m_barang ON (m_barang.barang_id = t_pengiriman_detail.m_barang_id OR m_barang.barang_id = t_barangrusakdet.m_barang_id)
+                    LEFT JOIN m_satuan_konversi ON ((
+                            m_satuan_konversi.m_satuan_id = t_pengiriman_detail.m_satuan_id 
+                            AND m_satuan_konversi.m_barang_id = t_pengiriman_detail.m_barang_id 
+                            ) 
+                    OR ( m_satuan_konversi.m_satuan_id = t_barangrusakdet.m_satuan_id AND m_satuan_konversi.m_barang_id = t_barangrusakdet.m_barang_id ))
+                    LEFT JOIN m_satuan satuanutama ON satuanutama.satuan_id = m_barang.m_satuan_id 
+                WHERE
+                    t_penagihan_detail.penagihandet_aktif = 'Y' ";
 
         if ($penagihan_id > 0) {
             $sql .= " AND t_penagihan_detail.t_penagihan_id = $penagihan_id ";
         }
-
+        
         $qpenagihan = $this->conn2->query($sql);
         $rpenagihan = array();
         while ($val = $qpenagihan->fetch_array()) {
@@ -368,46 +391,68 @@ class M_penagihan
                     t_penagihan_detail.penagihandet_id,
                     t_penagihan_detail.t_penagihan_id,
                     t_penagihan_detail.t_pengiriman_id,
-                    t_pengiriman.m_rekanan_id,
-                    t_pengiriman.pengiriman_no,
-                    t_pengiriman.pengiriman_tgl,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_barangrusak.barangrusak_no ELSE t_pengiriman.pengiriman_no 
+                    END AS pengiriman_no,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_barangrusak.barangrusak_tgl ELSE t_pengiriman.pengiriman_tgl 
+                    END AS pengiriman_tgl,
                     t_penagihan_detail.t_pengirimandet_id,
-                    t_pengiriman_detail.m_barang_id,
-                    CASE WHEN t_penagihan_detail.penagihandet_jenis = 'sewa' 
-                        THEN CONCAT('Sewa ', m_barang.barang_nama) 
-                        ELSE m_barang.barang_nama END AS barang_nama,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'sewa' THEN
+                        t_pengiriman_detail.m_barang_id ELSE t_barangrusakdet.m_barang_id 
+                    END AS m_barang_id,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'sewa' THEN
+                        CONCAT( 'Sewa ', m_barang.barang_nama ) 
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_penagihan_detail.penagihandet_ket ELSE m_barang.barang_nama 
+                    END AS barang_nama,
                     m_barang.m_satuan_id AS m_barangsatuan_id,
                     satuanutama.satuan_nama AS m_barangsatuan_nama,
                     t_pengiriman_detail.m_satuan_id,
-                    COALESCE ( m_satuan_konversi.satkonv_nilai, 1 ) AS satkonv_nilai,
-                    t_pengiriman_detail.pengirimandet_harga,
-                    t_pengiriman_detail.pengirimandet_qty,
+                    COALESCE ( m_satuan_konversi.satkonv_nilai, 1 ) AS satkonv_nilai,-- t_pengiriman_detail.pengirimandet_harga,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_barangrusakdet.barangrusakdet_harga ELSE t_pengiriman_detail.pengirimandet_harga 
+                    END AS pengirimandet_harga,
+                CASE
+                        
+                        WHEN t_penagihan_detail.penagihandet_jenis = 'ganti rugi' THEN
+                        t_barangrusakdet.barangrusakdet_qty ELSE t_pengiriman_detail.pengirimandet_qty 
+                    END AS pengirimandet_qty,
                     t_penagihan_detail.penagihandet_subtotal,
                     t_penagihan_detail.penagihandet_ppn,
                     t_penagihan_detail.penagihandet_potongan,
                     t_penagihan_detail.penagihandet_total,
-                    t_pengiriman_detail.t_returdet_qty,
+                    COALESCE ( t_pengiriman_detail.t_returdet_qty, 0 ) AS t_returdet_qty,
                     t_penagihan_detail.penagihandet_jenis,
-                    penagihan.bulan, penagihan.tahun
+                    penagihan.bulan,
+                    penagihan.tahun 
                 FROM
                     t_penagihan_detail
-                    INNER JOIN t_pengiriman ON t_pengiriman.pengiriman_id = t_penagihan_detail.t_pengiriman_id
-                    INNER JOIN t_pengiriman_detail ON t_pengiriman_detail.pengirimandet_id = t_penagihan_detail.t_pengirimandet_id
-                    INNER JOIN m_barang ON m_barang.barang_id = t_pengiriman_detail.m_barang_id
+                    LEFT JOIN t_pengiriman ON t_pengiriman.pengiriman_id = t_penagihan_detail.t_pengiriman_id
+                    LEFT JOIN t_pengiriman_detail ON t_pengiriman_detail.pengirimandet_id = t_penagihan_detail.t_pengirimandet_id
+                    LEFT JOIN t_barangrusak ON t_barangrusak.barangrusak_id = t_penagihan_detail.t_pengiriman_id
+                    LEFT JOIN t_barangrusakdet ON t_barangrusakdet.barangrusakdet_id = t_penagihan_detail.t_pengirimandet_id
+                    LEFT JOIN m_barang ON ( m_barang.barang_id = t_pengiriman_detail.m_barang_id OR m_barang.barang_id = t_barangrusakdet.m_barang_id )
                     LEFT JOIN m_satuan_konversi ON ( m_satuan_konversi.m_satuan_id = t_pengiriman_detail.m_satuan_id AND m_satuan_konversi.m_barang_id = t_pengiriman_detail.m_barang_id )
-                    INNER JOIN m_satuan satuanutama ON satuanutama.satuan_id = m_barang.m_satuan_id 
-                    LEFT JOIN (
-                        SELECT 
-                        t_penagihansewa.t_penagihan_id, t_penagihansewa.t_penagihandet_id, bulan, tahun
-                        FROM t_penagihansewa
-                        WHERE t_penagihansewa.penagihansewa_aktif = 'Y'
-                    ) AS penagihan ON penagihan.t_penagihandet_id = t_penagihan_detail.penagihandet_id
-                WHERE t_penagihan_detail.penagihandet_aktif = 'Y' ";
+                    LEFT JOIN m_satuan satuanutama ON satuanutama.satuan_id = m_barang.m_satuan_id
+                    LEFT JOIN ( SELECT t_penagihansewa.t_penagihan_id, t_penagihansewa.t_penagihandet_id, bulan, tahun FROM t_penagihansewa WHERE t_penagihansewa.penagihansewa_aktif = 'Y' ) AS penagihan ON penagihan.t_penagihandet_id = t_penagihan_detail.penagihandet_id 
+                WHERE
+                    t_penagihan_detail.penagihandet_aktif = 'Y' ";
 
         if ($penagihan_id > 0) {
             $sql .= " AND t_penagihan_detail.t_penagihan_id = $penagihan_id ";
         }
-
+        
         $qpenagihan = $this->conn2->query($sql);
         $rpenagihan = array();
         while ($val = $qpenagihan->fetch_array()) {
@@ -439,6 +484,63 @@ class M_penagihan
             );
         }
 
+        return $rpenagihan;
+    }
+
+    public function getGantiRugi($m_rekanan_id, $penagihan_tgl)
+    {
+        $sql = "SELECT 
+                    t_barangrusak.barangrusak_id,
+                    t_barangrusak.barangrusak_no,
+                    t_barangrusak.barangrusak_tgl,
+                    t_barangrusakdet.barangrusakdet_id,
+                    t_barangrusakdet.m_barang_id,
+                    m_barang.barang_nama,
+                    t_barangrusakdet.m_satuan_id,
+                    m_satuan.satuan_nama,
+                    t_barangrusakdet.barangrusakdet_qty,
+                    t_barangrusakdet.barangrusakdet_harga,
+                    t_barangrusakdet.barangrusakdet_subtotal,
+                    t_barangrusakdet.barangrusakdet_alasan
+                FROM t_barangrusakdet
+                INNER JOIN t_barangrusak ON t_barangrusak.barangrusak_id = t_barangrusakdet.t_barangrusak_id
+                INNER JOIN m_barang ON m_barang.barang_id = t_barangrusakdet.m_barang_id
+                INNER JOIN m_satuan ON m_satuan.satuan_id = t_barangrusakdet.m_satuan_id
+                WHERE t_barangrusakdet.barangrusakdet_aktif = 'Y'
+                AND t_barangrusak.barangrusak_aktif = 'Y'
+                AND t_barangrusak.m_rekanan_id = $m_rekanan_id
+                AND t_barangrusak.barangrusak_tgl >= '$penagihan_tgl' ";
+
+         $qpenagihan = $this->conn2->query($sql);
+         $rpenagihan = array();
+         while ($val = $qpenagihan->fetch_array()) {
+             $rpenagihan[] = array(
+                'penagihandet_id' => 0,
+                't_penagihan_id' => 0,
+                'm_rekanan_id' => $m_rekanan_id,
+                't_pengiriman_id' => $val['barangrusak_id'],
+                'pengiriman_no' => $val['barangrusak_no'],
+                'pengiriman_tgl' => $val['barangrusak_tgl'],
+                't_pengirimandet_id' => $val['barangrusakdet_id'],
+                'm_barang_id' => $val['m_barang_id'],
+                'barang_nama' => 'Ganti Rugi ' . $val['barang_nama'] . ' ' . $val['barangrusakdet_qty'] . ' ' . $val['satuan_nama'] . '<br> Ket : ' . $val['barangrusakdet_alasan'],
+                'm_barangsatuan_id' => $val['m_satuan_id'],
+                'm_barangsatuan_nama' => $val['satuan_nama'],
+                'm_satuan_id' => $val['m_satuan_id'],
+                'satkonv_nilai' => 1,
+                'penagihandet_harga' => $val['barangrusakdet_harga'],
+                'penagihandet_qty' => $val['barangrusakdet_qty'],
+                'penagihandet_qtyreal' => $val['barangrusakdet_qty'],
+                'penagihandet_subtotal' => $val['barangrusakdet_subtotal'],
+                'penagihandet_ppn' => 0,
+                'penagihandet_potongan' => 0,
+                'penagihandet_total' => $val['barangrusakdet_subtotal'],
+                't_returdet_qty' => 0,
+                'penagihandet_jenis' => 'ganti rugi',
+                'bulan' => 0,
+                'tahun' => 0,
+            );
+        }
         return $rpenagihan;
     }
 }

@@ -145,6 +145,13 @@ class C_penagihan
                                     $val['tahun'], $val['penagihandet_total'], 0, $_SESSION["USER_ID"], date("Y-m-d H:i:s")];
                         query_create($this->conn2, 't_penagihansewa', $fieldSewaSave, $dataSewaSave);
                     }
+
+                    if ($penagihandet_jenis == 'ganti rugi') {
+                        $barangrusak_id = $val['t_pengiriman_id'];
+                        $fieldbrgrsk = " t_penagihan_id = $penagihan_id, t_penagihan_no = '$penagihan_no' ";
+                        $wherebrgrsk = " WHERE barangrusak_id = $barangrusak_id ";
+                        query_update($this->conn2, 't_barangrusak', $fieldbrgrsk, $wherebrgrsk);
+                    }
                 }
 
                 /* update pengiriman status penagihan */
@@ -223,6 +230,10 @@ class C_penagihan
         $field = " penagihansewa_aktif = 'N' ";
         $where = "t_penagihan_id = " . $data['penagihan_id'];
         query_update($this->conn2, 't_penagihansewa', $field, $where);
+
+        $fieldbrgrsk = " t_penagihan_id = 0, t_penagihan_no = '' ";
+        $wherebrgrsk = " WHERE t_penagihan_id = " . $data['penagihan_id'];
+        query_update($this->conn2, 't_barangrusak', $fieldbrgrsk, $wherebrgrsk);
 
         if ($action > 0) {
             echo 200;
@@ -387,6 +398,15 @@ class C_penagihan
         $mpdf->WriteHTML($content);
         $mpdf->Output();
     }
+
+    public function getGantiRugi($data)
+    {
+        $m_rekanan_id = $data['m_rekanan_id'];
+        $penagihan_tgl = $data['penagihan_tgl'];
+        $data = $this->model->getGantiRugi($m_rekanan_id, $penagihan_tgl);
+
+        echo json_encode($data);
+    }
 }
 
 $penagihan = new C_penagihan($conn, $conn2, $config);
@@ -413,6 +433,9 @@ switch ($action) {
         break;
     case 'batal':
         $penagihan->batal($_POST);
+        break;
+    case 'getgantirugi':
+        $penagihan->getGantiRugi($_POST);
         break;
     default:
         templateAdmin($conn2, '../views/penagihan/v_penagihan.php', NULL, 'KEUANGAN', 'PENAGIHAN');

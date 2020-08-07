@@ -157,7 +157,9 @@ class M_barangrusak
                     t_barangrusak.barangrusak_no,
                     t_barangrusak.m_rekanan_id,
                     m_rekanan.rekanan_nama,
-                    m_rekanan.rekanan_alamat
+                    m_rekanan.rekanan_alamat,
+                    t_barangrusak.t_penagihan_id,
+                    t_barangrusak.t_penagihan_no
                 FROM t_barangrusak
                 INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_barangrusak.m_rekanan_id
                 WHERE t_barangrusak.barangrusak_aktif = 'Y' 

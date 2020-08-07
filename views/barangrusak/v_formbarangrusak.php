@@ -236,7 +236,7 @@
                         <button type="button" id="batal" class="btn btn-danger btn-sm" disabled>Batal</button>
                         <?php } ?>
                         <?php if (($create <> '' && isset($data->barangrusak_id) == 0) || ($update <> '' && $data->barangrusak_id > 0)) { ?>
-                        <button type="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
+                        <button type="submit" id="submit" class="btn btn-primary btn-sm float-right">Simpan</button>
                         <?php } ?>
                         <!-- <button type="button" class="btn btn-default btn-sm float-right" style="margin-right: 5px;">Cetak</button> -->
                     </div>
@@ -338,7 +338,15 @@
             $("#m_rekanan_id").data('select2').trigger('select', {
                 data: {"id":dat.m_rekanan_id, "text": dat.rekanan_nama }
             });
-            $('#batal').removeAttr('disabled')
+            
+            if (dat.barangrusak_no !== '') {
+                $('#batal').attr('disabled', true);
+                $('#submit').attr('disabled', true);
+                var penagihanstr = dat.t_penagihan_no == null || dat.t_penagihan_no == '' ? '' : ", sudah dibuat penagihan dengan No. Penagihan " + dat.t_penagihan_no;
+                swal("Info!", "No. Barang Rusak " + dat.barangrusak_no + penagihanstr, "warning");
+            } else {
+                $('#batal').removeAttr('disabled');
+            }
         }
 
         $('#batal').on('click', function() {
