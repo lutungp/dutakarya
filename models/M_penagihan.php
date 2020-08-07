@@ -508,6 +508,7 @@ class M_penagihan
                 INNER JOIN m_satuan ON m_satuan.satuan_id = t_barangrusakdet.m_satuan_id
                 WHERE t_barangrusakdet.barangrusakdet_aktif = 'Y'
                 AND t_barangrusak.barangrusak_aktif = 'Y'
+                AND (t_barangrusak.t_penagihan_id = 0 OR t_barangrusak.t_penagihan_id = null)
                 AND t_barangrusak.m_rekanan_id = $m_rekanan_id
                 AND t_barangrusak.barangrusak_tgl >= '$penagihan_tgl' ";
 

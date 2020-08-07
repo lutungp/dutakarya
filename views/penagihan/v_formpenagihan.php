@@ -96,7 +96,7 @@
                             penagihandet_subtotal : element.jmlsewa*element.hargakontrakdet_harga,
                             penagihandet_ppn : element.jmlsewa*hargakontrakdet_ppn,
                             penagihandet_potongan : 0,
-                            penagihandet_total : element.jmlsewa*(element.hargakontrakdet_harga + hargakontrakdet_ppn),
+                            penagihandet_total : element.jmlsewa*(parseInt(element.hargakontrakdet_harga) + parseInt(hargakontrakdet_ppn)),
                             t_returdet_qty : 0,
                             penagihandet_jenis : 'sewa',
                             bulan : element.bulan,
