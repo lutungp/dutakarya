@@ -21,7 +21,8 @@ class M_barangrusak
                     t_barangrusak.barangrusak_no,
                     t_barangrusak.m_rekanan_id,
                     m_rekanan.rekanan_nama,
-                    m_rekanan.rekanan_alamat
+                    m_rekanan.rekanan_alamat,
+                    t_barangrusak.t_penagihan_no
                 FROM t_barangrusak
                 INNER JOIN m_rekanan ON m_rekanan.rekanan_id = t_barangrusak.m_rekanan_id
                 WHERE t_barangrusak.barangrusak_aktif = 'Y' ";
@@ -32,6 +33,7 @@ class M_barangrusak
                 'barangrusak_id' => $val['barangrusak_id'],
                 'barangrusak_tgl' => $val['barangrusak_tgl'],
                 'barangrusak_no' => $val['barangrusak_no'],
+                't_penagihan_no' => $val['t_penagihan_no'],
                 'm_rekanan_id' => $val['m_rekanan_id'],
                 'rekanan_nama' => $val['rekanan_nama'],
                 'rekanan_alamat' => $val['rekanan_alamat'],

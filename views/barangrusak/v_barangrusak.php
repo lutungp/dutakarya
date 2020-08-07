@@ -18,6 +18,7 @@
                 { name: 'rekanan_nama', type: 'string' },
                 { name: 'rekanan_alamat', type: 'string' },
                 { name: 'penerimaan_aktif', type: 'string' },
+                { name: 't_penagihan_no', type: 'string' },
             ],
             id: 'barangrusak_id',
             url: url
@@ -72,7 +73,8 @@
                         return html;
                     },
                 },
-                { text: 'Tanggal', datafield: 'barangrusak_tgl', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 200},
+                { text: 'No. Penagihan', datafield: 't_penagihan_no', cellsalign: 'center', width : 150},
+                { text: 'Tanggal', datafield: 'barangrusak_tgl', cellsformat: 'dd-MM-yyyy', cellsalign: 'center', width : 150},
                 // { text: 'Penerimaan Aktif', datafield: 'penerimaan_aktif', filterable: false},
                 <?php if ($read <> '' || $update <> '') {?>
                 { text: 'Edit', datafield: 'Edit', columntype: 'button', width:'50', align:'center', sortable:false, filterable: false,
